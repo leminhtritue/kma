@@ -158,8 +158,8 @@ def cal_accc(loader, netF):
             else:
                 all_output = torch.cat((all_output, outputs.float().cpu()), 0)
                 all_label = torch.cat((all_label, labels.float()), 0)
-    print(type(all_output))
-    print(type(all_label))
+    print((all_output.shape))
+    print(type(all_label.shape))
     sys.exit()
     # _, predict = torch.max(all_output, 1)
     # accuracy = torch.sum(torch.squeeze(predict).float() == all_label).item() / float(all_label.size()[0])
