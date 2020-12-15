@@ -269,9 +269,6 @@ def test_target(args):
     netB.eval()
     netC.eval()
 
-    cal_accc(dset_loaders['source_te'], netF, "train_data", "train_label")
-    cal_accc(dset_loaders['test'], netF, "test_data", "test_label")
-    sys.exit()
     acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
     log_str = 'Task: {}, Accuracy = {:.2f}%'.format(args.dset, acc)
     args.out_file.write(log_str + '\n')
@@ -381,6 +378,9 @@ def train_target(args):
         torch.save(netB.state_dict(), osp.join(args.output_dir, "target_B_" + args.savename + ".pt"))
         torch.save(netC.state_dict(), osp.join(args.output_dir, "target_C_" + args.savename + ".pt"))
 
+
+    cal_accc(dset_loaders['source_te'], netF, "train_data", "train_label")
+    cal_accc(dset_loaders['test'], netF, "test_data", "test_label")
     return netF, netB, netC
 
 def obtain_label(loader, netF, netB, netC, args, c=None):
