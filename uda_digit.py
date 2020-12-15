@@ -141,6 +141,31 @@ def cal_acc(loader, netF, netB, netC):
     mean_ent = torch.mean(loss.Entropy(nn.Softmax(dim=1)(all_output))).cpu().data.item()
     return accuracy*100, mean_ent
 
+def cal_accc(loader, netF):
+    start_test = True
+    with torch.no_grad():
+        iter_test = iter(loader)
+        for i in range(len(loader)):
+            data = iter_test.next()
+            inputs = data[0]
+            labels = data[1]
+            inputs = inputs.cuda()
+            outputs = netF(inputs)
+            if start_test:
+                all_output = outputs.float().cpu()
+                all_label = labels.float()
+                start_test = False
+            else:
+                all_output = torch.cat((all_output, outputs.float().cpu()), 0)
+                all_label = torch.cat((all_label, labels.float()), 0)
+    print(type(all_output))
+    print(type(all_label))
+    sys.exit()
+    # _, predict = torch.max(all_output, 1)
+    # accuracy = torch.sum(torch.squeeze(predict).float() == all_label).item() / float(all_label.size()[0])
+    # mean_ent = torch.mean(loss.Entropy(nn.Softmax(dim=1)(all_output))).cpu().data.item()
+    # return accuracy*100, mean_ent
+
 def train_source(args):
     dset_loaders = digit_load(args)
     ## set base network
@@ -241,6 +266,7 @@ def test_target(args):
     netB.eval()
     netC.eval()
 
+    cal_accc(dset_loaders['source_te'], netF)
     acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
     log_str = 'Task: {}, Accuracy = {:.2f}%'.format(args.dset, acc)
     args.out_file.write(log_str + '\n')
