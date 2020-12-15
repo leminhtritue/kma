@@ -141,7 +141,7 @@ def cal_acc(loader, netF, netB, netC):
     mean_ent = torch.mean(loss.Entropy(nn.Softmax(dim=1)(all_output))).cpu().data.item()
     return accuracy*100, mean_ent
 
-def cal_accc(loader, netF):
+def cal_accc(loader, netF, ouput_name, label_name):
     start_test = True
     with torch.no_grad():
         iter_test = iter(loader)
@@ -160,10 +160,10 @@ def cal_accc(loader, netF):
                 all_label = torch.cat((all_label, labels.float()), 0)
     print(all_output.shape)
     print(all_label.shape)
-    t = all_output.numpy()
-    print(type(t))
-    print(t.shape)
-    sys.exit()
+    all_output_np = all_output.numpy()
+    all_label_np = all_label.numpy()
+    np.save(ouput_name, all_output_np)
+    np.save(label_name, all_label_np)
     # _, predict = torch.max(all_output, 1)
     # accuracy = torch.sum(torch.squeeze(predict).float() == all_label).item() / float(all_label.size()[0])
     # mean_ent = torch.mean(loss.Entropy(nn.Softmax(dim=1)(all_output))).cpu().data.item()
@@ -269,7 +269,9 @@ def test_target(args):
     netB.eval()
     netC.eval()
 
-    cal_accc(dset_loaders['source_te'], netF)
+    cal_accc(dset_loaders['source_te'], netF, "train_data", "train_label")
+    cal_accc(dset_loaders['test'], netF, "test_data", "test_label")
+    sys.exit()
     acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
     log_str = 'Task: {}, Accuracy = {:.2f}%'.format(args.dset, acc)
     args.out_file.write(log_str + '\n')
