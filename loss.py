@@ -49,11 +49,19 @@ class KernelSource(nn.Module):
             mark_multiply[targets==i] = -1
             mark_add = torch.zeros(targets.size()).cuda()
             mark_multiply[targets==i] = 1
-            print(inputs.shape)
-            print(inputs[:,i].shape)
-            print(type(inputs.shape))
-            print(type(inputs[:,i].shape))
-            loss += (inputs[:,i] * mark_multiply + mark_add).sum()
+            temp_value = inputs[:,i] * mark_multiply + mark_add
+            mark_cmp = torch.zeros(temp_value.size()).cuda()
+            tt = torch.minimum(temp_value, mark_cmp)
+            print(temp_value.shape)
+            print(mark_cmp.shape)
+            print(tt.shape)
+            print()
+            loss += tt.sum()
         print(loss/self.num_classes)
+
+        tt = hyperplanceNet.weight
+        print(tt.shape)
+        print(type(tt))
+        print(tt)
         sys.exit()
         return loss
