@@ -223,8 +223,6 @@ def train_source(args):
         classifier_loss = loss.CrossEntropyLabelSmooth(num_classes=args.class_num, epsilon=args.smooth)(outputs_source, labels_source) 
         total_loss += classifier_loss
         count_loss += 1           
-
-        sys.exit()
         optimizer.zero_grad()
         classifier_loss.backward()
         optimizer.step()
