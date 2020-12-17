@@ -55,6 +55,6 @@ class KernelSource(nn.Module):
 
         wnorm = 0.5* hyperplanceNet.get_weight().norm(dim=1).sum()
         print("weight norm: ", wnorm)
-        print("0.05 * sum class:", 0.05 * loss)
+        print("sum class:", loss)
         print()
-        return 0.05 * loss + wnorm
+        return loss + wnorm
