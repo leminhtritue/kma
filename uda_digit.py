@@ -202,6 +202,8 @@ def train_source(args):
     netF.train()
     netB.train()
     netC.train()
+    total_loss = 0.0
+    count_loss = 0
 
     while iter_num < max_iter:
         try:
@@ -217,14 +219,11 @@ def train_source(args):
         lr_scheduler(optimizer, iter_num=iter_num, max_iter=max_iter)
 
         inputs_source, labels_source = inputs_source.cuda(), labels_source.cuda()
-        outputs_source = netC(netB(netF(inputs_source)))
-        classifier_loss = loss.CrossEntropyLabelSmooth(num_classes=args.class_num, epsilon=args.smooth)(outputs_source, labels_source)            
-        print(outputs_source.shape)
-        print(classifier_loss)
-        print(type(netC.get_weight()))
-        print(type(netC.get_bias()))
-        print(netC.get_weight().shape)
-        print(netC.get_bias().shape)
+        outputs_source = netC(netB(netF(inputs_source))) #64x10
+        classifier_loss = loss.CrossEntropyLabelSmooth(num_classes=args.class_num, epsilon=args.smooth)(outputs_source, labels_source) 
+        total_loss += classifier_loss
+        count_loss += 1           
+
         sys.exit()
         optimizer.zero_grad()
         classifier_loss.backward()
@@ -236,7 +235,9 @@ def train_source(args):
             netC.eval()
             acc_s_tr, _ = cal_acc(dset_loaders['source_tr'], netF, netB, netC)
             acc_s_te, _ = cal_acc(dset_loaders['source_te'], netF, netB, netC)
-            log_str = 'Task: {}, Iter:{}/{}; Accuracy = {:.2f}%/ {:.2f}%'.format(args.dset, iter_num, max_iter, acc_s_tr, acc_s_te)
+            log_str = 'Task: {}, Iter:{}/{}; Accuracy source (train/test) = {:.2f}%/ {:.2f}%, Loss = {:.2f}%'.format(args.dset, iter_num, max_iter, acc_s_tr, acc_s_te, total_loss/count_loss)
+            total_loss = 0.0
+            count_loss = 0
             args.out_file.write(log_str + '\n')
             args.out_file.flush()
             print(log_str+'\n')
