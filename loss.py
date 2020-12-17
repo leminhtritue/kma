@@ -47,8 +47,8 @@ class KernelSource(nn.Module):
         for i in range(self.num_classes):
             mark_multiply = torch.ones(targets.size()).cuda()
             mark_multiply[targets==i] = -1
-            mark_add = torch.zeros(targets.size()).cuda()
-            mark_multiply[targets==i] = 1
+            mark_add = torch.ones(targets.size()).cuda()
+            mark_multiply[targets==i] = 0
             temp_value = inputs[:,i] * mark_multiply + mark_add
             mark_cmp = torch.zeros(temp_value.size()).cuda()
             loss += torch.minimum(temp_value, mark_cmp).sum()
