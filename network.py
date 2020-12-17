@@ -30,7 +30,7 @@ class feat_bootleneck(nn.Module):
         self.type = type
 
     def forward(self, x):
-        x = self.bottleneck(x)
+        # x = self.bottleneck(x)
         # if self.type == "bn":
         #     x = self.bn(x)
         #     x = self.dropout(x)
