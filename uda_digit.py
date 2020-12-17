@@ -219,6 +219,8 @@ def train_source(args):
         inputs_source, labels_source = inputs_source.cuda(), labels_source.cuda()
         outputs_source = netC(netB(netF(inputs_source)))
         classifier_loss = loss.CrossEntropyLabelSmooth(num_classes=args.class_num, epsilon=args.smooth)(outputs_source, labels_source)            
+        print(outputs_source.shape)
+        print(classifier_loss)
         optimizer.zero_grad()
         classifier_loss.backward()
         optimizer.step()
@@ -476,6 +478,7 @@ if __name__ == "__main__":
         args.out_file.write(print_args(args)+'\n')
         args.out_file.flush()
         train_source(args)
+        sys.exit()
         test_target(args)
 
     args.savename = 'par_' + str(args.cls_par)
