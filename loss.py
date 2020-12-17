@@ -51,7 +51,7 @@ class KernelSource(nn.Module):
             mark_multiply[targets==i] = 0
             temp_value = inputs[:,i] * mark_multiply + mark_add
             mark_cmp = torch.zeros(temp_value.size()).cuda()
-            loss += torch.minimum(temp_value, mark_cmp).sum()
+            loss += torch.maximum(temp_value, mark_cmp).sum()
 
         wnorm = 0.5* hyperplanceNet.get_weight().norm(dim=1).sum()
         print("0.1 * weight norm: ", 0.1 * wnorm)
