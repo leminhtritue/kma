@@ -5,6 +5,7 @@ from torch.autograd import Variable
 import math
 import torch.nn.functional as F
 import pdb
+import sys
 
 def Entropy(input_):
     bs = input_.size(0)
@@ -43,8 +44,8 @@ class KernelSource(nn.Module):
         if self.use_gpu: targets = targets.cuda()
         loss = 0.0
         print(targets.shape)
-        print(targets.min)
-        print(targets.max)
+        print(targets.min())
+        print(targets.max())
         for i in range(self.num_classes):
             mark_multiply = torch.ones(targets.size())
             mark_multiply[targets==i] = -1
