@@ -48,6 +48,10 @@ class feat_classifier(nn.Module):
     def forward(self, x):
         x = self.fc(x)
         return x
+    def get_weight(self):
+        return self.fc.weight
+    def get_bias(self):
+        return self.fc.bias
 
 class DTNBase(nn.Module):
     def __init__(self):
