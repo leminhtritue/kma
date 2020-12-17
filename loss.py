@@ -46,7 +46,7 @@ class KernelSource(nn.Module):
         print(targets.min)
         print(targets.max)
         for i in range(self.num_classes):
-            mark_multiply = torch.ones(targets)
+            mark_multiply = torch.ones(targets.size())
             mark_multiply[targets==i] = -1
             print(mark_multiply)
             print(mark_multiply.shape)
