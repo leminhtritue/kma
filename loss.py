@@ -52,9 +52,9 @@ class KernelSource(nn.Module):
             temp_value = inputs[:,i] * mark_multiply + mark_add
             mark_cmp = torch.zeros(temp_value.size()).cuda()
             loss += torch.minimum(temp_value, mark_cmp).sum()
-        print(loss/self.num_classes)
+        print(loss)
 
-        tt = hyperplanceNet.get_weight().norm(1)
+        tt = hyperplanceNet.get_weight().norm(dim=1)
         print(tt.shape)
         print(type(tt))
         print(tt)
