@@ -54,7 +54,7 @@ class KernelSource(nn.Module):
             loss += torch.minimum(temp_value, mark_cmp).sum()
 
         wnorm = 0.5* hyperplanceNet.get_weight().norm(dim=1).sum()
-        print("weight norm: ", wnorm)
+        print("0.1 * weight norm: ", 0.1 * wnorm)
         print("sum class:", loss)
         print()
-        return loss + wnorm
+        return loss + 0.1 * wnorm
