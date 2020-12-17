@@ -53,5 +53,8 @@ class KernelSource(nn.Module):
             mark_cmp = torch.zeros(temp_value.size()).cuda()
             loss += torch.minimum(temp_value, mark_cmp).sum()
 
-        # loss += 0.5* hyperplanceNet.get_weight().norm(dim=1).sum()
+        print(loss)
+        tt = 0.5* hyperplanceNet.get_weight().norm(dim=1).sum()
+        print(tt)
+        # loss += 
         return loss
