@@ -220,7 +220,7 @@ def train_source(args):
 
         inputs_source, labels_source = inputs_source.cuda(), labels_source.cuda()
         outputs_source = netC(netB(netF(inputs_source))) #64x10
-        classifier_loss = loss.KernelSource(num_classes=args.class_num)(outputs_source, labels_source) 
+        classifier_loss = loss.KernelSource(num_classes=args.class_num)(outputs_source, labels_source, netC) 
         total_loss += classifier_loss
         count_loss += 1           
         optimizer.zero_grad()

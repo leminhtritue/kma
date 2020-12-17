@@ -34,7 +34,7 @@ class CrossEntropyLabelSmooth(nn.Module):
 
 class KernelSource(nn.Module):
     def __init__(self, num_classes, alpha = 0.1, use_gpu=True):
-        super(CrossEntropyLabelSmooth, self).__init__()
+        super(KernelSource, self).__init__()
         self.num_classes = num_classes
         self.use_gpu = use_gpu
         self.alpha = alpha
