@@ -49,7 +49,11 @@ class KernelSource(nn.Module):
         for i in range(self.num_classes):
             mark_multiply = torch.ones(targets.size())
             mark_multiply[targets==i] = -1
-            print(mark_multiply)
-            print(mark_multiply.shape)
+            mark_add = torch.zeros(targets.size())
+            mark_multiply[targets==i] = 1
+            print(inputs.shape)
+            print(inputs[:,i].shape)
+            tt =  inputs[:,i] * mark_multiply + mark_add
+            print(tt.shape)
             sys.exit()
         return loss
