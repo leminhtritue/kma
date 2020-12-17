@@ -43,12 +43,11 @@ class KernelSource(nn.Module):
     def forward(self, inputs, targets, hyperplanceNet):
         if self.use_gpu: 
             targets = targets.cuda()
-            inputs = inputs.cuda()
         loss = 0.0
         for i in range(self.num_classes):
-            mark_multiply = torch.ones(targets.size())
+            mark_multiply = torch.ones(targets.size()).cuda()
             mark_multiply[targets==i] = -1
-            mark_add = torch.zeros(targets.size())
+            mark_add = torch.zeros(targets.size()).cuda()
             mark_multiply[targets==i] = 1
             print(inputs.shape)
             print(inputs[:,i].shape)
