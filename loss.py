@@ -53,7 +53,7 @@ class KernelSource(nn.Module):
             print(inputs[:,i].shape)
             print(type(inputs.shape))
             print(type(inputs[:,i].shape))
-            tt =  inputs[:,i] * mark_multiply + mark_add
-            print(tt.shape)
-            sys.exit()
+            loss += (inputs[:,i] * mark_multiply + mark_add).sum()
+        print(loss/self.num_classes)
+        sys.exit()
         return loss
