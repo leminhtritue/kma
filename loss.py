@@ -31,3 +31,24 @@ class CrossEntropyLabelSmooth(nn.Module):
         else:
             loss = (- targets * log_probs).sum(1)
         return loss
+
+class KernelSource(nn.Module):
+    def __init__(self, num_classes, alpha = 0.1, use_gpu=True):
+        super(CrossEntropyLabelSmooth, self).__init__()
+        self.num_classes = num_classes
+        self.use_gpu = use_gpu
+        self.alpha = alpha
+
+    def forward(self, inputs, targets, hyperplanceNet):
+        if self.use_gpu: targets = targets.cuda()
+        loss = 0.0
+        print(targets.shape)
+        print(targets.min)
+        print(targets.max)
+        for i in range(self.num_classes):
+            mark_multiply = torch.ones(targets)
+            mark_multiply[targets==i] = -1
+            print(mark_multiply)
+            print(mark_multiply.shape)
+            sys.exit()
+        return loss
