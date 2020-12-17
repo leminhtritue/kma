@@ -52,6 +52,8 @@ class KernelSource(nn.Module):
             mark_multiply[targets==i] = 1
             print(inputs.shape)
             print(inputs[:,i].shape)
+            print(type(inputs.shape))
+            print(type(inputs[:,i].shape))
             tt =  inputs[:,i] * mark_multiply + mark_add
             print(tt.shape)
             sys.exit()
