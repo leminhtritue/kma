@@ -225,6 +225,7 @@ def train_source(args):
         print(type(netC.get_bias()))
         print(netC.get_weight().shape)
         print(netC.get_bias().shape)
+        sys.exit()
         optimizer.zero_grad()
         classifier_loss.backward()
         optimizer.step()
