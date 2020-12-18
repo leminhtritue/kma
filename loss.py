@@ -44,6 +44,13 @@ class KernelSource(nn.Module):
         if self.use_gpu: 
             targets = targets.cuda()
         loss = 0.0
+        mark_multiply = torch.ones(inputs.size()).cuda()
+        mark_add = torch.ones(inputs.size()).cuda()
+        mark_cmp = torch.zeros(inputs.size()).cuda()
+        print(mark_multiply.shape)
+        print(mark_add.shape)
+        print(mark_cmp.shape)
+        sys.exit()
         for i in range(self.num_classes):
             mark_multiply = torch.ones(targets.size()).cuda()
             mark_multiply[targets==i] = -1
