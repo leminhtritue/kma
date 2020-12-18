@@ -56,7 +56,10 @@ class KernelSource(nn.Module):
             print(mark_add[:,i + 1])
 
         sys.exit()
-        loss = torch.maximum(inputs * mark_multiply + mark_add, mark_cmp).sum()
+        loss = torch.maximum(inputs * mark_multiply + mark_add, mark_cmp)
+        print(loss.shape)
+        loss = loss.mean(dim=0)
+        print(loss.shape)
 
         wnorm = 0.5* hyperplanceNet.get_weight().norm(dim=1).sum()
         # print("0.1 * weight norm: ", 0.1 * wnorm)
