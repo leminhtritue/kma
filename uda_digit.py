@@ -221,7 +221,7 @@ def train_source(args):
 
         inputs_source, labels_source = inputs_source.cuda(), labels_source.cuda()
         outputs_source = netC(netB(netF(inputs_source))) #64x10
-        classifier_loss = loss.KernelSource(num_classes=args.class_num)(outputs_source, labels_source, netC, alpha=args.smooth) 
+        classifier_loss = loss.KernelSource(num_classes=args.class_num, alpha=args.smooth)(outputs_source, labels_source, netC) 
         # classifier_loss = loss.CrossEntropyLabelSmooth(num_classes=args.class_num, epsilon=args.smooth)(outputs_source, labels_source)  
         total_loss += classifier_loss
         count_loss += 1           
