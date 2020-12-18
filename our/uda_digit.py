@@ -265,7 +265,8 @@ def test_target(args):
         netF = network.DTNBase().cuda()
 
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
-    netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
+    # netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
+    netC = network.feat_classifier(type="linear", class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
 
     args.modelpath = args.output_dir + '/source_F.pt'   
     netF.load_state_dict(torch.load(args.modelpath))
@@ -484,8 +485,8 @@ if __name__ == "__main__":
         args.out_file.write(print_args(args)+'\n')
         args.out_file.flush()
         train_source(args)
-        sys.exit()
         test_target(args)
+        sys.exit()
 
     args.savename = 'par_' + str(args.cls_par)
     args.out_file = open(osp.join(args.output_dir, 'log_tar_' + args.savename + '.txt'), 'w')
