@@ -49,9 +49,12 @@ class KernelSource(nn.Module):
         mark_cmp = torch.zeros(inputs.size()).cuda()
         for i in range(self.num_classes):
             mark_multiply[:, i][targets==i] = -1
-            mark_multiply[:, i][targets==i] = 0
             print(mark_multiply[:,i])
             print(mark_multiply[:,i + 1])
+            
+            mark_add[:, i][targets==i] = 0
+            print(mark_add[:,i])
+            print(mark_add[:,i + 1])
             sys.exit()
             temp_value = inputs[:,i] * mark_multiply + mark_add
             mark_cmp = torch.zeros(temp_value.size()).cuda()
