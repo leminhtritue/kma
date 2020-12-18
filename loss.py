@@ -51,11 +51,7 @@ class KernelSource(nn.Module):
             mark_add[:, i][targets==i] = 0
 
         loss_02 = torch.maximum(inputs * mark_multiply + mark_add, mark_cmp).mean(dim=0)
-        # print("loss_02:", loss_02, loss_02.mean())
         loss_01 = 0.5* hyperplanceNet.get_weight().norm(dim=1)
-        # print("loss_01:", loss_01, loss_01.mean())
-        loss = loss_02.mean() + loss_01.mean()
-        # print("0.1 * weight norm: ", 0.1 * wnorm)
-        # print("sum class:", loss)
-        # print()
+        loss = loss_01.mean() + loss_02.mean()
+        print("loss 01 02: ", loss_01.mean(), loss_02.mean())
         return loss
