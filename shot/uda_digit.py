@@ -292,9 +292,9 @@ def train_target(args):
     # interval_iter = max_iter // args.interval
     iter_num = 0
 
-    netF.train()
-    netB.train()
-    netC.train()
+    # netF.train()
+    # netB.train()
+    # netC.train()
     while iter_num < max_iter:
         optimizer.zero_grad()
         try:
