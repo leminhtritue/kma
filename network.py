@@ -30,11 +30,11 @@ class feat_bootleneck(nn.Module):
         self.bottleneck = nn.Linear(feature_dim, bottleneck_dim)
         self.bottleneck.apply(init_weights)
         self.type = type
-        self.feature_map = RandomFourierFeatures(feature_dim, 256)
+        self.feature_map = RandomFourierFeatures(feature_dim, 800)
         self.feature_map.new_feature_map()
 
     def forward(self, x):
-        # x = self.feature_map(x)
+        x = self.feature_map(x)
         # x = self.bottleneck(x)
         # if self.type == "bn":
         #     x = self.bn(x)
