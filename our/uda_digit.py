@@ -230,9 +230,9 @@ def train_source(args):
         optimizer.step()
 
         if iter_num % interval_iter == 0 or iter_num == max_iter:
-            netF.eval()
-            netB.eval()
-            netC.eval()
+            # netF.eval()
+            # netB.eval()
+            # netC.eval()
             acc_s_tr, _ = cal_acc(dset_loaders['source_tr'], netF, netB, netC)
             acc_s_te, _ = cal_acc(dset_loaders['source_te'], netF, netB, netC)
             log_str = 'Task: {}, Iter:{}/{}; Accuracy source (train/test) = {:.2f}%/ {:.2f}%, Loss = {:.2f}'.format(args.dset, iter_num, max_iter, acc_s_tr, acc_s_te, total_loss/count_loss)
