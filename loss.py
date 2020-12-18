@@ -48,12 +48,7 @@ class KernelSource(nn.Module):
         mark_cmp = torch.zeros(inputs.size()).cuda()
         for i in range(self.num_classes):
             mark_multiply[:, i][targets==i] = -1
-            print(mark_multiply[:,i])
-            print(mark_multiply[:,i + 1])
-
             mark_add[:, i][targets==i] = 0
-            print(mark_add[:,i])
-            print(mark_add[:,i + 1])
 
         loss = torch.maximum(inputs * mark_multiply + mark_add, mark_cmp)
         print(loss.shape)
