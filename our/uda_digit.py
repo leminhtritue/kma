@@ -200,9 +200,9 @@ def train_source(args):
     interval_iter = max_iter // 10
     iter_num = 0
 
-    # netF.train()
-    # netB.train()
-    # netC.train()
+    netF.eval()
+    netB.eval()
+    netC.eval()
     total_loss = 0.0
     count_loss = 0
 
