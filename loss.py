@@ -48,8 +48,8 @@ class KernelSource(nn.Module):
         mark_add = torch.ones(inputs.size()).cuda()
         mark_cmp = torch.zeros(inputs.size()).cuda()
         for i in range(self.num_classes):
-            mark_multiply[:, targets==i] = -1
-            mark_multiply[:, targets==i] = 0
+            mark_multiply[:, i][targets==i] = -1
+            mark_multiply[:, i][targets==i] = 0
             print(mark_multiply[:,i])
             print(mark_multiply[:,i + 1])
             sys.exit()
