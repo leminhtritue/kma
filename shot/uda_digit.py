@@ -292,9 +292,9 @@ def train_target(args):
     # interval_iter = max_iter // args.interval
     iter_num = 0
 
-    netF.train()
-    netB.train()
-    netC.train()
+    # netF.train()
+    # netB.train()
+    # netC.train()
     while iter_num < max_iter:
         optimizer.zero_grad()
         try:
@@ -344,9 +344,9 @@ def train_target(args):
         optimizer.step()
 
         if iter_num % interval_iter == 0 or iter_num == max_iter:
-            netF.eval()
-            netB.eval()
-            netC.eval()
+            # netF.eval()
+            # netB.eval()
+            # netC.eval()
             acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
             acc_tr, _ = cal_acc(dset_loaders['target_te'], netF, netB, netC)
             log_str = 'Task: {}, Iter:{}/{}; Accuracy target (train/test) = {:.2f}%/{:.2f}%'.format(args.dset, iter_num, max_iter, acc_tr, acc)
