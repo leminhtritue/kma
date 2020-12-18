@@ -344,18 +344,18 @@ def train_target(args):
         optimizer.step()
 
         if iter_num % interval_iter == 0 or iter_num == max_iter:
-            # netF.eval()
-            # netB.eval()
-            # netC.eval()
+            netF.eval()
+            netB.eval()
+            netC.eval()
             acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
             acc_tr, _ = cal_acc(dset_loaders['target_te'], netF, netB, netC)
             log_str = 'Task: {}, Iter:{}/{}; Accuracy target (train/test) = {:.2f}%/{:.2f}%'.format(args.dset, iter_num, max_iter, acc_tr, acc)
             args.out_file.write(log_str + '\n')
             args.out_file.flush()
             print(log_str+'\n')
-            # netF.train()
-            # netB.train()
-            # netC.train()
+            netF.train()
+            netB.train()
+            netC.train()
 
     if args.issave:
         torch.save(netF.state_dict(), osp.join(args.output_dir, "target_F_" + args.savename + ".pt"))
