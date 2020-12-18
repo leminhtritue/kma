@@ -34,10 +34,7 @@ class feat_bootleneck(nn.Module):
         self.feature_map.new_feature_map()
 
     def forward(self, x):
-        print(x.shape)
         x = self.feature_map(x)
-        print(x.shape)
-        sys.exit()
         # x = self.bottleneck(x)
         # if self.type == "bn":
         #     x = self.bn(x)
