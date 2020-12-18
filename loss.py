@@ -47,15 +47,12 @@ class KernelSource(nn.Module):
         mark_multiply = torch.ones(inputs.size()).cuda()
         mark_add = torch.ones(inputs.size()).cuda()
         mark_cmp = torch.zeros(inputs.size()).cuda()
-        print(mark_multiply.shape)
-        print(mark_add.shape)
-        print(mark_cmp.shape)
-        sys.exit()
         for i in range(self.num_classes):
-            mark_multiply = torch.ones(targets.size()).cuda()
-            mark_multiply[targets==i] = -1
-            mark_add = torch.ones(targets.size()).cuda()
-            mark_multiply[targets==i] = 0
+            mark_multiply[:, targets==i] = -1
+            mark_multiply[:, targets==i] = 0
+            print(mark_multiply[:,i])
+            print(mark_multiply[:,i + 1])
+            sys.exit()
             temp_value = inputs[:,i] * mark_multiply + mark_add
             mark_cmp = torch.zeros(temp_value.size()).cuda()
             loss += torch.maximum(temp_value, mark_cmp).sum()
