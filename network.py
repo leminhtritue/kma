@@ -30,14 +30,10 @@ class feat_bootleneck(nn.Module):
         self.bottleneck = nn.Linear(feature_dim, bottleneck_dim)
         self.bottleneck.apply(init_weights)
         self.type = type
-        self.feature_map = RandomFourierFeatures(feature_dim, 256)
-        self.feature_map.new_feature_map()
+        self.feature_map = RandomFourierFeatures(feature_dim, 1024).new_feature_map()
 
     def forward(self, x):
-        print(x.shape)
         x = self.feature_map(x)
-        print(x.shape)
-        sys.exit()
         # x = self.bottleneck(x)
         # if self.type == "bn":
         #     x = self.bn(x)
@@ -48,7 +44,7 @@ class feat_classifier(nn.Module):
     def __init__(self, class_num, bottleneck_dim=256, type="linear"):
         super(feat_classifier, self).__init__()
         if type == "linear":
-            self.fc = nn.Linear(bottleneck_dim, class_num)
+            self.fc = nn.Linear(1024, class_num)
         else:
             self.fc = weightNorm(nn.Linear(bottleneck_dim, class_num), name="weight")
         self.fc.apply(init_weights)
