@@ -301,7 +301,8 @@ def train_target(args):
         netF = network.DTNBase().cuda()
 
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
-    netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
+    # netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
+    netC = network.feat_classifier(type="linear", class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
 
     args.modelpath = args.output_dir + '/source_F.pt'   
     netF.load_state_dict(torch.load(args.modelpath))
@@ -309,15 +310,17 @@ def train_target(args):
     netB.load_state_dict(torch.load(args.modelpath))
     args.modelpath = args.output_dir + '/source_C.pt'    
     netC.load_state_dict(torch.load(args.modelpath))
-    netC.eval()
-    for k, v in netC.named_parameters():
-        v.requires_grad = False
+    
+    # for k, v in netC.named_parameters():
+    #     v.requires_grad = False
 
     param_group = []
     for k, v in netF.named_parameters():
         param_group += [{'params': v, 'lr': args.lr}]
     for k, v in netB.named_parameters():
         param_group += [{'params': v, 'lr': args.lr}]
+    for k, v in netC.named_parameters():
+        param_group += [{'params': v, 'lr': args.lr}] 
 
     optimizer = optim.SGD(param_group)
     optimizer = op_copy(optimizer)
@@ -326,6 +329,10 @@ def train_target(args):
     interval_iter = len(dset_loaders["target"])
     # interval_iter = max_iter // args.interval
     iter_num = 0
+
+    netF.train()
+    netB.train()
+    netC.train()
 
     while iter_num < max_iter:
         optimizer.zero_grad()
@@ -340,11 +347,13 @@ def train_target(args):
 
         if iter_num % interval_iter == 0 and args.cls_par > 0:
             netF.eval()
-            netF.eval()
+            netB.eval()
+            netC.eval()
             mem_label = obtain_label(dset_loaders['target_te'], netF, netB, netC, args)
             mem_label = torch.from_numpy(mem_label).cuda()
             netF.train()
             netB.train()
+            netC.train()
 
         iter_num += 1
         lr_scheduler(optimizer, iter_num=iter_num, max_iter=max_iter)
@@ -376,20 +385,24 @@ def train_target(args):
         if iter_num % interval_iter == 0 or iter_num == max_iter:
             netF.eval()
             netB.eval()
+            netC.eval()
             acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
-            log_str = 'Task: {}, Iter:{}/{}; Accuracy = {:.2f}%'.format(args.dset, iter_num, max_iter, acc)
+            acc_tr, _ = cal_acc(dset_loaders['target_te'], netF, netB, netC)
+            log_str = 'Task: {}, Iter:{}/{}; Accuracy target (train/test) = {:.2f}%/{:.2f}%'.format(args.dset, iter_num, max_iter, acc_tr, acc)
             args.out_file.write(log_str + '\n')
             args.out_file.flush()
             print(log_str+'\n')
+            netF.train()
+            netB.train()
+            netC.train()
 
     if args.issave:
         torch.save(netF.state_dict(), osp.join(args.output_dir, "target_F_" + args.savename + ".pt"))
         torch.save(netB.state_dict(), osp.join(args.output_dir, "target_B_" + args.savename + ".pt"))
         torch.save(netC.state_dict(), osp.join(args.output_dir, "target_C_" + args.savename + ".pt"))
 
-
-    cal_accc(dset_loaders['source_te'], netF, "train_data", "train_label")
-    cal_accc(dset_loaders['test'], netF, "test_data", "test_label")
+    # cal_accc(dset_loaders['source_te'], netF, "train_data", "train_label")
+    # cal_accc(dset_loaders['test'], netF, "test_data", "test_label")
     return netF, netB, netC
 
 def obtain_label(loader, netF, netB, netC, args, c=None):
