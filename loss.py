@@ -43,7 +43,6 @@ class KernelSource(nn.Module):
     def forward(self, inputs, targets, hyperplanceNet):
         if self.use_gpu: 
             targets = targets.cuda()
-        loss = 0.0
         mark_multiply = torch.ones(inputs.size()).cuda()
         mark_add = torch.ones(inputs.size()).cuda()
         mark_cmp = torch.zeros(inputs.size()).cuda()
@@ -51,14 +50,13 @@ class KernelSource(nn.Module):
             mark_multiply[:, i][targets==i] = -1
             print(mark_multiply[:,i])
             print(mark_multiply[:,i + 1])
-            
+
             mark_add[:, i][targets==i] = 0
             print(mark_add[:,i])
             print(mark_add[:,i + 1])
-            sys.exit()
-            temp_value = inputs[:,i] * mark_multiply + mark_add
-            mark_cmp = torch.zeros(temp_value.size()).cuda()
-            loss += torch.maximum(temp_value, mark_cmp).sum()
+
+        sys.exit()
+        loss = torch.maximum(inputs * mark_multiply + mark_add, mark_cmp).sum()
 
         wnorm = 0.5* hyperplanceNet.get_weight().norm(dim=1).sum()
         # print("0.1 * weight norm: ", 0.1 * wnorm)
