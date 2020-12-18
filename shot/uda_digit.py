@@ -171,9 +171,9 @@ def train_source(args):
     interval_iter = max_iter // 10
     iter_num = 0
 
-    netF.train()
-    netB.train()
-    netC.train()
+    # netF.train()
+    # netB.train()
+    # netC.train()
 
     while iter_num < max_iter:
         try:
@@ -292,9 +292,9 @@ def train_target(args):
     # interval_iter = max_iter // args.interval
     iter_num = 0
 
-    netF.train()
-    netB.train()
-    netC.train()
+    # netF.train()
+    # netB.train()
+    # netC.train()
     while iter_num < max_iter:
         optimizer.zero_grad()
         try:
@@ -353,9 +353,9 @@ def train_target(args):
             args.out_file.write(log_str + '\n')
             args.out_file.flush()
             print(log_str+'\n')
-            netF.train()
-            netB.train()
-            netC.train()
+            # netF.train()
+            # netB.train()
+            # netC.train()
 
     if args.issave:
         torch.save(netF.state_dict(), osp.join(args.output_dir, "target_F_" + args.savename + ".pt"))
