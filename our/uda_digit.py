@@ -395,9 +395,9 @@ def train_target(args):
             args.out_file.write(log_str + '\n')
             args.out_file.flush()
             print(log_str+'\n')
-            netF.train()
-            netB.train()
-            netC.train()
+            # netF.train()
+            # netB.train()
+            # netC.train()
 
     if args.issave:
         torch.save(netF.state_dict(), osp.join(args.output_dir, "target_F_" + args.savename + ".pt"))
