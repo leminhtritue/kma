@@ -502,7 +502,6 @@ if __name__ == "__main__":
         args.out_file.flush()
         train_source(args)
         test_target(args)
-        sys.exit()
 
     args.savename = 'par_' + str(args.cls_par)
     args.out_file = open(osp.join(args.output_dir, 'log_tar_' + args.savename + '.txt'), 'w')
