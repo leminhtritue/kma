@@ -381,6 +381,14 @@ def train_target(args):
             im_loss = entropy_loss * args.ent_par
             classifier_loss += im_loss
 
+        # outputs_source = netC(netB(netF(inputs_source))) #64x10
+        # classifier_loss = loss.KernelSource(num_classes=args.class_num, alpha=args.smooth)(outputs_source, labels_source, netC) 
+        # # classifier_loss = loss.CrossEntropyLabelSmooth(num_classes=args.class_num, epsilon=args.smooth)(outputs_source, labels_source)  
+        # total_loss += classifier_loss
+        # count_loss += 1           
+
+
+
         optimizer.zero_grad()
         classifier_loss.backward()
         optimizer.step()
@@ -503,6 +511,7 @@ if __name__ == "__main__":
         train_source(args)
         test_target(args)
 
+    sys.exit()
     args.savename = 'par_' + str(args.cls_par)
     args.out_file = open(osp.join(args.output_dir, 'log_tar_' + args.savename + '.txt'), 'w')
     args.out_file.write(print_args(args)+'\n')
