@@ -414,6 +414,10 @@ def train_target(args):
         right_sample_count += max_hyperplane.sum()
         sum_sample += outputs_test_max.shape[0]
 
+        tt = outputs_test_max.max(dim=1).indices 
+        print(tt)
+        sys.exit()
+
         optimizer.zero_grad()
         classifier_loss.backward()
         optimizer.step()
