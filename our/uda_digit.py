@@ -337,6 +337,14 @@ def train_target(args):
     # netB.train()
     # netC.train()
 
+    classifier_loss_total = 0.0
+    classifier_loss_count = 0
+    entropy_loss_total = 0.0
+    entropy_loss_count = 0
+    div_loss_total = 0.0
+    div_loss_count = 0
+    right_sample_count = 0
+
     while iter_num < max_iter:
         optimizer.zero_grad()
         try:
@@ -381,7 +389,6 @@ def train_target(args):
             im_loss = entropy_loss * args.ent_par
             classifier_loss += im_loss
 
-
         mark_max = torch.zeros(outputs_test.size()).cuda()
         mark_zeros = torch.zeros(outputs_test.size()).cuda()
         outputs_test_max = torch.maximum(outputs_test, mark_zeros)
@@ -389,20 +396,20 @@ def train_target(args):
             mark_max[:,i] = torch.max(torch.cat((outputs_test_max[:, :i],outputs_test_max[:, i+1:]), dim = 1), dim = 1).values        
 
         softmax_score = nn.Softmax(dim=1)(outputs_test_max - mark_max)
-        loss_entropy = loss.Entropy(softmax_score).mean()
-        print(loss_entropy)       
-        loss_div = loss.Entropy_1D(softmax_score.mean(dim = 0))
-        print(loss_div.shape)
-        print(loss_div)
-        # loss_entropy = loss.Entropy(softmax_score).mean()
+        entropy_loss = loss.Entropy(softmax_score).mean()
+        print(entropy_loss)       
+        div_loss = -loss.Entropy_1D(softmax_score.mean(dim = 0))
+
+        classifier_loss = entropy_loss + div_loss
+        classifier_loss_total += classifier_loss
+        classifier_loss_count += 1   
+        entropy_loss_total += entropy_loss
+        entropy_loss_count += 1 
+        div_loss_total += div_loss
+        div_loss_count += 1  
+        tt = outputs_test_max.max(dim=1)         
+        print(tt.shape)
         sys.exit()
-        # outputs_source = netC(netB(netF(inputs_source))) #64x10
-        # classifier_loss = loss.KernelSource(num_classes=args.class_num, alpha=args.smooth)(outputs_source, labels_source, netC) 
-        # # classifier_loss = loss.CrossEntropyLabelSmooth(num_classes=args.class_num, epsilon=args.smooth)(outputs_source, labels_source)  
-        # total_loss += classifier_loss
-        # count_loss += 1           
-
-
 
         optimizer.zero_grad()
         classifier_loss.backward()
@@ -414,10 +421,20 @@ def train_target(args):
             netC.eval()
             acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
             acc_tr, _ = cal_acc(dset_loaders['target_te'], netF, netB, netC)
-            log_str = 'Task: {}, Iter:{}/{}; Accuracy target (train/test) = {:.2f}%/{:.2f}%'.format(args.dset, iter_num, max_iter, acc_tr, acc)
+            log_str = 'Task: {}, Iter:{}/{}; Loss (all/entropy/div): {:.2f} / {:.2f} / {:.2f}, Accuracy target (train/test) = {:.2f}% / {:.2f}%'.format(args.dset, iter_num, max_iter, \
+                classifier_loss_total/classifier_loss_count, entropy_loss_total/entropy_loss_count, div_loss_total/div_loss_count, acc_tr, acc)
             args.out_file.write(log_str + '\n')
             args.out_file.flush()
             print(log_str+'\n')
+
+            classifier_loss_total = 0.0
+            classifier_loss_count = 0
+            entropy_loss_total = 0.0
+            entropy_loss_count = 0
+            div_loss_total = 0.0
+            div_loss_count = 0
+            right_sample_count = 0
+
             # netF.train()
             # netB.train()
             # netC.train()
