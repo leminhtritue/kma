@@ -448,6 +448,7 @@ def train_target(args):
             div_loss_count = 0
             right_sample_count = 0
             sum_sample = 0
+            start_output = True
 
             # netF.train()
             # netB.train()
