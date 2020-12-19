@@ -374,21 +374,21 @@ def train_target(args):
         features_test = netB(netF(inputs_test))
         outputs_test = netC(features_test)
 
-        if args.cls_par > 0:
-            pred = mem_label[tar_idx]
-            classifier_loss = args.cls_par * nn.CrossEntropyLoss()(outputs_test, pred)
-        else:
-            classifier_loss = torch.tensor(0.0).cuda()
+        # if args.cls_par > 0:
+        #     pred = mem_label[tar_idx]
+        #     classifier_loss = args.cls_par * nn.CrossEntropyLoss()(outputs_test, pred)
+        # else:
+        #     classifier_loss = torch.tensor(0.0).cuda()
 
-        if args.ent:
-            softmax_out = nn.Softmax(dim=1)(outputs_test)
-            entropy_loss = torch.mean(loss.Entropy(softmax_out))
-            if args.gent:
-                msoftmax = softmax_out.mean(dim=0)
-                entropy_loss -= torch.sum(-msoftmax * torch.log(msoftmax + 1e-5))
+        # if args.ent:
+        #     softmax_out = nn.Softmax(dim=1)(outputs_test)
+        #     entropy_loss = torch.mean(loss.Entropy(softmax_out))
+        #     if args.gent:
+        #         msoftmax = softmax_out.mean(dim=0)
+        #         entropy_loss -= torch.sum(-msoftmax * torch.log(msoftmax + 1e-5))
 
-            im_loss = entropy_loss * args.ent_par
-            classifier_loss += im_loss
+        #     im_loss = entropy_loss * args.ent_par
+        #     classifier_loss += im_loss
 
         mark_max = torch.zeros(outputs_test.size()).cuda()
         mark_zeros = torch.zeros(outputs_test.size()).cuda()
@@ -400,7 +400,7 @@ def train_target(args):
         entropy_loss = loss.Entropy(softmax_score).mean()      
         div_loss = -loss.Entropy_1D(softmax_score.mean(dim = 0))
 
-        classifier_loss = entropy_loss + div_loss
+        # classifier_loss = entropy_loss + div_loss
         classifier_loss = entropy_loss
         classifier_loss_total += classifier_loss
         classifier_loss_count += 1   
@@ -413,9 +413,6 @@ def train_target(args):
         max_hyperplane[max_hyperplane > 0] = 1
         right_sample_count += max_hyperplane.sum()
         sum_sample += outputs_test_max.shape[0]
-
-        tt = outputs_test_max.max(dim=1).indices 
-        print(tt)
 
         optimizer.zero_grad()
         classifier_loss.backward()
