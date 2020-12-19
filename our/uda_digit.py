@@ -14,6 +14,7 @@ from tqdm import tqdm
 from scipy.spatial.distance import cdist
 import pickle
 from data_load import mnist, svhn, usps
+import collections
 
 def op_copy(optimizer):
     for param_group in optimizer.param_groups:
@@ -431,6 +432,9 @@ def train_target(args):
             netB.eval()
             netC.eval()
             print(all_output.shape)
+            _, predict = torch.max(all_output, 1)
+            print(predict.shape)
+            print(collections.Counter(predict.numpy()))
             sys.exit()
             acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
             acc_tr, _ = cal_acc(dset_loaders['target_te'], netF, netB, netC)
