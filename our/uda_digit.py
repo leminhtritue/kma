@@ -391,9 +391,9 @@ def train_target(args):
         softmax_score = nn.Softmax(dim=1)(outputs_test_max - mark_max)
         loss_entropy = loss.Entropy(softmax_score).mean()
         print(loss_entropy)       
-        t = softmax_score.mean(dim = 0)
-        print(t.shape)
-        print(t)
+        loss_div = loss.Entropy(softmax_score.mean(dim = 0))
+        print(loss_div.shape)
+        print(loss_div)
         # loss_entropy = loss.Entropy(softmax_score).mean()
         sys.exit()
         # outputs_source = netC(netB(netF(inputs_source))) #64x10
