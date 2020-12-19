@@ -416,7 +416,6 @@ def train_target(args):
 
         tt = outputs_test_max.max(dim=1).indices 
         print(tt)
-        sys.exit()
 
         optimizer.zero_grad()
         classifier_loss.backward()
