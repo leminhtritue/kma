@@ -394,6 +394,7 @@ def train_target(args):
         print(t.sum(dim=1))
         print(tt.shape)
         print(tt.sum(dim=1))
+        print(tt)
         sys.exit()
         # outputs_source = netC(netB(netF(inputs_source))) #64x10
         # classifier_loss = loss.KernelSource(num_classes=args.class_num, alpha=args.smooth)(outputs_source, labels_source, netC) 
