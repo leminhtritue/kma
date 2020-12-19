@@ -282,7 +282,7 @@ def test_target(args):
     netC.eval()
 
     acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
-    log_str = 'Task: {}, Accuracy = {:.2f}%'.format(args.dset, acc)
+    log_str = 'Task: {}, Source model accuracy on target test = {:.2f}%'.format(args.dset, acc)
     args.out_file.write(log_str + '\n')
     args.out_file.flush()
     print(log_str+'\n')
