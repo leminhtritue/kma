@@ -409,14 +409,8 @@ def train_target(args):
         div_loss_count += 1  
 
         max_hyperplane = outputs_test_max.max(dim=1).values       
-        max_hyperplane[0] = 3 
-        max_hyperplane[5] = 4
-        print(max_hyperplane.shape)
-        print(max_hyperplane)
         max_hyperplane[max_hyperplane > 0] = 1
         right_sample_count += max_hyperplane.sum()
-        print(right_sample_count)
-        sys.exit()
 
         optimizer.zero_grad()
         classifier_loss.backward()
