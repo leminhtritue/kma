@@ -410,7 +410,8 @@ def train_target(args):
         tt = outputs_test_max.max(dim=1).values        
         print(tt.shape)
         print(tt)
-        print(torch.count_nonzero(tt))
+        ttt = torch.count_nonzero(tt)
+        print(ttt)
         tt[0] = 1
         print(tt)
         print(torch.count_nonzero(tt))
