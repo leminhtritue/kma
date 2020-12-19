@@ -345,6 +345,7 @@ def train_target(args):
     div_loss_count = 0
     right_sample_count = 0
     sum_sample = 0
+    start_output = True
 
     while iter_num < max_iter:
         optimizer.zero_grad()
@@ -414,9 +415,12 @@ def train_target(args):
         right_sample_count += max_hyperplane.sum()
         sum_sample += outputs_test_max.shape[0]
 
-        _, predict = torch.max(outputs_test, 1)
-        print(predict.shape)
-        print(predict)
+        if (start_output):
+            all_output = outputs_test.float()
+            start_output = false
+        else:
+            all_output = torch.cat((all_output, outputs_test.float(), 0)
+        print(all_output.shape)
 
         optimizer.zero_grad()
         classifier_loss.backward()
