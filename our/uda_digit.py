@@ -409,6 +409,7 @@ def train_target(args):
         div_loss_count += 1  
         tt = outputs_test_max.max(dim=1).values        
         print(tt.shape)
+        print(tt)
         sys.exit()
 
         optimizer.zero_grad()
