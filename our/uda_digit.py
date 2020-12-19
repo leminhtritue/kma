@@ -410,6 +410,7 @@ def train_target(args):
 
         max_hyperplane = outputs_test_max.max(dim=1).values       
         max_hyperplane[0] = 3 
+        max_hyperplane[5] = 4
         print(max_hyperplane.shape)
         print(max_hyperplane)
         max_hyperplane[max_hyperplane > 0] = 1
