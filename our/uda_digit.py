@@ -386,9 +386,9 @@ def train_target(args):
         print(outputs_test.shape)
         print(mark_max.shape)
         i = 0
-        t = torch.cat((outputs_test[:, :i],outputs_test[:, i+1:]), dim = 1)
+        t = torch.min(torch.cat((outputs_test[:, :i],outputs_test[:, i+1:]), dim = 1), dim = 1)
         print(t.shape)
-        print(t[0,:])
+        # print(t[0,:])
         print(outputs_test[0,:])
         sys.exit()
         # outputs_source = netC(netB(netF(inputs_source))) #64x10
