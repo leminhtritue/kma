@@ -430,6 +430,8 @@ def train_target(args):
             netF.eval()
             netB.eval()
             netC.eval()
+            print(all_output.shape)
+            sys.exit()
             acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
             acc_tr, _ = cal_acc(dset_loaders['target_te'], netF, netB, netC)
             log_str = 'Task: {}, Iter:{}/{}; Loss (all/entropy/div): {:.2f} / {:.2f} / {:.2f}, Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(args.dset, iter_num, max_iter, \
