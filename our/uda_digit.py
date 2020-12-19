@@ -388,13 +388,13 @@ def train_target(args):
         for i in range(args.class_num):
             mark_max[:,i] = torch.max(torch.cat((outputs_test_max[:, :i],outputs_test_max[:, i+1:]), dim = 1), dim = 1).values        
 
-        t = outputs_test_max - mark_max
-        tt = nn.Softmax(dim=1)(t)
-        print(t.shape)
-        print(t.sum(dim=1))
-        print(tt.shape)
-        print(tt.sum(dim=1))
-        print(tt)
+        softmax_score = nn.Softmax(dim=1)(outputs_test_max - mark_max)
+        print(softmax_score.shape)
+        print(softmax_score.sum(dim=1))
+        print(softmax_score)
+        loss_entropy = loss.Entropy(softmax_score)
+        print(loss_entropy.shape)
+        print(loss_entropy)       
         sys.exit()
         # outputs_source = netC(netB(netF(inputs_source))) #64x10
         # classifier_loss = loss.KernelSource(num_classes=args.class_num, alpha=args.smooth)(outputs_source, labels_source, netC) 
