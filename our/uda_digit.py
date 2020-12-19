@@ -407,7 +407,7 @@ def train_target(args):
         entropy_loss_count += 1 
         div_loss_total += div_loss
         div_loss_count += 1  
-        tt = outputs_test_max.max(dim=1)         
+        tt = outputs_test_max.max(dim=1).values        
         print(tt.shape)
         sys.exit()
 
