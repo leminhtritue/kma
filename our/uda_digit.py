@@ -421,7 +421,6 @@ def train_target(args):
             start_output = False
         else:
             all_output = torch.cat((all_output, outputs_test.float().cpu()), 0)
-        print(all_output.shape)
 
         optimizer.zero_grad()
         classifier_loss.backward()
@@ -431,11 +430,7 @@ def train_target(args):
             netF.eval()
             netB.eval()
             netC.eval()
-            print(all_output.shape)
             _, predict = torch.max(all_output, 1)
-            print(predict.shape)
-            print(collections.Counter(predict.numpy()))
-            sys.exit()
             acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
             acc_tr, _ = cal_acc(dset_loaders['target_te'], netF, netB, netC)
             log_str = 'Task: {}, Iter:{}/{}; Loss (all/entropy/div): {:.2f} / {:.2f} / {:.2f}, Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(args.dset, iter_num, max_iter, \
@@ -443,6 +438,7 @@ def train_target(args):
             args.out_file.write(log_str + '\n')
             args.out_file.flush()
             print(log_str+'\n')
+            print("Class distribution: ", collections.Counter(predict.numpy()))
 
             classifier_loss_total = 0.0
             classifier_loss_count = 0
