@@ -410,6 +410,8 @@ def train_target(args):
         tt = outputs_test_max.max(dim=1).values        
         print(tt.shape)
         print(tt)
+        tt[0] = 1
+        print(tt)
         sys.exit()
 
         optimizer.zero_grad()
