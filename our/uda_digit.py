@@ -389,8 +389,9 @@ def train_target(args):
             mark_max[:,i] = torch.max(torch.cat((outputs_test_max[:, :i],outputs_test_max[:, i+1:]), dim = 1), dim = 1).values        
 
         t = outputs_test_max - mark_max
-        t = nn.Softmax(dim=1)(t)
+        tt = nn.Softmax(dim=1)(t)
         print(t.shape)
+        print(tt.shape)
         sys.exit()
         # outputs_source = netC(netB(netF(inputs_source))) #64x10
         # classifier_loss = loss.KernelSource(num_classes=args.class_num, alpha=args.smooth)(outputs_source, labels_source, netC) 
