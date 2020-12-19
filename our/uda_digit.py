@@ -438,7 +438,8 @@ def train_target(args):
             args.out_file.write(log_str + '\n')
             args.out_file.flush()
             print(log_str)
-            print("Class distribution: \n", collections.Counter(predict.numpy()))
+            print(collections.Counter(predict.numpy()))
+            print()
 
             classifier_loss_total = 0.0
             classifier_loss_count = 0
