@@ -419,7 +419,7 @@ def train_target(args):
             all_output = outputs_test.float()
             start_output = False
         else:
-            all_output = torch.cat((all_output, outputs.float()), 0)
+            all_output = torch.cat((all_output, outputs_test.float()), 0)
         print(all_output.shape)
 
         optimizer.zero_grad()
