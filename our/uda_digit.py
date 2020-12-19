@@ -437,8 +437,8 @@ def train_target(args):
                 classifier_loss_total/classifier_loss_count, entropy_loss_total/entropy_loss_count, div_loss_total/div_loss_count, acc_tr, acc, right_sample_count, sum_sample)
             args.out_file.write(log_str + '\n')
             args.out_file.flush()
-            print(log_str+'\n')
-            print("Class distribution: ", collections.Counter(predict.numpy()))
+            print(log_str)
+            print("Class distribution: \n", collections.Counter(predict.numpy()))
 
             classifier_loss_total = 0.0
             classifier_loss_count = 0
