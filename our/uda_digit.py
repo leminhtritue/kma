@@ -383,10 +383,11 @@ def train_target(args):
 
 
         mark_max = torch.zeros(outputs_test.size()).cuda()
+        mark_zeros = torch.zeros(outputs_test.size()).cuda()
         print(outputs_test.shape)
         print(mark_max.shape)
         i = 0
-        t = torch.min(torch.cat((outputs_test[:, :i],outputs_test[:, i+1:]), dim = 1), dim = 1).values
+        t = torch.max(torch.cat((outputs_test[:, :i],outputs_test[:, i+1:]), dim = 1), dim = 1).values
         print(t.shape)
         print(t)
         # print(t[0,:])
