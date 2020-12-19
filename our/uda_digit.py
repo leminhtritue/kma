@@ -414,6 +414,10 @@ def train_target(args):
         right_sample_count += max_hyperplane.sum()
         sum_sample += outputs_test_max.shape[0]
 
+        _, predict = torch.max(outputs_test, 1)
+        print(predict.shape)
+        print(predict)
+
         optimizer.zero_grad()
         classifier_loss.backward()
         optimizer.step()
