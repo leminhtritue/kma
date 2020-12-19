@@ -384,15 +384,12 @@ def train_target(args):
 
         mark_max = torch.zeros(outputs_test.size()).cuda()
         mark_zeros = torch.zeros(outputs_test.size()).cuda()
-        # outputs_test_max = torch.maximum(outputs_test, mark_zeros)
-        outputs_test_max = outputs_test
-        print(outputs_test_max.shape)
-        print(outputs_test.shape)
-        print(mark_max.shape)
+        outputs_test_max = torch.maximum(outputs_test, mark_zeros)
         for i in range(args.class_num):
-            mark_max[:,i] = torch.max(torch.cat((outputs_test_max[:, :i],outputs_test_max[:, i+1:]), dim = 1), dim = 1).values    
-            t = torch.max(torch.cat((outputs_test_max[:, :i],outputs_test_max[:, i+1:]), dim = 1), dim = 1).values    
-            print(mark_max[0,:])
+            mark_max[:,i] = torch.max(torch.cat((outputs_test_max[:, :i],outputs_test_max[:, i+1:]), dim = 1), dim = 1).values        
+
+        t = outputs_test_max - mark_max
+        print(t.shape)
         sys.exit()
         # outputs_source = netC(netB(netF(inputs_source))) #64x10
         # classifier_loss = loss.KernelSource(num_classes=args.class_num, alpha=args.smooth)(outputs_source, labels_source, netC) 
