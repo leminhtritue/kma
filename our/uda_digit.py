@@ -386,8 +386,9 @@ def train_target(args):
         print(outputs_test.shape)
         print(mark_max.shape)
         i = 0
-        t = torch.min(torch.cat((outputs_test[:, :i],outputs_test[:, i+1:]), dim = 1), dim = 1)
+        t = torch.min(torch.cat((outputs_test[:, :i],outputs_test[:, i+1:]), dim = 1), dim = 1).values
         print(t.shape)
+        print(t)
         # print(t[0,:])
         print(outputs_test[0,:])
         sys.exit()
