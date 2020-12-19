@@ -401,6 +401,7 @@ def train_target(args):
         div_loss = -loss.Entropy_1D(softmax_score.mean(dim = 0))
 
         classifier_loss = entropy_loss + div_loss
+        classifier_loss = entropy_loss
         classifier_loss_total += classifier_loss
         classifier_loss_count += 1   
         entropy_loss_total += entropy_loss
