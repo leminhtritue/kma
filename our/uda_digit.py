@@ -388,10 +388,15 @@ def train_target(args):
         print(mark_max.shape)
         i = 0
         mark_max[:,i] = torch.max(torch.cat((outputs_test[:, :i],outputs_test[:, i+1:]), dim = 1), dim = 1).values
+        mark_max[:,i+2] = torch.max(torch.cat((outputs_test[:, :i+2],outputs_test[:, i+3:]), dim = 1), dim = 1).values
         # print(t.shape)
         print(mark_max[:,i])
+        print(mark_max[:,i + 1])
+        print(mark_max[:,i + 2])
         # print(t[0,:])
         print(outputs_test[0,:])
+        print(outputs_test[1,:])
+        print(outputs_test[2,:])
         sys.exit()
         # outputs_source = netC(netB(netF(inputs_source))) #64x10
         # classifier_loss = loss.KernelSource(num_classes=args.class_num, alpha=args.smooth)(outputs_source, labels_source, netC) 
