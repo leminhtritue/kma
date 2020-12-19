@@ -408,7 +408,8 @@ def train_target(args):
         div_loss_total += div_loss
         div_loss_count += 1  
 
-        max_hyperplane = outputs_test_max.max(dim=1).values        
+        max_hyperplane = outputs_test_max.max(dim=1).values       
+        max_hyperplane[0] = 3 
         print(max_hyperplane.shape)
         print(max_hyperplane)
         max_hyperplane[max_hyperplane > 0] = 1
@@ -426,7 +427,7 @@ def train_target(args):
             netC.eval()
             acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
             acc_tr, _ = cal_acc(dset_loaders['target_te'], netF, netB, netC)
-            log_str = 'Task: {}, Iter:{}/{}; Loss (all/entropy/div): {:.2f} / {:.2f} / {:.2f}, Accuracy target (train/test) = {:.2f}% / {:.2f}%, right samples: {}'.format(args.dset, iter_num, max_iter, \
+            log_str = 'Task: {}, Iter:{}/{}; Loss (all/entropy/div): {:.2f} / {:.2f} / {:.2f}, Accuracy target (train/test) = {:.2f}% / {:.2f}%, right samples: {}.'.format(args.dset, iter_num, max_iter, \
                 classifier_loss_total/classifier_loss_count, entropy_loss_total/entropy_loss_count, div_loss_total/div_loss_count, acc_tr, acc, right_sample_count)
             args.out_file.write(log_str + '\n')
             args.out_file.flush()
