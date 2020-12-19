@@ -410,11 +410,12 @@ def train_target(args):
         tt = outputs_test_max.max(dim=1).values        
         print(tt.shape)
         print(tt)
-        ttt = torch.count_nonzero(tt)
-        print(ttt)
-        tt[0] = 1
+        tt[tt > 0] = 1
+        print(tt.sum())
+        tt[0] = 3
         print(tt)
-        print(torch.count_nonzero(tt))
+        tt[tt > 0] = 1
+        print(tt.sum())
         sys.exit()
 
         optimizer.zero_grad()
