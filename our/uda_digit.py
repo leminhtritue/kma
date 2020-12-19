@@ -392,7 +392,7 @@ def train_target(args):
         print(softmax_score.shape)
         print(softmax_score.sum(dim=1))
         print(softmax_score)
-        loss_entropy = loss.Entropy(softmax_score)
+        loss_entropy = loss.Entropy(softmax_score).mean()
         print(loss_entropy.shape)
         print(loss_entropy)       
         sys.exit()
