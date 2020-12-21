@@ -74,7 +74,7 @@ class RandomFourierFeatures_our(FeatureMap):
 
     def forward(self, x):
         x = x * math.sqrt(self.softmax_temp)
-        u = x.unsqueeze(-2).matmul(self.omega).squeeze(-2)
+        u = x.matmul(self.omega)
         phi = torch.cat([torch.cos(u), torch.sin(u)], dim=-1)
         return phi * math.sqrt(2/self.n_dims)
 
