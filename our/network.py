@@ -11,6 +11,73 @@ import sys
 from fast_transformers.feature_maps import RandomFourierFeatures
 import math
 
+class FeatureMap(nn.Module):
+    """Define the FeatureMap interface."""
+    def __init__(self, query_dims):
+        super().__init__()
+        self.query_dims = query_dims
+
+    def new_feature_map(self):
+        """Create a new instance of this feature map. In particular, if it is a
+        random feature map sample new parameters."""
+        raise NotImplementedError()
+
+    def forward_queries(self, x):
+        """Encode the queries `x` using this feature map."""
+        return self(x)
+
+    def forward_keys(self, x):
+        """Encode the keys `x` using this feature map."""
+        return self(x)
+
+    def forward(self, x):
+        """Encode x using this feature map. For symmetric feature maps it
+        suffices to define this function, but for asymmetric feature maps one
+        needs to define the `forward_queries` and `forward_keys` functions."""
+        raise NotImplementedError()
+
+    @classmethod
+    def factory(cls, *args, **kwargs):
+        """Return a function that when called with the query dimensions returns
+        an instance of this feature map.
+
+        It is inherited by the subclasses so it is available in all feature
+        maps.
+        """
+        def inner(query_dims):
+            return cls(query_dims, *args, **kwargs)
+        return inner
+
+class RandomFourierFeatures_our(FeatureMap):
+    def __init__(self, query_dimensions, n_dims=None, softmax_temp=None,
+                 orthogonal=False):
+        super(RandomFourierFeatures_our, self).__init__(query_dimensions)
+
+        self.n_dims = n_dims or query_dimensions
+        self.orthogonal = orthogonal
+        self.softmax_temp = (
+            1/math.sqrt(query_dimensions) if softmax_temp is None
+            else softmax_temp
+        )
+
+        # Make a buffer for storing the sampled omega
+        self.register_buffer(
+            "omega",
+            torch.zeros(query_dimensions, self.n_dims//2)
+        )
+
+    def new_feature_map(self):
+        if self.orthogonal:
+            orthogonal_random_matrix_(self.omega)
+        else:
+            self.omega.normal_()
+
+    def forward(self, x):
+        x = x * math.sqrt(self.softmax_temp)
+        u = x.unsqueeze(-2).matmul(self.omega).squeeze(-2)
+        phi = torch.cat([torch.cos(u), torch.sin(u)], dim=-1)
+        return phi * math.sqrt(2/self.n_dims)
+
 def init_weights(m):
     classname = m.__class__.__name__
     if classname.find('Conv2d') != -1 or classname.find('ConvTranspose2d') != -1:
