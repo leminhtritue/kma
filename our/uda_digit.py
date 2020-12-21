@@ -332,6 +332,10 @@ def extract_hyperplane(args):
     netC.eval()
 
     hyperplane_score = get_hyperplane(dset_loaders['source_te'], netF, netB, netC)
+    hyperplane_score[hyperplane_score < 0] = 0
+    hyperplane_score[hyperplane_score > 0] = 1
+    hyperplane_score = hyperplane_score.sum(dim = 1)
+    print(hyperplane_score[:10])
     print(hyperplane_score.shape)
     sys.exit()
 
