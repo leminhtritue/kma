@@ -73,6 +73,7 @@ class RandomFourierFeatures_our(FeatureMap):
             self.omega.normal_()
 
     def forward(self, x):
+        print(x.shape)
         x = x * math.sqrt(self.softmax_temp)
         u = x.matmul(self.omega)
         phi = torch.cat([torch.cos(u), torch.sin(u)], dim=-1)
@@ -116,8 +117,8 @@ class feat_bootleneck(nn.Module):
         phi = torch.cat([torch.cos(u), torch.sin(u)], dim=-1)
         
         tt = phi * math.sqrt(2/self.rf_dim)
-        x = self.feature_map(x)
         tttt = self.feature_map_our(x)
+        x = self.feature_map(x)
         print(tt.shape)
         print(x.shape)
         print(tt[0,:])
