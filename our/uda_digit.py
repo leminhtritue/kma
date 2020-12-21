@@ -643,8 +643,8 @@ if __name__ == "__main__":
         train_source(args)
         test_target(args)
 
-    test_dataset(args, "source_te")
-    extract_hyperplane(args, "source_te")
+    test_dataset(args)
+    extract_hyperplane(args)
     sys.exit()
     args.savename = 'par_' + str(args.cls_par)
     args.out_file = open(osp.join(args.output_dir, 'log_tar_' + args.savename + '.txt'), 'w')
