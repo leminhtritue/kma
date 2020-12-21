@@ -8,6 +8,7 @@ import math
 import torch.nn.utils.weight_norm as weightNorm
 from collections import OrderedDict
 import sys
+from fast_transformers.feature_maps import RandomFourierFeatures
 import math
 
 def init_weights(m):
@@ -31,8 +32,8 @@ class feat_bootleneck(nn.Module):
         self.bottleneck.apply(init_weights)
         self.type = type
 
-        # self.feature_map = RandomFourierFeatures(feature_dim, 32)
-        # self.feature_map.new_feature_map()
+        self.feature_map = RandomFourierFeatures(feature_dim, 32)
+        self.feature_map.new_feature_map()
 
         self.rf_dim = 32
         self.omega = torch.zeros(feature_dim, self.rf_dim//2).cuda()
@@ -44,8 +45,8 @@ class feat_bootleneck(nn.Module):
         u = t.matmul(self.omega)
         phi = torch.cat([torch.cos(u), torch.sin(u)], dim=-1)
         
-        x = phi * math.sqrt(2/self.rf_dim)
-        # x = self.feature_map(x)
+        # x = phi * math.sqrt(2/self.rf_dim)
+        x = self.feature_map(x)
         # x = self.bottleneck(x)
         # if self.type == "bn":
         #     x = self.bn(x)
