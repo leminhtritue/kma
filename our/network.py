@@ -48,7 +48,7 @@ class FeatureMap(nn.Module):
         return inner
 
 class RandomFourierFeatures(FeatureMap):
-    def __init__(self, query_dimensions, gamma = 0.5, n_dims=None, softmax_temp=None,
+    def __init__(self, query_dimensions, n_dims=None, gamma = 0.5, softmax_temp=None,
                  orthogonal=False):
         super(RandomFourierFeatures, self).__init__(query_dimensions)
 
@@ -99,11 +99,11 @@ class feat_bootleneck(nn.Module):
         super(feat_bootleneck, self).__init__()
         self.bn = nn.BatchNorm1d(bottleneck_dim, affine=True)
         self.dropout = nn.Dropout(p=0.5)
-        self.bottleneck = nn.Linear(feature_dim, bottleneck_dim, gamma)
+        self.bottleneck = nn.Linear(feature_dim, bottleneck_dim)
         self.bottleneck.apply(init_weights)
         self.type = type
 
-        self.feature_map = RandomFourierFeatures(feature_dim, 32)
+        self.feature_map = RandomFourierFeatures(feature_dim, 32, gamma)
         self.feature_map.new_feature_map()
 
     def forward(self, x):
