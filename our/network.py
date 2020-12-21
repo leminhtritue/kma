@@ -45,8 +45,15 @@ class feat_bootleneck(nn.Module):
         u = t.matmul(self.omega)
         phi = torch.cat([torch.cos(u), torch.sin(u)], dim=-1)
         
-        # x = phi * math.sqrt(2/self.rf_dim)
+        tt = phi * math.sqrt(2/self.rf_dim)
         x = self.feature_map(x)
+        print(tt.shape)
+        print(x.shape)
+        print(tt[0,:])
+        print(xx[0,:])
+        ttt = tt - x
+        print(ttt.shape)
+        print(ttt[0,:])
         # x = self.bottleneck(x)
         # if self.type == "bn":
         #     x = self.bn(x)
