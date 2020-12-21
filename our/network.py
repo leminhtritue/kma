@@ -8,6 +8,7 @@ import math
 import torch.nn.utils.weight_norm as weightNorm
 from collections import OrderedDict
 import sys
+import math
 
 def init_weights(m):
     classname = m.__class__.__name__
@@ -33,14 +34,14 @@ class feat_bootleneck(nn.Module):
         # self.feature_map = RandomFourierFeatures(feature_dim, 32)
         # self.feature_map.new_feature_map()
 
-        self.rf_dim = 32
+        self.rf_dim = 512
         self.omega = torch.zeros(feature_dim, self.rf_dim//2)
         self.omega.normal_()
         self.softmax_temp = 1/torch.sqrt(feature_dim)
 
     def forward(self, x):
 
-        x = x * torch.sqrt(self.softmax_temp)
+        x = x * math.sqrt(self.softmax_temp)
         print(x.shape)
         print(self.omega.shape)
         u = x.matmul(self.omega)
@@ -61,7 +62,7 @@ class feat_classifier(nn.Module):
     def __init__(self, class_num, bottleneck_dim=256, type="linear"):
         super(feat_classifier, self).__init__()
         if type == "linear":
-            self.fc = nn.Linear(32, class_num)
+            self.fc = nn.Linear(512, class_num)
         else:
             self.fc = weightNorm(nn.Linear(bottleneck_dim, class_num), name="weight")
         self.fc.apply(init_weights)
