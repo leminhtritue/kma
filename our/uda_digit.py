@@ -142,7 +142,26 @@ def cal_acc(loader, netF, netB, netC):
     mean_ent = torch.mean(loss.Entropy(nn.Softmax(dim=1)(all_output))).cpu().data.item()
     return accuracy*100, mean_ent
 
-def cal_accc(loader, netF, ouput_name, label_name):
+def get_hyperplane(loader, netF, netB, netC):
+    start_test = True
+    with torch.no_grad():
+        iter_test = iter(loader)
+        for i in range(len(loader)):
+            data = iter_test.next()
+            inputs = data[0]
+            labels = data[1]
+            inputs = inputs.cuda()
+            outputs = netC(netB(netF(inputs)))
+            if start_test:
+                all_output = outputs.float().cpu()
+                all_label = labels.float()
+                start_test = False
+            else:
+                all_output = torch.cat((all_output, outputs.float().cpu()), 0)
+                all_label = torch.cat((all_label, labels.float()), 0)
+    return all_output
+
+def cal_acc_plot(loader, netF, ouput_name, label_name):
     start_test = True
     with torch.no_grad():
         iter_test = iter(loader)
@@ -287,6 +306,34 @@ def test_target(args):
     args.out_file.write(log_str + '\n')
     args.out_file.flush()
     print(log_str+'\n')
+
+def extract_hyperplane(args):
+    dset_loaders = digit_load(args)
+    ## set base network
+    if args.dset == 'u2m':
+        netF = network.LeNetBase().cuda()
+    elif args.dset == 'm2u':
+        netF = network.LeNetBase().cuda()  
+    elif args.dset == 's2m':
+        netF = network.DTNBase().cuda()
+
+    netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
+    # netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
+    netC = network.feat_classifier(type="linear", class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
+
+    args.modelpath = args.output_dir + '/source_F.pt'   
+    netF.load_state_dict(torch.load(args.modelpath))
+    args.modelpath = args.output_dir + '/source_B.pt'   
+    netB.load_state_dict(torch.load(args.modelpath))
+    args.modelpath = args.output_dir + '/source_C.pt'   
+    netC.load_state_dict(torch.load(args.modelpath))
+    netF.eval()
+    netB.eval()
+    netC.eval()
+
+    hyperplane_score = get_hyperplane(dset_loaders['source_te'], netF, netB, netC)
+    print(hyperplane_score.shape)
+    sys.exit()
 
 def print_args(args):
     s = "==========================================\n"
@@ -460,8 +507,8 @@ def train_target(args):
         torch.save(netB.state_dict(), osp.join(args.output_dir, "target_B_" + args.savename + ".pt"))
         torch.save(netC.state_dict(), osp.join(args.output_dir, "target_C_" + args.savename + ".pt"))
 
-    # cal_accc(dset_loaders['source_te'], netF, "train_data", "train_label")
-    # cal_accc(dset_loaders['test'], netF, "test_data", "test_label")
+    # cal_acc_plot(dset_loaders['source_te'], netF, "train_data", "train_label")
+    # cal_acc_plot(dset_loaders['test'], netF, "test_data", "test_label")
     return netF, netB, netC
 
 def obtain_label(loader, netF, netB, netC, args, c=None):
@@ -560,6 +607,7 @@ if __name__ == "__main__":
         train_source(args)
         test_target(args)
 
+    extract_hyperplane(args)
     sys.exit()
     args.savename = 'par_' + str(args.cls_par)
     args.out_file = open(osp.join(args.output_dir, 'log_tar_' + args.savename + '.txt'), 'w')
