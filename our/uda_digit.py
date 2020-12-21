@@ -337,6 +337,7 @@ def extract_hyperplane(args):
     hyperplane_score = hyperplane_score.sum(dim = 1)
     print(hyperplane_score[:10])
     print(hyperplane_score.shape)
+    print(collections.Counter(hyperplane_score.numpy()))
     sys.exit()
 
 def print_args(args):
