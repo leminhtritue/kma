@@ -78,7 +78,8 @@ class RandomFourierFeatures(FeatureMap):
         x = x * self.gamma
         u = x.matmul(self.omega)
         phi = torch.cat([torch.cos(u), torch.sin(u)], dim=-1)
-        return phi * math.sqrt(2/self.n_dims)
+        # return phi * math.sqrt(2/self.n_dims)
+        return phi
 
 def init_weights(m):
     classname = m.__class__.__name__
@@ -122,6 +123,8 @@ class feat_classifier(nn.Module):
         self.fc.apply(init_weights)
 
     def forward(self, x):
+        print(x.shape)
+        sys.exit()
         x = self.fc(x)
         return x
     def get_weight(self):
