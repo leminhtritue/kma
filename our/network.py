@@ -112,21 +112,21 @@ class feat_bootleneck(nn.Module):
         self.softmax_temp = 1/math.sqrt(feature_dim)
 
     def forward(self, x):
-        t = x * math.sqrt(self.softmax_temp)
-        u = t.matmul(self.omega)
-        phi = torch.cat([torch.cos(u), torch.sin(u)], dim=-1)
+        # t = x * math.sqrt(self.softmax_temp)
+        # u = t.matmul(self.omega)
+        # phi = torch.cat([torch.cos(u), torch.sin(u)], dim=-1)
         
-        tt = phi * math.sqrt(2/self.rf_dim)
-        tttt = self.feature_map_our(x)
-        x = self.feature_map(x)
-        print(tt.shape)
-        print(x.shape)
-        print(tt[0,:])
-        print(x[0,:])
-        ttt = tt - x
-        print(ttt.shape)
-        print(ttt[0,:])
-        sys.exit()
+        # tt = phi * math.sqrt(2/self.rf_dim)
+        x = self.feature_map_our(x)
+        # x = self.feature_map(x)
+        # print(tt.shape)
+        # print(x.shape)
+        # print(tt[0,:])
+        # print(x[0,:])
+        # ttt = tt - x
+        # print(ttt.shape)
+        # print(ttt[0,:])
+        # sys.exit()
         # x = self.bottleneck(x)
         # if self.type == "bn":
         #     x = self.bn(x)
