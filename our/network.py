@@ -79,6 +79,7 @@ class RandomFourierFeatures(FeatureMap):
         u = x.matmul(self.omega)
         phi = torch.cat([torch.cos(u), torch.sin(u)], dim=-1)
         # return phi * math.sqrt(2/self.n_dims)
+        print("phi", phi.shape)
         return phi
 
 def init_weights(m):
@@ -106,7 +107,9 @@ class feat_bootleneck(nn.Module):
         self.feature_map.new_feature_map()
 
     def forward(self, x):
+        print("bootle b", x.shape)
         x = self.feature_map(x)
+        print("bootle a", x.shape)
         # x = self.bottleneck(x)
         # if self.type == "bn":
         #     x = self.bn(x)
@@ -123,7 +126,7 @@ class feat_classifier(nn.Module):
         self.fc.apply(init_weights)
 
     def forward(self, x):
-        print(x.shape)
+        print("class f", x.shape)
         sys.exit()
         x = self.fc(x)
         return x
