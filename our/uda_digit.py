@@ -367,6 +367,7 @@ def extract_hyperplane(args):
     print(t[:,0])
     t = t * t
     print(t[:,0])
+    t = t.sum(dim = 0)
     print(t.shape)
     print(hyperplane_score_abs.shape)
     sys.exit()
