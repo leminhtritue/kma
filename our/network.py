@@ -102,6 +102,9 @@ class feat_bootleneck(nn.Module):
         self.feature_map = RandomFourierFeatures(feature_dim, 32)
         self.feature_map.new_feature_map()
 
+        self.feature_map_our = RandomFourierFeatures_our(feature_dim, 32)
+        self.feature_map_our.new_feature_map()
+
         self.rf_dim = 32
         self.omega = torch.zeros(feature_dim, self.rf_dim//2).cuda()
         self.omega.normal_()
@@ -114,6 +117,7 @@ class feat_bootleneck(nn.Module):
         
         tt = phi * math.sqrt(2/self.rf_dim)
         x = self.feature_map(x)
+        tttt = self.feature_map_our(x)
         print(tt.shape)
         print(x.shape)
         print(tt[0,:])
