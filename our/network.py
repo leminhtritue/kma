@@ -35,7 +35,7 @@ class feat_bootleneck(nn.Module):
         # self.feature_map.new_feature_map()
 
         self.rf_dim = 512
-        self.omega = torch.zeros(feature_dim, self.rf_dim//2)
+        self.omega = torch.zeros(feature_dim, self.rf_dim//2).cuda()
         self.omega.normal_()
         self.softmax_temp = 1/math.sqrt(feature_dim)
 
