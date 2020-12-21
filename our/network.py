@@ -48,6 +48,7 @@ class feat_bootleneck(nn.Module):
         phi = torch.cat([torch.cos(u), torch.sin(u)], dim=-1)
         print(phi.shape)
         x = phi * torch.sqrt(2/self.rf_dim)
+        sys.exit()
 
         # x = self.feature_map(x)
         # x = self.bottleneck(x)
