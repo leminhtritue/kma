@@ -307,7 +307,7 @@ def test_target(args):
     args.out_file.flush()
     print(log_str+'\n')
 
-def extract_hyperplane(args):
+def test_dataset(args, dataset):
     dset_loaders = digit_load(args)
     ## set base network
     if args.dset == 'u2m':
@@ -331,7 +331,37 @@ def extract_hyperplane(args):
     netB.eval()
     netC.eval()
 
-    hyperplane_score = get_hyperplane(dset_loaders['source_te'], netF, netB, netC)
+    acc, _ = cal_acc(dset_loaders[dataset], netF, netB, netC)
+    log_str = 'Task: {}, Source model accuracy on {} = {:.2f}%'.format(args.dset, dataset, acc)
+    args.out_file.write(log_str + '\n')
+    args.out_file.flush()
+    print(log_str+'\n')
+
+def extract_hyperplane(args, dataset):
+    dset_loaders = digit_load(args)
+    ## set base network
+    if args.dset == 'u2m':
+        netF = network.LeNetBase().cuda()
+    elif args.dset == 'm2u':
+        netF = network.LeNetBase().cuda()  
+    elif args.dset == 's2m':
+        netF = network.DTNBase().cuda()
+
+    netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
+    # netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
+    netC = network.feat_classifier(type="linear", class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
+
+    args.modelpath = args.output_dir + '/source_F.pt'   
+    netF.load_state_dict(torch.load(args.modelpath))
+    args.modelpath = args.output_dir + '/source_B.pt'   
+    netB.load_state_dict(torch.load(args.modelpath))
+    args.modelpath = args.output_dir + '/source_C.pt'   
+    netC.load_state_dict(torch.load(args.modelpath))
+    netF.eval()
+    netB.eval()
+    netC.eval()
+
+    hyperplane_score = get_hyperplane(dset_loaders[dataset], netF, netB, netC)
     hyperplane_score[hyperplane_score < 0] = 0
     hyperplane_score[hyperplane_score > 0] = 1
     hyperplane_score = hyperplane_score.sum(dim = 1)
@@ -611,8 +641,9 @@ if __name__ == "__main__":
         args.out_file.flush()
         train_source(args)
         test_target(args)
-
-    extract_hyperplane(args)
+        
+    test_dataset(args, "source_te")
+    extract_hyperplane(args, "source_te")
     sys.exit()
     args.savename = 'par_' + str(args.cls_par)
     args.out_file = open(osp.join(args.output_dir, 'log_tar_' + args.savename + '.txt'), 'w')
