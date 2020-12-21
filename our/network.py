@@ -7,7 +7,6 @@ from torch.autograd import Variable
 import math
 import torch.nn.utils.weight_norm as weightNorm
 from collections import OrderedDict
-from fast_transformers.feature_maps import RandomFourierFeatures
 import sys
 
 def init_weights(m):
@@ -30,11 +29,27 @@ class feat_bootleneck(nn.Module):
         self.bottleneck = nn.Linear(feature_dim, bottleneck_dim)
         self.bottleneck.apply(init_weights)
         self.type = type
-        self.feature_map = RandomFourierFeatures(feature_dim, 32)
-        self.feature_map.new_feature_map()
+
+        # self.feature_map = RandomFourierFeatures(feature_dim, 32)
+        # self.feature_map.new_feature_map()
+
+        self.rf_dim = 32
+        self.omega = torch.zeros(feature_dim, self.rf_dim//2)
+        self.omega.normal_()
+        self.softmax_temp = 1/torch.sqrt(feature_dim)
 
     def forward(self, x):
-        x = self.feature_map(x)
+
+        x = x * torch.sqrt(self.softmax_temp)
+        print(x.shape)
+        print(self.omega.shape)
+        u = x.matmul(self.omega)
+        print(u.shape)
+        phi = torch.cat([torch.cos(u), torch.sin(u)], dim=-1)
+        print(phi.shape)
+        x = phi * torch.sqrt(2/self.rf_dim)
+
+        # x = self.feature_map(x)
         # x = self.bottleneck(x)
         # if self.type == "bn":
         #     x = self.bn(x)
