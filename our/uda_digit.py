@@ -368,11 +368,8 @@ def extract_hyperplane(args):
     t = t * t
     t = t.sum(dim = 1)
     t = hyperplane_score_abs / t
-    print(t.shape)
     _, predict = torch.min(t, 1)
-    print(predict.shape)
     print(collections.Counter(predict.cpu().numpy()))
-    sys.exit()
 
     hyperplane_score[hyperplane_score < 0] = 0
     hyperplane_score[hyperplane_score > 0] = 1
