@@ -407,8 +407,8 @@ def train_target(args):
         param_group += [{'params': v, 'lr': args.lr}]
     for k, v in netB.named_parameters():
         param_group += [{'params': v, 'lr': args.lr}]
-    for k, v in netC.named_parameters():
-        param_group += [{'params': v, 'lr': args.lr}] 
+    # for k, v in netC.named_parameters():
+    #     param_group += [{'params': v, 'lr': args.lr}] 
 
     optimizer = optim.SGD(param_group)
     optimizer = op_copy(optimizer)
@@ -649,10 +649,6 @@ if __name__ == "__main__":
     args.out_file = open(osp.join(args.output_dir, 'log_tar_' + args.savename + '.txt'), 'w')
     args.out_file.write(print_args(args)+'\n')
     args.out_file.flush()
-
-    test_dataset(args)
-    extract_hyperplane(args)
-    sys.exit()
 
     test_target(args)
     train_target(args)
