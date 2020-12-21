@@ -50,7 +50,7 @@ class feat_bootleneck(nn.Module):
         print(tt.shape)
         print(x.shape)
         print(tt[0,:])
-        print(xx[0,:])
+        print(x[0,:])
         ttt = tt - x
         print(ttt.shape)
         print(ttt[0,:])
