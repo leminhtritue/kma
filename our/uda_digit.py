@@ -307,7 +307,7 @@ def test_target(args):
     args.out_file.flush()
     print(log_str+'\n')
 
-def test_dataset(args, dataset):
+def test_dataset(args):
     dset_loaders = digit_load(args)
     ## set base network
     if args.dset == 'u2m':
@@ -331,13 +331,13 @@ def test_dataset(args, dataset):
     netB.eval()
     netC.eval()
 
-    acc, _ = cal_acc(dset_loaders[dataset], netF, netB, netC)
-    log_str = 'Task: {}, Source model accuracy on {} = {:.2f}%'.format(args.dset, dataset, acc)
+    acc, _ = cal_acc(dset_loaders[args.dataset], netF, netB, netC)
+    log_str = 'Task: {}, Source model accuracy on {} = {:.2f}%'.format(args.dset, args.dataset, acc)
     args.out_file.write(log_str + '\n')
     args.out_file.flush()
     print(log_str+'\n')
 
-def extract_hyperplane(args, dataset):
+def extract_hyperplane(args):
     dset_loaders = digit_load(args)
     ## set base network
     if args.dset == 'u2m':
@@ -361,7 +361,7 @@ def extract_hyperplane(args, dataset):
     netB.eval()
     netC.eval()
 
-    hyperplane_score = get_hyperplane(dset_loaders[dataset], netF, netB, netC)
+    hyperplane_score = get_hyperplane(dset_loaders[args.dataset], netF, netB, netC)
     hyperplane_score[hyperplane_score < 0] = 0
     hyperplane_score[hyperplane_score > 0] = 1
     hyperplane_score = hyperplane_score.sum(dim = 1)
@@ -605,6 +605,7 @@ if __name__ == "__main__":
     parser.add_argument('--batch_size', type=int, default=64, help="batch_size")
     parser.add_argument('--worker', type=int, default=4, help="number of workers")
     parser.add_argument('--dset', type=str, default='s2m', choices=['u2m', 'm2u','s2m'])
+    parser.add_argument('--dataset', type=str, default='source_te')
     parser.add_argument('--lr', type=float, default=0.01, help="learning rate")
     parser.add_argument('--seed', type=int, default=2020, help="random seed")
     parser.add_argument('--cls_par', type=float, default=0.3)
@@ -641,7 +642,7 @@ if __name__ == "__main__":
         args.out_file.flush()
         train_source(args)
         test_target(args)
-        
+
     test_dataset(args, "source_te")
     extract_hyperplane(args, "source_te")
     sys.exit()
