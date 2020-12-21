@@ -364,12 +364,12 @@ def extract_hyperplane(args):
     hyperplane_score = get_hyperplane(dset_loaders[args.dataset], netF, netB, netC)
     hyperplane_score_abs = torch.abs(hyperplane_score)
     t = netC.get_weight()
-    print(t.shape)
     t = t * t
-    print(t.shape)
     t = t.sum(dim = 1)
     print(t.shape)
     print(hyperplane_score_abs.shape)
+    t = hyperplane_score_abs / t
+    print(t.shape)
     sys.exit()
     _, predict = torch.min(hyperplane_score_abs, 1)
     print(collections.Counter(predict.numpy()))
