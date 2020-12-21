@@ -73,7 +73,7 @@ class RandomFourierFeatures_our(FeatureMap):
             self.omega.normal_()
 
     def forward(self, x):
-        print(x.shape)
+        # print(x.shape)
         x = x * math.sqrt(self.softmax_temp)
         u = x.matmul(self.omega)
         phi = torch.cat([torch.cos(u), torch.sin(u)], dim=-1)
