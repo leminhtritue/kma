@@ -321,11 +321,11 @@ def test_dataset(args):
     # netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
     netC = network.feat_classifier(type="linear", class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
 
-    args.modelpath = args.output_dir + '/source_F.pt'   
+    args.modelpath = args.output_dir + '/target_F_par_0.0.pt'   
     netF.load_state_dict(torch.load(args.modelpath))
-    args.modelpath = args.output_dir + '/source_B.pt'   
+    args.modelpath = args.output_dir + '/target_B_par_0.0.pt'   
     netB.load_state_dict(torch.load(args.modelpath))
-    args.modelpath = args.output_dir + '/source_C.pt'   
+    args.modelpath = args.output_dir + '/target_C_par_0.0.pt'   
     netC.load_state_dict(torch.load(args.modelpath))
     netF.eval()
     netB.eval()
@@ -351,11 +351,11 @@ def extract_hyperplane(args):
     # netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
     netC = network.feat_classifier(type="linear", class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
 
-    args.modelpath = args.output_dir + '/source_F.pt'   
+    args.modelpath = args.output_dir + '/target_F_par_0.0.pt'   
     netF.load_state_dict(torch.load(args.modelpath))
-    args.modelpath = args.output_dir + '/source_B.pt'   
+    args.modelpath = args.output_dir + '/target_B_par_0.0.pt'   
     netB.load_state_dict(torch.load(args.modelpath))
-    args.modelpath = args.output_dir + '/source_C.pt'   
+    args.modelpath = args.output_dir + '/target_C_par_0.0.pt'   
     netC.load_state_dict(torch.load(args.modelpath))
     netF.eval()
     netB.eval()
@@ -645,11 +645,11 @@ if __name__ == "__main__":
     args.out_file.write(print_args(args)+'\n')
     args.out_file.flush()
 
-    test_dataset(args)
-    extract_hyperplane(args)
+    # test_dataset(args)
+    # extract_hyperplane(args)
 
-    test_target(args)
-    train_target(args)
+    # test_target(args)
+    # train_target(args)
 
     test_dataset(args)
     extract_hyperplane(args)
