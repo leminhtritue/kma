@@ -8,7 +8,6 @@ import math
 import torch.nn.utils.weight_norm as weightNorm
 from collections import OrderedDict
 import sys
-from fast_transformers.feature_maps import RandomFourierFeatures
 import math
 
 class FeatureMap(nn.Module):
@@ -48,10 +47,10 @@ class FeatureMap(nn.Module):
             return cls(query_dims, *args, **kwargs)
         return inner
 
-class RandomFourierFeatures_our(FeatureMap):
+class RandomFourierFeatures(FeatureMap):
     def __init__(self, query_dimensions, n_dims=None, softmax_temp=None,
                  orthogonal=False):
-        super(RandomFourierFeatures_our, self).__init__(query_dimensions)
+        super(RandomFourierFeatures, self).__init__(query_dimensions)
 
         self.n_dims = n_dims or query_dimensions
         self.orthogonal = orthogonal
@@ -103,30 +102,8 @@ class feat_bootleneck(nn.Module):
         self.feature_map = RandomFourierFeatures(feature_dim, 32)
         self.feature_map.new_feature_map()
 
-        self.feature_map_our = RandomFourierFeatures_our(feature_dim, 32)
-        self.feature_map_our.new_feature_map()
-
-        self.rf_dim = 32
-        self.omega = torch.zeros(feature_dim, self.rf_dim//2).cuda()
-        self.omega.normal_()
-        self.softmax_temp = 1/math.sqrt(feature_dim)
-
     def forward(self, x):
-        # t = x * math.sqrt(self.softmax_temp)
-        # u = t.matmul(self.omega)
-        # phi = torch.cat([torch.cos(u), torch.sin(u)], dim=-1)
-        
-        # tt = phi * math.sqrt(2/self.rf_dim)
-        x = self.feature_map_our(x)
-        # x = self.feature_map(x)
-        # print(tt.shape)
-        # print(x.shape)
-        # print(tt[0,:])
-        # print(x[0,:])
-        # ttt = tt - x
-        # print(ttt.shape)
-        # print(ttt[0,:])
-        # sys.exit()
+        x = self.feature_map(x)
         # x = self.bottleneck(x)
         # if self.type == "bn":
         #     x = self.bn(x)
