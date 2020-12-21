@@ -54,6 +54,7 @@ class feat_bootleneck(nn.Module):
         ttt = tt - x
         print(ttt.shape)
         print(ttt[0,:])
+        sys.exit()
         # x = self.bottleneck(x)
         # if self.type == "bn":
         #     x = self.bn(x)
