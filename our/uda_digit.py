@@ -648,8 +648,9 @@ if __name__ == "__main__":
 
     test_dataset(args)
     extract_hyperplane(args)
-    sys.exit()
 
     test_target(args)
     train_target(args)
-    
+
+    test_dataset(args)
+    extract_hyperplane(args)
