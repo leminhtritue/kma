@@ -37,7 +37,7 @@ class feat_bootleneck(nn.Module):
         self.rf_dim = 512
         self.omega = torch.zeros(feature_dim, self.rf_dim//2)
         self.omega.normal_()
-        self.softmax_temp = 1/torch.sqrt(feature_dim)
+        self.softmax_temp = 1/math.sqrt(feature_dim)
 
     def forward(self, x):
 
@@ -48,7 +48,7 @@ class feat_bootleneck(nn.Module):
         print(u.shape)
         phi = torch.cat([torch.cos(u), torch.sin(u)], dim=-1)
         print(phi.shape)
-        x = phi * torch.sqrt(2/self.rf_dim)
+        x = phi * math.sqrt(2/self.rf_dim)
         sys.exit()
 
         # x = self.feature_map(x)
