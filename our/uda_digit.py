@@ -362,15 +362,14 @@ def extract_hyperplane(args):
     netC.eval()
 
     hyperplane_score = get_hyperplane(dset_loaders[args.dataset], netF, netB, netC)
-    # hyperplane_score[hyperplane_score < 0] = 0
-    # hyperplane_score[hyperplane_score > 0] = 1
-    # hyperplane_score = hyperplane_score.sum(dim = 1)
-    # print(collections.Counter(hyperplane_score.numpy()))
-
-    hyperplane_score = torch.abs(hyperplane_score)
-    _, predict = torch.min(hyperplane_score, 1)
+    hyperplane_score_abs = torch.abs(hyperplane_score)
+    _, predict = torch.min(hyperplane_score_abs, 1)
     print(collections.Counter(predict.numpy()))
 
+    hyperplane_score[hyperplane_score < 0] = 0
+    hyperplane_score[hyperplane_score > 0] = 1
+    hyperplane_score = hyperplane_score.sum(dim = 1)
+    print(collections.Counter(hyperplane_score.numpy()))
 
 def print_args(args):
     s = "==========================================\n"
@@ -650,8 +649,8 @@ if __name__ == "__main__":
     args.out_file.write(print_args(args)+'\n')
     args.out_file.flush()
 
-    test_target(args)
-    train_target(args)
+    # test_target(args)
+    # train_target(args)
 
     test_dataset(args)
     extract_hyperplane(args)
