@@ -180,7 +180,7 @@ def train_source(args):
     elif args.dset == 's2m':
         netF = network.DTNBase().cuda()
 
-    netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
+    netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
     # netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
     netC = network.feat_classifier(type="linear", class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
 
@@ -268,7 +268,7 @@ def test_target(args):
     elif args.dset == 's2m':
         netF = network.DTNBase().cuda()
 
-    netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
+    netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
     # netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
     netC = network.feat_classifier(type="linear", class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
 
@@ -304,7 +304,7 @@ def train_target(args):
     elif args.dset == 's2m':
         netF = network.DTNBase().cuda()
 
-    netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
+    netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
     # netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
     netC = network.feat_classifier(type="linear", class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
 
@@ -535,6 +535,7 @@ if __name__ == "__main__":
     parser.add_argument('--smooth', type=float, default=0.1)   
     parser.add_argument('--output', type=str, default='')
     parser.add_argument('--issave', type=bool, default=True)
+    parser.add_argument('--gamma', type=float, default=0.5)
     args = parser.parse_args()
     args.class_num = 10
 

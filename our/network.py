@@ -48,7 +48,7 @@ class FeatureMap(nn.Module):
         return inner
 
 class RandomFourierFeatures(FeatureMap):
-    def __init__(self, query_dimensions, n_dims=None, softmax_temp=None,
+    def __init__(self, query_dimensions, gamma = 0.5, n_dims=None, softmax_temp=None,
                  orthogonal=False):
         super(RandomFourierFeatures, self).__init__(query_dimensions)
 
@@ -58,6 +58,7 @@ class RandomFourierFeatures(FeatureMap):
             1/math.sqrt(query_dimensions) if softmax_temp is None
             else softmax_temp
         )
+        self.gamma = gamma
 
         # Make a buffer for storing the sampled omega
         self.register_buffer(
@@ -73,7 +74,8 @@ class RandomFourierFeatures(FeatureMap):
 
     def forward(self, x):
         # print(x.shape)
-        x = x * math.sqrt(self.softmax_temp)
+        # x = x * math.sqrt(self.softmax_temp)
+        x = x * self.gamma
         u = x.matmul(self.omega)
         phi = torch.cat([torch.cos(u), torch.sin(u)], dim=-1)
         return phi * math.sqrt(2/self.n_dims)
@@ -91,11 +93,11 @@ def init_weights(m):
         nn.init.zeros_(m.bias)
 
 class feat_bootleneck(nn.Module):
-    def __init__(self, feature_dim, bottleneck_dim=256, type="ori"):
+    def __init__(self, feature_dim, gamma = 0.5, bottleneck_dim=256, type="ori"):
         super(feat_bootleneck, self).__init__()
         self.bn = nn.BatchNorm1d(bottleneck_dim, affine=True)
         self.dropout = nn.Dropout(p=0.5)
-        self.bottleneck = nn.Linear(feature_dim, bottleneck_dim)
+        self.bottleneck = nn.Linear(feature_dim, bottleneck_dim, gamma)
         self.bottleneck.apply(init_weights)
         self.type = type
 
