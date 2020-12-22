@@ -487,7 +487,8 @@ def train_target(args):
         for i in range(args.class_num):
             mark_max[:,i] = torch.max(torch.cat((outputs_test_max[:, :i],outputs_test_max[:, i+1:]), dim = 1), dim = 1).values        
 
-        softmax_score = nn.Softmax(dim=1)(outputs_test_max - mark_max)
+        # softmax_score = nn.Softmax(dim=1)(outputs_test_max - mark_max)
+        softmax_score = nn.Softmax(dim=1)(torch.maximum(outputs_test_max - mark_max, mark_zeros))
         entropy_loss = loss.Entropy(softmax_score).mean()      
         div_loss = -loss.Entropy_1D(softmax_score.mean(dim = 0))
 
