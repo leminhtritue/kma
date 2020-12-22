@@ -447,12 +447,12 @@ def train_target(args):
         if inputs_test.size(0) == 1:
             continue
 
-        # if iter_num % interval_iter == 0 and args.cls_par > 0:
+        if iter_num % interval_iter == 0 and args.cls_par > 0:
         #     netF.eval()
         #     netB.eval()
         #     netC.eval()
-        #     mem_label = obtain_label(dset_loaders['target_te'], netF, netB, netC, args)
-        #     mem_label = torch.from_numpy(mem_label).cuda()
+            mem_label = obtain_label(dset_loaders['target_te'], netF, netB, netC, args)
+            mem_label = torch.from_numpy(mem_label).cuda()
         #     netF.train()
         #     netB.train()
         #     netC.train()
@@ -464,11 +464,11 @@ def train_target(args):
         features_test = netB(netF(inputs_test))
         outputs_test = netC(features_test)
 
-        # if args.cls_par > 0:
-        #     pred = mem_label[tar_idx]
-        #     classifier_loss = args.cls_par * nn.CrossEntropyLoss()(outputs_test, pred)
-        # else:
-        #     classifier_loss = torch.tensor(0.0).cuda()
+        if args.cls_par > 0:
+            pred = mem_label[tar_idx]
+            classifier_loss = args.cls_par * nn.CrossEntropyLoss()(outputs_test, pred)
+        else:
+            classifier_loss = torch.tensor(0.0).cuda()
 
         # if args.ent:
         #     softmax_out = nn.Softmax(dim=1)(outputs_test)
@@ -491,7 +491,7 @@ def train_target(args):
         div_loss = -loss.Entropy_1D(softmax_score.mean(dim = 0))
 
         # classifier_loss = entropy_loss + div_loss
-        classifier_loss = entropy_loss
+        classifier_loss += entropy_loss
         classifier_loss_total += classifier_loss
         classifier_loss_count += 1   
         entropy_loss_total += entropy_loss
