@@ -654,8 +654,8 @@ if __name__ == "__main__":
     args.out_file.write(print_args(args)+'\n')
     args.out_file.flush()
 
-    # test_target(args)
-    # train_target(args)
+    test_target(args)
+    train_target(args)
 
-    test_dataset(args)
-    extract_hyperplane(args)
+    # test_dataset(args)
+    # extract_hyperplane(args)
