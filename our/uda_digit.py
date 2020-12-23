@@ -515,10 +515,10 @@ def train_target(args):
         # div_loss_total += div_loss
         # div_loss_count += 1  
 
-        max_hyperplane = outputs_test_max.max(dim=1).values       
-        max_hyperplane[max_hyperplane > 0] = 1
-        right_sample_count += max_hyperplane.sum()
-        sum_sample += outputs_test_max.shape[0]
+        # max_hyperplane = outputs_test_max.max(dim=1).values       
+        # max_hyperplane[max_hyperplane > 0] = 1
+        # right_sample_count += max_hyperplane.sum()
+        # sum_sample += outputs_test_max.shape[0]
 
         if (start_output):
             all_output = outputs_test.float().cpu()
