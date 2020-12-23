@@ -507,8 +507,8 @@ def train_target(args):
         
 
         softmax_out = nn.Softmax(dim=1)(outputs_test)
-        cost_log = -torch.log(softmax_out + 1e-5)
-        cost = 0.1 * cost_log + cost_s
+        cost_log = -0.1 * torch.log(softmax_out + 1e-5)
+        cost = cost_log + cost_s
         # print(cost_s.mean())
         # print(cost_log.mean())
 
@@ -560,7 +560,7 @@ def train_target(args):
             _, predict = torch.max(all_output, 1)
             acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
             acc_tr, _ = cal_acc(dset_loaders['target_te'], netF, netB, netC)
-            log_str = 'Iter:{}/{}; Loss (entropy): {:.2f}, Cost (s/logp) = {:.2f}% / {:.2f}%, Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(iter_num, max_iter, \
+            log_str = 'Iter:{}/{}; Loss (entropy): {:.2f}, Cost (s/logp) = {:.2f} / {:.2f}, Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(iter_num, max_iter, \
             	entropy_loss_total/entropy_loss_count, costs_loss_total/costs_loss_count, costlog_loss_total/costlog_loss_count, acc_tr, acc, right_sample_count, sum_sample)
             args.out_file.write(log_str + '\n')
             args.out_file.flush()
