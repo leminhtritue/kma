@@ -446,8 +446,10 @@ def train_target(args):
     classifier_loss_count = 0
     entropy_loss_total = 0.0
     entropy_loss_count = 0
-    div_loss_total = 0.0
-    div_loss_count = 0
+    costlog_loss_total = 0.0
+    costlog_loss_count = 0
+    costs_loss_total = 0.0
+    costs_loss_count = 0
     right_sample_count = 0
     sum_sample = 0
     start_output = True
@@ -521,19 +523,19 @@ def train_target(args):
         im_loss = entropy_loss * args.ent_par
         classifier_loss = im_loss
 
-
-
         # entropy_loss = loss.Entropy(softmax_score).mean()      
         # div_loss = -loss.Entropy_1D(softmax_score.mean(dim = 0))
-
         # classifier_loss = entropy_loss + div_loss
         # classifier_loss = entropy_loss
+
         classifier_loss_total += classifier_loss
         classifier_loss_count += 1   
         entropy_loss_total += entropy_loss
         entropy_loss_count += 1 
-        # div_loss_total += div_loss
-        # div_loss_count += 1  
+        costlog_loss_total += cost_log.mean()
+        costlog_loss_count += 1  
+        costs_loss_total += cost_s.mean()
+        costs_loss_count += 1  
 
         # max_hyperplane = outputs_test_max.max(dim=1).values       
         # max_hyperplane[max_hyperplane > 0] = 1
