@@ -537,10 +537,11 @@ def train_target(args):
         costs_loss_total += cost_s.mean()
         costs_loss_count += 1  
 
-        # max_hyperplane = outputs_test_max.max(dim=1).values       
-        # max_hyperplane[max_hyperplane > 0] = 1
-        # right_sample_count += max_hyperplane.sum()
-        # sum_sample += outputs_test_max.shape[0]
+        max_hyperplane = outputs_test_max.max(dim=1).values       
+        max_hyperplane[max_hyperplane > 0] = 1
+        max_hyperplane[max_hyperplane < 0] = 0
+        right_sample_count += max_hyperplane.sum()
+        sum_sample += outputs_test_max.shape[0]
 
         if (start_output):
             all_output = outputs_test.float().cpu()
@@ -559,8 +560,8 @@ def train_target(args):
             _, predict = torch.max(all_output, 1)
             acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
             acc_tr, _ = cal_acc(dset_loaders['target_te'], netF, netB, netC)
-            log_str = 'Task: {}, Iter:{}/{}; Loss (all/entropy/div): {:.2f} / {:.2f} / {:.2f}, Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(args.dset, iter_num, max_iter, \
-                classifier_loss_total/classifier_loss_count, entropy_loss_total/entropy_loss_count, div_loss_total/1.0, acc_tr, acc, right_sample_count, sum_sample)
+            log_str = 'Iter:{}/{}; Loss (entropy): {:.2f}, Cost (s/logp) = {:.2f}% / {:.2f}%, Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(iter_num, max_iter, \
+            	entropy_loss_total/entropy_loss_count, costs_loss_total/costs_loss_count, costlog_loss_total/costlog_loss_count, acc_tr, acc, right_sample_count, sum_sample)
             args.out_file.write(log_str + '\n')
             args.out_file.flush()
             print(log_str)
