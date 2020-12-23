@@ -508,7 +508,7 @@ def train_target(args):
 
         softmax_out = nn.Softmax(dim=1)(outputs_test)
         cost_log = -0.1 * torch.log(softmax_out + 1e-5)
-        cost = cost_log + cost_s
+        cost = cost_log + 0 * cost_s
         # print(cost_s.mean())
         # print(cost_log.mean())
 
