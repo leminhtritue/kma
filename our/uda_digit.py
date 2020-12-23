@@ -495,6 +495,7 @@ def train_target(args):
             softmax_out = nn.Softmax(dim=1)(outputs_test)
             entropy_loss = torch.mean(loss.Entropy(softmax_out))
             if args.gent:
+            	print("in")
                 msoftmax = softmax_out.mean(dim=0)
                 entropy_loss -= torch.sum(-msoftmax * torch.log(msoftmax + 1e-5))
 
