@@ -512,8 +512,8 @@ def train_target(args):
         classifier_loss_count += 1   
         entropy_loss_total += entropy_loss
         entropy_loss_count += 1 
-        div_loss_total += div_loss
-        div_loss_count += 1  
+        # div_loss_total += div_loss
+        # div_loss_count += 1  
 
         max_hyperplane = outputs_test_max.max(dim=1).values       
         max_hyperplane[max_hyperplane > 0] = 1
