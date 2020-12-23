@@ -487,9 +487,19 @@ def train_target(args):
         #     classifier_loss = torch.tensor(0.0).cuda()
 
 
-        softmax_out = nn.Softmax(dim=1)(outputs_test)
-        entropy_loss = torch.mean(loss.Entropy(softmax_out))
-        classifier_loss = entropy_loss
+        # softmax_out = nn.Softmax(dim=1)(outputs_test)
+        # entropy_loss = torch.mean(loss.Entropy(softmax_out))
+        # classifier_loss = entropy_loss
+
+        if args.ent:
+            softmax_out = nn.Softmax(dim=1)(outputs_test)
+            entropy_loss = torch.mean(loss.Entropy(softmax_out))
+            if args.gent:
+                msoftmax = softmax_out.mean(dim=0)
+                entropy_loss -= torch.sum(-msoftmax * torch.log(msoftmax + 1e-5))
+
+            im_loss = entropy_loss * args.ent_par
+            classifier_loss = im_loss
 
         # mark_max = torch.zeros(outputs_test.size()).cuda()
         # mark_zeros = torch.zeros(outputs_test.size()).cuda()
