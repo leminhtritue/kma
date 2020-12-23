@@ -491,9 +491,24 @@ def train_target(args):
         # entropy_loss = torch.mean(loss.Entropy(softmax_out))
         # classifier_loss = entropy_loss
 
+        mark_max = torch.zeros(outputs_test.size()).cuda()
+        mark_zeros = torch.zeros(outputs_test.size()).cuda()
+
+        # outputs_test_max = torch.maximum(outputs_test, mark_zeros)
+        outputs_test_max = outputs_test
+        
+        for i in range(args.class_num):
+            mark_max[:,i] = torch.max(torch.cat((outputs_test_max[:, :i],outputs_test_max[:, i+1:]), dim = 1), dim = 1).values        
+
+        softmax_score = nn.Softmax(dim=1)(outputs_test_max - mark_max)
+        softmax_score = nn.Softmax(dim=1)(torch.maximum(outputs_test_max - mark_max, mark_zeros))
+        print(softmax_score.shape)
+
         softmax_out = nn.Softmax(dim=1)(outputs_test)
         cost_log = -torch.log(softmax_out + 1e-5)
         cost = cost_log
+        print(cost_log.shape)
+        sys.exit()
         entropy_raw = softmax_out * cost
         entropy_raw = torch.sum(entropy_raw, dim=1)         
         # entropy_raw = loss.Entropy(softmax_out)
@@ -505,17 +520,7 @@ def train_target(args):
         im_loss = entropy_loss * args.ent_par
         classifier_loss = im_loss
 
-        # mark_max = torch.zeros(outputs_test.size()).cuda()
-        # mark_zeros = torch.zeros(outputs_test.size()).cuda()
 
-        # outputs_test_max = torch.maximum(outputs_test, mark_zeros)
-        # outputs_test_max = outputs_test
-        
-        # for i in range(args.class_num):
-            # mark_max[:,i] = torch.max(torch.cat((outputs_test_max[:, :i],outputs_test_max[:, i+1:]), dim = 1), dim = 1).values        
-
-        # softmax_score = nn.Softmax(dim=1)(outputs_test_max - mark_max)
-        # softmax_score = nn.Softmax(dim=1)(torch.maximum(outputs_test_max - mark_max, mark_zeros))
 
         # entropy_loss = loss.Entropy(softmax_score).mean()      
         # div_loss = -loss.Entropy_1D(softmax_score.mean(dim = 0))
