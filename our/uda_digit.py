@@ -486,33 +486,28 @@ def train_target(args):
         # else:
         #     classifier_loss = torch.tensor(0.0).cuda()
 
-        # if args.ent:
-        #     softmax_out = nn.Softmax(dim=1)(outputs_test)
-        #     entropy_loss = torch.mean(loss.Entropy(softmax_out))
-        #     if args.gent:
-        #         msoftmax = softmax_out.mean(dim=0)
-        #         entropy_loss -= torch.sum(-msoftmax * torch.log(msoftmax + 1e-5))
 
-        #     im_loss = entropy_loss * args.ent_par
-        #     classifier_loss += im_loss
+        softmax_out = nn.Softmax(dim=1)(outputs_test)
+        entropy_loss = torch.mean(loss.Entropy(softmax_out))
+        classifier_loss = entropy_loss
 
-        mark_max = torch.zeros(outputs_test.size()).cuda()
-        mark_zeros = torch.zeros(outputs_test.size()).cuda()
+        # mark_max = torch.zeros(outputs_test.size()).cuda()
+        # mark_zeros = torch.zeros(outputs_test.size()).cuda()
 
         # outputs_test_max = torch.maximum(outputs_test, mark_zeros)
-        outputs_test_max = outputs_test
+        # outputs_test_max = outputs_test
         
-        for i in range(args.class_num):
-            mark_max[:,i] = torch.max(torch.cat((outputs_test_max[:, :i],outputs_test_max[:, i+1:]), dim = 1), dim = 1).values        
+        # for i in range(args.class_num):
+            # mark_max[:,i] = torch.max(torch.cat((outputs_test_max[:, :i],outputs_test_max[:, i+1:]), dim = 1), dim = 1).values        
 
-        softmax_score = nn.Softmax(dim=1)(outputs_test_max - mark_max)
+        # softmax_score = nn.Softmax(dim=1)(outputs_test_max - mark_max)
         # softmax_score = nn.Softmax(dim=1)(torch.maximum(outputs_test_max - mark_max, mark_zeros))
 
-        entropy_loss = loss.Entropy(softmax_score).mean()      
-        div_loss = -loss.Entropy_1D(softmax_score.mean(dim = 0))
+        # entropy_loss = loss.Entropy(softmax_score).mean()      
+        # div_loss = -loss.Entropy_1D(softmax_score.mean(dim = 0))
 
         # classifier_loss = entropy_loss + div_loss
-        classifier_loss = entropy_loss
+        # classifier_loss = entropy_loss
         classifier_loss_total += classifier_loss
         classifier_loss_count += 1   
         entropy_loss_total += entropy_loss
@@ -678,5 +673,5 @@ if __name__ == "__main__":
     test_target(args)
     train_target(args)
 
-    test_dataset(args)
-    extract_hyperplane(args)
+    # test_dataset(args)
+    # extract_hyperplane(args)
