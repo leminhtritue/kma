@@ -502,15 +502,14 @@ def train_target(args):
 
         # cost_s = nn.Softmax(dim=1)(outputs_test_max - mark_max)
         cost_s = -torch.maximum(outputs_test_max - mark_max, mark_zeros)
-        # print(cost_s.shape)
-        print(cost_s.mean())
+        
 
         softmax_out = nn.Softmax(dim=1)(outputs_test)
         cost_log = -torch.log(softmax_out + 1e-5)
-        cost = cost_log
-        # print(cost_log.shape)
-        print(cost_log.mean())
-        # sys.exit()
+        cost = 0.1 * cost_log + cost_s
+        # print(cost_s.mean())
+        # print(cost_log.mean())
+
         entropy_raw = softmax_out * cost
         entropy_raw = torch.sum(entropy_raw, dim=1)         
         # entropy_raw = loss.Entropy(softmax_out)
