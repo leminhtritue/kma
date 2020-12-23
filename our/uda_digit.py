@@ -491,18 +491,19 @@ def train_target(args):
         # entropy_loss = torch.mean(loss.Entropy(softmax_out))
         # classifier_loss = entropy_loss
 
-        if args.ent:
-            softmax_out = nn.Softmax(dim=1)(outputs_test)
-            entropy_raw = -softmax_out * torch.log(softmax_out + 1e-5)
-            entropy_raw = torch.sum(entropy_raw, dim=1)         
-            # entropy_raw = loss.Entropy(softmax_out)
-            entropy_loss = torch.mean(entropy_raw)
-            if args.gent > 0:
-                msoftmax = softmax_out.mean(dim=0)
-                entropy_loss -= torch.sum(-msoftmax * torch.log(msoftmax + 1e-5))
+        softmax_out = nn.Softmax(dim=1)(outputs_test)
+        cost_log = -torch.log(softmax_out + 1e-5)
+        cost = cost_log
+        entropy_raw = -softmax_out * cost
+        entropy_raw = torch.sum(entropy_raw, dim=1)         
+        # entropy_raw = loss.Entropy(softmax_out)
+        entropy_loss = torch.mean(entropy_raw)
+        if args.gent > 0:
+            msoftmax = softmax_out.mean(dim=0)
+            entropy_loss -= torch.sum(-msoftmax * torch.log(msoftmax + 1e-5))
 
-            im_loss = entropy_loss * args.ent_par
-            classifier_loss = im_loss
+        im_loss = entropy_loss * args.ent_par
+        classifier_loss = im_loss
 
         # mark_max = torch.zeros(outputs_test.size()).cuda()
         # mark_zeros = torch.zeros(outputs_test.size()).cuda()
