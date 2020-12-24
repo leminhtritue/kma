@@ -296,7 +296,20 @@ def train_source(args):
     all_source_data = torch.cat((source_train_data, source_test_data), 0)
     all_source_label = torch.cat((source_train_label, source_test_label), 0)
     print(all_source_data.shape, all_source_label.shape)
+
+    a_count = 0
+    for i in range(args.class_num):
+    	cur_data = all_source_data[all_source_label == i]
+    	cur_shape0 = cur_data.shape[0]
+    	a_count += cur_shape0
+    	cur_mean = cur_data.mean(dim=0)
+    	cmp_mean = cur_data.sum(dim=0)/cur_shape0
+    	print(a_count)
+    	print(cur_mean)
+    	print(cmp_mean)
+    print(a_count)
     sys.exit()
+
     torch.save(best_netF, osp.join(args.output_dir, "source_F.pt"))
     torch.save(best_netB, osp.join(args.output_dir, "source_B.pt"))
     torch.save(best_netC, osp.join(args.output_dir, "source_C.pt"))
