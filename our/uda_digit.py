@@ -464,8 +464,8 @@ def train_target(args):
         param_group += [{'params': v, 'lr': args.lr}]
     for k, v in netB.named_parameters():
         param_group += [{'params': v, 'lr': args.lr}]
-    # for k, v in netC.named_parameters():
-    #     param_group += [{'params': v, 'lr': args.lr}] 
+    for k, v in netC.named_parameters():
+        param_group += [{'params': v, 'lr': args.lr}] 
 
     optimizer = optim.SGD(param_group)
     optimizer = op_copy(optimizer)
@@ -505,15 +505,15 @@ def train_target(args):
         if inputs_test.size(0) == 1:
             continue
 
-        # if iter_num % interval_iter == 0 and args.cls_par > 0:
-        #     netF.eval()
-        #     netB.eval()
-        #     netC.eval()
-        #     mem_label = obtain_label(dset_loaders['target_te'], netF, netB, netC, args)
-        #     mem_label = torch.from_numpy(mem_label).cuda()
-        #     netF.train()
-        #     netB.train()
-        #     netC.train()
+        if iter_num % interval_iter == 0 and args.cls_par > 0:
+            netF.eval()
+            netB.eval()
+            netC.eval()
+            mem_label = obtain_label(dset_loaders['target_te'], netF, netB, netC, args)
+            mem_label = torch.from_numpy(mem_label).cuda()
+            netF.train()
+            netB.train()
+            netC.train()
 
         iter_num += 1
         lr_scheduler(optimizer, iter_num=iter_num, max_iter=max_iter)
@@ -567,6 +567,10 @@ def train_target(args):
 
         im_loss = entropy_loss * args.ent_par
         classifier_loss = im_loss
+
+        if args.cls_par > 0:
+            pred = mem_label[tar_idx]
+            classifier_loss += args.cls_par * nn.CrossEntropyLoss()(outputs_test, pred)
 
         # entropy_loss = loss.Entropy(softmax_score).mean()      
         # div_loss = -loss.Entropy_1D(softmax_score.mean(dim = 0))
@@ -705,9 +709,9 @@ if __name__ == "__main__":
     parser.add_argument('--dataset', type=str, default='test')
     parser.add_argument('--lr', type=float, default=0.01, help="learning rate")
     parser.add_argument('--seed', type=int, default=2020, help="random seed")
-    parser.add_argument('--cls_par', type=float, default=0.1)
+    parser.add_argument('--cls_par', type=float, default=0.1) #0.0
     parser.add_argument('--ent_par', type=float, default=1.0)
-    parser.add_argument('--gent', type=float, default=0.0)
+    parser.add_argument('--gent', type=float, default=0.1)
     parser.add_argument('--ent', type=bool, default=True)
     parser.add_argument('--bottleneck', type=int, default=256)
     parser.add_argument('--layer', type=str, default="wn", choices=["linear", "wn"])
