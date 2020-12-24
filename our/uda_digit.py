@@ -298,18 +298,15 @@ def train_source(args):
     print(all_source_data.shape, all_source_label.shape)
 
     a_count = 0
+    mean_out = torch.zeros((args.class_num,all_source_data.shape[1]))
+    print(mean_out.shape)
     for i in range(args.class_num):
-    	start_test = True
     	cur_data = all_source_data[all_source_label == i]
     	cur_shape0 = cur_data.shape[0]
     	a_count += cur_shape0
     	cur_mean = cur_data.mean(dim=0)
     	print(cur_mean[:5])
-    	if start_test:
-    		mean_out = cur_mean
-    		start_test = False
-    	else:
-    		mean_out = torch.cat((mean_out, cur_mean), 0)
+    	mean_out[i] = cur_mean
     print(mean_out.shape)
     print(mean_out[:,:5])
     print(a_count)
