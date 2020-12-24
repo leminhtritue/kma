@@ -536,8 +536,8 @@ def train_target(args):
         mark_max = torch.zeros(outputs_test.size()).cuda()
         mark_zeros = torch.zeros(outputs_test.size()).cuda()
 
-        # outputs_test_max = torch.maximum(outputs_test, mark_zeros)
-        outputs_test_max = outputs_test
+        outputs_test_max = torch.maximum(outputs_test, mark_zeros)
+        # outputs_test_max = outputs_test
         
         for i in range(args.class_num):
             mark_max[:,i] = torch.max(torch.cat((outputs_test_max[:, :i],outputs_test_max[:, i+1:]), dim = 1), dim = 1).values        
