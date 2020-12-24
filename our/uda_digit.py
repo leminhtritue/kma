@@ -541,7 +541,10 @@ def train_target(args):
             mark_max[:,i] = torch.max(torch.cat((outputs_test_max[:, :i],outputs_test_max[:, i+1:]), dim = 1), dim = 1).values        
 
         # cost_s = nn.Softmax(dim=1)(outputs_test_max - mark_max)
-        cost_s = -torch.maximum(outputs_test_max - mark_max, mark_zeros)
+        cost_s = torch.maximum(outputs_test_max - mark_max, mark_zeros)
+        print("cott s", cost_s.shape)
+        cost_s = nn.Softmax(dim=1)(cost_s)
+        cost_s = -torch.log(cost_s + 1e-5)
 
         print(mean_out.shape)
         print(features_test.shape)
@@ -583,11 +586,11 @@ def train_target(args):
         costs_loss_total += cost_s.mean()
         costs_loss_count += 1  
 
-        max_hyperplane = outputs_test_max.max(dim=1).values       
+        max_hyperplane = outputs_test.max(dim=1).values       
         max_hyperplane[max_hyperplane > 0] = 1
         max_hyperplane[max_hyperplane < 0] = 0
         right_sample_count += max_hyperplane.sum()
-        sum_sample += outputs_test_max.shape[0]
+        sum_sample += outputs_test.shape[0]
 
         if (start_output):
             all_output = outputs_test.float().cpu()
