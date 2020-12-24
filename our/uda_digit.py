@@ -378,6 +378,7 @@ def test_dataset(args):
     args.out_file.write(log_str + '\n')
     args.out_file.flush()
     print(log_str+'\n')
+    return acc
 
 def extract_hyperplane(args):
     dset_loaders = digit_load(args)
