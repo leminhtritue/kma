@@ -304,9 +304,11 @@ def train_source(args):
     	a_count += cur_shape0
     	cur_mean = cur_data.mean(dim=1)
     	cmp_mean = cur_data.sum(dim=1)/cur_shape0
-    	print(a_count)
+    	print(cur_shape0)
     	print(cur_mean)
+    	print(cur_mean.shape)
     	print(cmp_mean)
+    	print(cmp_mean.shape)
     print(a_count)
     sys.exit()
 
