@@ -326,11 +326,6 @@ def test_target(args):
     # netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
     netC = network.feat_classifier(type="linear", class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
 
-    mean_out = torch.load(args.output_dir + '/source_mean.pt')
-    print(mean_out.shape)
-    print(mean_out[:,:5])
-    sys.exit()
-
     args.modelpath = args.output_dir + '/source_F.pt'   
     netF.load_state_dict(torch.load(args.modelpath))
     args.modelpath = args.output_dir + '/source_B.pt'   
@@ -458,7 +453,16 @@ def train_target(args):
     netB.load_state_dict(torch.load(args.modelpath))
     args.modelpath = args.output_dir + '/source_C.pt'    
     netC.load_state_dict(torch.load(args.modelpath))
-    
+
+    mean_out = torch.load(args.output_dir + '/source_mean.pt')
+    print(mean_out.shape)
+    print(mean_out[:,:5])
+    t = netC(mean_out)
+    print(t.shape)
+    _, predict = torch.max(t, 1)
+    print(predict)
+    sys.exit()
+
     # for k, v in netC.named_parameters():
     #     v.requires_grad = False
 
