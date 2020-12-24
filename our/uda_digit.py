@@ -292,18 +292,16 @@ def train_source(args):
 
     source_train_data, source_train_label = get_feature_label(dset_loaders['source_tr'], netF, netB, netC)
     source_test_data, source_test_label = get_feature_label(dset_loaders['source_te'], netF, netB, netC)
-    print(source_train_data.shape, source_train_label.shape, source_test_data.shape, source_test_label.shape)
     all_source_data = torch.cat((source_train_data, source_test_data), 0)
     all_source_label = torch.cat((source_train_label, source_test_label), 0)
-    print(all_source_data.shape, all_source_label.shape)
+
 
     mean_out = torch.zeros((args.class_num,all_source_data.shape[1]))
     for i in range(args.class_num):
     	cur_data = all_source_data[all_source_label == i]
     	cur_mean = cur_data.mean(dim=0)
     	mean_out[i] = cur_mean
-    print(mean_out.shape)
-    print(mean_out[:,:5])
+
 
     torch.save(mean_out, osp.join(args.output_dir, "source_mean.pt"))
     torch.save(best_netF, osp.join(args.output_dir, "source_F.pt"))
