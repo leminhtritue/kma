@@ -454,7 +454,7 @@ def train_target(args):
     args.modelpath = args.output_dir + '/source_C.pt'    
     netC.load_state_dict(torch.load(args.modelpath))
 
-    mean_out = torch.load(args.output_dir + '/source_mean.pt')
+    mean_out = torch.load(args.output_dir + '/source_mean.pt').cuda()
     print(mean_out.shape)
     print(mean_out[:,:5])
     t = netC(mean_out)
