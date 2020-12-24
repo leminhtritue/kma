@@ -545,7 +545,7 @@ def train_target(args):
 
         print(mean_out.shape)
         print(features_test.shape)
-        t = torch.cdist(mean_out, features_test, p=2)
+        t = torch.cdist(features_test, mean_out, p=2)
         print(t.shape)
         sys.exit()
 
