@@ -297,21 +297,15 @@ def train_source(args):
     all_source_label = torch.cat((source_train_label, source_test_label), 0)
     print(all_source_data.shape, all_source_label.shape)
 
-    a_count = 0
     mean_out = torch.zeros((args.class_num,all_source_data.shape[1]))
-    print(mean_out.shape)
     for i in range(args.class_num):
     	cur_data = all_source_data[all_source_label == i]
-    	cur_shape0 = cur_data.shape[0]
-    	a_count += cur_shape0
     	cur_mean = cur_data.mean(dim=0)
-    	print(cur_mean[:5])
     	mean_out[i] = cur_mean
     print(mean_out.shape)
     print(mean_out[:,:5])
-    print(a_count)
-    sys.exit()
 
+    torch.save(mean_out, osp.join(args.output_dir, "source_mean.pt"))
     torch.save(best_netF, osp.join(args.output_dir, "source_F.pt"))
     torch.save(best_netB, osp.join(args.output_dir, "source_B.pt"))
     torch.save(best_netC, osp.join(args.output_dir, "source_C.pt"))
@@ -331,6 +325,11 @@ def test_target(args):
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
     # netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
     netC = network.feat_classifier(type="linear", class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
+
+    mean_out = torch.load(args.output_dir + '/source_mean.pt')
+    print(mean_out.shape)
+    print(mean_out[:,:5])
+    sys.exit()
 
     args.modelpath = args.output_dir + '/source_F.pt'   
     netF.load_state_dict(torch.load(args.modelpath))
