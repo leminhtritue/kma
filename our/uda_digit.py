@@ -464,8 +464,9 @@ def train_target(args):
         param_group += [{'params': v, 'lr': args.lr}]
     for k, v in netB.named_parameters():
         param_group += [{'params': v, 'lr': args.lr}]
-    # for k, v in netC.named_parameters():
-    #     param_group += [{'params': v, 'lr': args.lr}] 
+    if (args.trainC > 0.0):
+        for k, v in netC.named_parameters():
+            param_group += [{'params': v, 'lr': args.lr}] 
 
     optimizer = optim.SGD(param_group)
     optimizer = op_copy(optimizer)
@@ -536,15 +537,19 @@ def train_target(args):
         mark_max = torch.zeros(outputs_test.size()).cuda()
         mark_zeros = torch.zeros(outputs_test.size()).cuda()
 
-        # outputs_test_max = torch.maximum(outputs_test, mark_zeros)
-        outputs_test_max = outputs_test
+        if (args.max_in > 0.0):
+            outputs_test_max = torch.maximum(outputs_test, mark_zeros)
+        else:
+            outputs_test_max = outputs_test
         
         for i in range(args.class_num):
             mark_max[:,i] = torch.max(torch.cat((outputs_test_max[:, :i],outputs_test_max[:, i+1:]), dim = 1), dim = 1).values        
 
-        # cost_s = nn.Softmax(dim=1)(outputs_test_max - mark_max)
-        # cost_s = outputs_test_max - mark_max
-        cost_s = torch.maximum(outputs_test_max - mark_max, mark_zeros)
+        if (args.max_out > 0.0):
+            cost_s = torch.maximum(outputs_test_max - mark_max, mark_zeros)
+        else:
+            cost_s = outputs_test_max - mark_max
+        
         cost_s = nn.Softmax(dim=1)(cost_s)
         cost_s = -torch.log(cost_s + 1e-5)
 
@@ -724,6 +729,10 @@ if __name__ == "__main__":
     parser.add_argument('--wsi', type=float, default=1.0)
     parser.add_argument('--wds', type=float, default=1.0)
     parser.add_argument('--wlp', type=float, default=1.0)
+    parser.add_argument('--trainC', type=float, default=0.0)
+    parser.add_argument('--max_in', type=float, default=0.0)
+    parser.add_argument('--max_out', type=float, default=0.1)
+
     args = parser.parse_args()
     args.class_num = 10
 
