@@ -755,4 +755,4 @@ if __name__ == "__main__":
     # test_dataset(args)
     # extract_hyperplane(args)
     cur_acc = test_target(args)
-    print("{}\t{}\t{}\t{}".format(args.wsi, args.wds, args.wlp, cur_acc))
+    print("{},{},{},{}".format(args.wsi, args.wds, args.wlp, cur_acc))
