@@ -532,17 +532,15 @@ def train_target(args):
         for i in range(args.class_num):
             mark_max[:,i] = torch.max(torch.cat((outputs_test_max[:, :i],outputs_test_max[:, i+1:]), dim = 1), dim = 1).values        
         
-        cost_s = outputs_test_max - mark_max
-        # cost_s = torch.maximum(outputs_test_max - mark_max, mark_zeros)
+        # cost_s = outputs_test_max - mark_max
+        cost_s = torch.maximum(outputs_test_max - mark_max, mark_zeros)
 
         softmax_si = nn.Softmax(dim=1)(cost_s)
-        softmax_out = nn.Softmax(dim=1)(outputs_test)
-
-        cost = 
-
-        entropy_raw = softmax_out * (-torch.log(softmax_out + 1e-5))
+        entropy_raw = softmax_si * (-torch.log(softmax_si + 1e-5))
         entropy_raw = torch.sum(entropy_raw, dim=1)         
         entropy_loss = torch.mean(entropy_raw)
+
+        softmax_out = nn.Softmax(dim=1)(outputs_test)
         if args.gent > 0:
             msoftmax = softmax_out.mean(dim=0)
             entropy_loss -= torch.sum(-msoftmax * torch.log(msoftmax + 1e-5))
