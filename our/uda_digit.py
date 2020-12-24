@@ -189,6 +189,25 @@ def cal_acc_plot(loader, netF, ouput_name, label_name):
     # mean_ent = torch.mean(loss.Entropy(nn.Softmax(dim=1)(all_output))).cpu().data.item()
     # return accuracy*100, mean_ent
 
+def get_feature_label(loader, netF, netB, netC):
+    start_test = True
+    with torch.no_grad():
+        iter_test = iter(loader)
+        for i in range(len(loader)):
+            data = iter_test.next()
+            inputs = data[0]
+            labels = data[1]
+            inputs = inputs.cuda()
+            outputs = netB(netF(inputs))
+            if start_test:
+                all_output = outputs.float().cpu()
+                all_label = labels.float()
+                start_test = False
+            else:
+                all_output = torch.cat((all_output, outputs.float().cpu()), 0)
+                all_label = torch.cat((all_label, labels.float()), 0)
+    return all_output, all_label
+
 def train_source(args):
     dset_loaders = digit_load(args)
     ## set base network
@@ -271,6 +290,13 @@ def train_source(args):
             # netB.train()
             # netC.train()                
 
+    source_train_data, source_train_label = get_feature_label(dset_loaders['source_tr'], netF, netB, netC)
+    source_test_data, source_test_label = get_feature_label(dset_loaders['source_te'], netF, netB, netC)
+    print(source_train_data.shape, source_train_label.shape, source_test_data.shape, source_test_label.shape)
+    all_source_data = torch.cat((source_train_data, source_test_data), 0)
+    all_source_label = torch.cat((source_train_label, source_test_label), 0)
+    print(all_source_data.shape, all_source_label.shape)
+    sys.exit()
     torch.save(best_netF, osp.join(args.output_dir, "source_F.pt"))
     torch.save(best_netB, osp.join(args.output_dir, "source_B.pt"))
     torch.save(best_netC, osp.join(args.output_dir, "source_C.pt"))
