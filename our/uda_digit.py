@@ -752,5 +752,5 @@ if __name__ == "__main__":
 
     # test_dataset(args)
     # extract_hyperplane(args)
-    cur_acc = test_target(args)
+    cur_acc = test_dataset(args)
     print("{},{},{},{}".format(args.wsi, args.wds, args.wlp, cur_acc))
