@@ -401,11 +401,11 @@ def extract_hyperplane(args):
     # args.modelpath = args.output_dir + '/source_C.pt'   
     # netC.load_state_dict(torch.load(args.modelpath))
 
-    args.modelpath = args.output_dir + '/target_F_par_0.0.pt'   
+    args.modelpath = args.output_dir + '/target_F_par_0.1.pt'   
     netF.load_state_dict(torch.load(args.modelpath))
-    args.modelpath = args.output_dir + '/target_B_par_0.0.pt'   
+    args.modelpath = args.output_dir + '/target_B_par_0.1.pt'   
     netB.load_state_dict(torch.load(args.modelpath))
-    args.modelpath = args.output_dir + '/target_C_par_0.0.pt'   
+    args.modelpath = args.output_dir + '/target_C_par_0.1.pt'   
     netC.load_state_dict(torch.load(args.modelpath))
 
     netF.eval()
