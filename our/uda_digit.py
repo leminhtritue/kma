@@ -341,6 +341,7 @@ def test_target(args):
     args.out_file.write(log_str + '\n')
     args.out_file.flush()
     print(log_str+'\n')
+    return acc
 
 def test_dataset(args):
     dset_loaders = digit_load(args)
@@ -753,3 +754,5 @@ if __name__ == "__main__":
 
     # test_dataset(args)
     # extract_hyperplane(args)
+    cur_acc = test_target(args)
+    print("{}\t{}\t{}\t{}".format(args.wsi, args.wds, args.wlp, cur_acc))
