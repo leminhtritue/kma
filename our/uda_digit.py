@@ -548,7 +548,7 @@ def train_target(args):
         cost_dist = torch.cdist(features_test, mean_out, p=2)
         print(cost_dist.shape)
         cost_dist = nn.Softmax(dim=1)(cost_dist)
-        cost_dist = -torch.log(cost_dist + 1e-5)
+        cost_dist = torch.log(cost_dist + 1e-5)
         print(cost_dist.shape)
 
         softmax_out = nn.Softmax(dim=1)(outputs_test)
