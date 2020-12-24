@@ -487,6 +487,8 @@ def train_target(args):
     costlog_loss_count = 0
     costs_loss_total = 0.0
     costs_loss_count = 0
+    costdist_loss_total = 0.0
+    costdist_loss_count = 0
     right_sample_count = 0
     sum_sample = 0
     start_output = True
@@ -546,19 +548,14 @@ def train_target(args):
         cost_s = -torch.log(cost_s + 1e-5)
 
         cost_dist = torch.cdist(features_test, mean_out, p=2)
-        print(cost_dist.shape)
         cost_dist = nn.Softmax(dim=1)(cost_dist)
         cost_dist = torch.log(cost_dist + 1e-5)
-        print(cost_dist.shape)
 
         softmax_out = nn.Softmax(dim=1)(outputs_test)
         cost_log = -torch.log(softmax_out + 1e-5)
-        cost = cost_log + cost_s
+        cost = cost_log + cost_s + cost_dist
         # print(cost_s.mean())
         # print(cost_log.mean())
-        print(cost_s.shape)
-        print(cost_log.shape)
-        sys.exit()
 
         entropy_raw = softmax_out * cost
         entropy_raw = torch.sum(entropy_raw, dim=1)         
@@ -584,6 +581,8 @@ def train_target(args):
         costlog_loss_count += 1  
         costs_loss_total += cost_s.mean()
         costs_loss_count += 1  
+        costdist_loss_total += cost_dist.mean()
+        costdist_loss_count += 1 
 
         max_hyperplane = outputs_test.max(dim=1).values       
         max_hyperplane[max_hyperplane > 0] = 1
@@ -609,7 +608,8 @@ def train_target(args):
             acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
             acc_tr, _ = cal_acc(dset_loaders['target_te'], netF, netB, netC)
             log_str = 'Iter:{}/{}; Loss (entropy): {:.2f}, Cost (s/logp) = {:.2f} / {:.2f}, Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(iter_num, max_iter, \
-            	entropy_loss_total/entropy_loss_count, costs_loss_total/costs_loss_count, costlog_loss_total/costlog_loss_count, acc_tr, acc, right_sample_count, sum_sample)
+            	entropy_loss_total/entropy_loss_count, costs_loss_total/costs_loss_count, costdist_loss_total/costdist_loss_count, costlog_loss_total/costlog_loss_count, \
+                acc_tr, acc, right_sample_count, sum_sample)
             args.out_file.write(log_str + '\n')
             args.out_file.flush()
             print(log_str)
@@ -620,8 +620,12 @@ def train_target(args):
             classifier_loss_count = 0
             entropy_loss_total = 0.0
             entropy_loss_count = 0
-            div_loss_total = 0.0
-            div_loss_count = 0
+            costs_loss_total = 0.0
+            costs_loss_count = 0
+            costdist_loss_total = 0.0
+            costdist_loss_count = 0
+            costlog_loss_total = 0.0
+            costlog_loss_count = 0
             right_sample_count = 0
             sum_sample = 0
             start_output = True
