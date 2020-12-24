@@ -542,15 +542,14 @@ def train_target(args):
 
         # cost_s = nn.Softmax(dim=1)(outputs_test_max - mark_max)
         cost_s = torch.maximum(outputs_test_max - mark_max, mark_zeros)
-        print("cott s", cost_s.shape)
         cost_s = nn.Softmax(dim=1)(cost_s)
         cost_s = -torch.log(cost_s + 1e-5)
 
-        print(mean_out.shape)
-        print(features_test.shape)
-        t = torch.cdist(features_test, mean_out, p=2)
-        print(t.shape)
-
+        cost_dist = torch.cdist(features_test, mean_out, p=2)
+        print(cost_dist.shape)
+        cost_dist = nn.Softmax(dim=1)(cost_dist)
+        cost_dist = -torch.log(cost_dist + 1e-5)
+        print(cost_dist.shape)
 
         softmax_out = nn.Softmax(dim=1)(outputs_test)
         cost_log = -torch.log(softmax_out + 1e-5)
