@@ -544,7 +544,10 @@ def train_target(args):
         entropy_raw = torch.sum(entropy_raw, dim=1)         
         entropy_loss = torch.mean(entropy_raw)
 
-        softmax_out = nn.Softmax(dim=1)(outputs_test)
+        if args.div_si > 0.0:
+            softmax_out = softmax_si
+        else:
+            softmax_out = nn.Softmax(dim=1)(outputs_test)
         if args.gent > 0:
             msoftmax = softmax_out.mean(dim=0)
             entropy_loss -= torch.sum(-msoftmax * torch.log(msoftmax + 1e-5))
@@ -710,6 +713,7 @@ if __name__ == "__main__":
     parser.add_argument('--trainC', type=float, default=0.0)
     parser.add_argument('--max_in', type=float, default=0.0)
     parser.add_argument('--max_out', type=float, default=0.1)
+    parser.add_argument('--div_si', type=float, default=0.1)
     
     args = parser.parse_args()
     args.class_num = 10
