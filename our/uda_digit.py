@@ -553,7 +553,7 @@ def train_target(args):
 
         softmax_out = nn.Softmax(dim=1)(outputs_test)
         cost_log = -torch.log(softmax_out + 1e-5)
-        cost = cost_log + cost_s + cost_dist
+        cost = args.wsi * cost_s + args.wds * cost_dist + args.wlp * cost_log
         # print(cost_s.mean())
         # print(cost_log.mean())
 
@@ -608,7 +608,7 @@ def train_target(args):
             acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
             acc_tr, _ = cal_acc(dset_loaders['target_te'], netF, netB, netC)
             log_str = 'Iter:{}/{}; Loss (entropy): {:.2f}, Cost (s/logp) = {:.2f} / {:.2f}, Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(iter_num, max_iter, \
-            	entropy_loss_total/entropy_loss_count, costs_loss_total/costs_loss_count, costdist_loss_total/costdist_loss_count, costlog_loss_total/costlog_loss_count, \
+            	entropy_loss_total/entropy_loss_count, args.wsi*costs_loss_total/costs_loss_count, args.wds*costdist_loss_total/costdist_loss_count, args.wlp*costlog_loss_total/costlog_loss_count, \
                 acc_tr, acc, right_sample_count, sum_sample)
             args.out_file.write(log_str + '\n')
             args.out_file.flush()
@@ -716,6 +716,9 @@ if __name__ == "__main__":
     parser.add_argument('--output', type=str, default='')
     parser.add_argument('--issave', type=bool, default=True)
     parser.add_argument('--gamma', type=float, default=0.5)
+    parser.add_argument('--wsi', type=float, default=1.0)
+    parser.add_argument('--wds', type=float, default=1.0)
+    parser.add_argument('--wlp', type=float, default=1.0)
     args = parser.parse_args()
     args.class_num = 10
 
