@@ -709,7 +709,7 @@ if __name__ == "__main__":
     parser.add_argument('--dataset', type=str, default='test')
     parser.add_argument('--lr', type=float, default=0.01, help="learning rate")
     parser.add_argument('--seed', type=int, default=2020, help="random seed")
-    parser.add_argument('--cls_par', type=float, default=0.1) #0.0
+    parser.add_argument('--cls_par', type=float, default=0.0) #0.0
     parser.add_argument('--ent_par', type=float, default=1.0)
     parser.add_argument('--gent', type=float, default=0.1)
     parser.add_argument('--ent', type=bool, default=True)
