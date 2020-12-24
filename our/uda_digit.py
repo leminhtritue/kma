@@ -607,7 +607,7 @@ def train_target(args):
             _, predict = torch.max(all_output, 1)
             acc_tr, _ = cal_acc(dset_loaders['target_te'], netF, netB, netC)
             acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
-            log_str = 'Iter:{}/{}; Loss (entropy): {:.2f}, Cost (s/logp) = {:.2f} / {:.2f} / {:.2f}, Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(iter_num, max_iter, \
+            log_str = 'Iter:{}/{}; Loss (entropy): {:.2f}, Cost (si/distance/logp) = {:.2f} / {:.2f} / {:.2f}, Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(iter_num, max_iter, \
             	entropy_loss_total/entropy_loss_count, args.wsi*costs_loss_total/costs_loss_count, args.wds*costdist_loss_total/costdist_loss_count, args.wlp*costlog_loss_total/costlog_loss_count, \
                 acc_tr, acc, right_sample_count, sum_sample)
             args.out_file.write(log_str + '\n')
@@ -707,7 +707,7 @@ if __name__ == "__main__":
     parser.add_argument('--seed', type=int, default=2020, help="random seed")
     parser.add_argument('--cls_par', type=float, default=0.1)
     parser.add_argument('--ent_par', type=float, default=1.0)
-    parser.add_argument('--gent', type=float, default=0.1)
+    parser.add_argument('--gent', type=float, default=0.0)
     parser.add_argument('--ent', type=bool, default=True)
     parser.add_argument('--bottleneck', type=int, default=256)
     parser.add_argument('--layer', type=str, default="wn", choices=["linear", "wn"])
