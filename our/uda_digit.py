@@ -302,15 +302,12 @@ def train_source(args):
     	cur_data = all_source_data[all_source_label == i]
     	cur_shape0 = cur_data.shape[0]
     	a_count += cur_shape0
-    	cur_mean = cur_data.mean(dim=1)
-    	print(cur_data.mean().shape)
-    	print(cur_data.mean(dim=0).shape)
-    	print(cur_data.mean(dim=1).shape)
-    	cmp_mean = cur_data.sum(dim=1)/cur_shape0
+    	cur_mean = cur_data.mean(dim=0)
+    	cmp_mean = cur_data.sum(dim=0)/cur_shape0
     	print(cur_shape0)
-    	print(cur_mean)
+    	print(cur_mean[:5])
     	print(cur_mean.shape)
-    	print(cmp_mean)
+    	print(cmp_mean[:5])
     	print(cmp_mean.shape)
     print(a_count)
     sys.exit()
