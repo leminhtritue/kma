@@ -606,7 +606,7 @@ def train_target(args):
             _, predict = torch.max(all_output, 1)
             acc_tr, _ = cal_acc(dset_loaders['target_te'], netF, netB, netC)
             acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
-            log_str = 'Iter:{}/{}; Loss (entropy): {:.2f}, Cost (s/logp) = {:.2f} / {:.2f}, Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(iter_num, max_iter, \
+            log_str = 'Iter:{}/{}; Loss (entropy): {:.2f}, Cost (s/logp) = {:.2f} / {:.2f} / {:.2f}, Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(iter_num, max_iter, \
             	entropy_loss_total/entropy_loss_count, args.wsi*costs_loss_total/costs_loss_count, args.wds*costdist_loss_total/costdist_loss_count, args.wlp*costlog_loss_total/costlog_loss_count, \
                 acc_tr, acc, right_sample_count, sum_sample)
             args.out_file.write(log_str + '\n')
