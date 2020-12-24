@@ -522,16 +522,6 @@ def train_target(args):
         features_test = netB(netF(inputs_test))
         outputs_test = netC(features_test)
 
-        # if args.cls_par > 0:
-        #     pred = mem_label[tar_idx]
-        #     classifier_loss = args.cls_par * nn.CrossEntropyLoss()(outputs_test, pred)
-        # else:
-        #     classifier_loss = torch.tensor(0.0).cuda()
-
-
-        # softmax_out = nn.Softmax(dim=1)(outputs_test)
-        # entropy_loss = torch.mean(loss.Entropy(softmax_out))
-        # classifier_loss = entropy_loss
 
         mark_max = torch.zeros(outputs_test.size()).cuda()
         mark_zeros = torch.zeros(outputs_test.size()).cuda()
@@ -541,15 +531,6 @@ def train_target(args):
         
         for i in range(args.class_num):
             mark_max[:,i] = torch.max(torch.cat((outputs_test_max[:, :i],outputs_test_max[:, i+1:]), dim = 1), dim = 1).values        
-
-        # cost_s = nn.Softmax(dim=1)(outputs_test_max - mark_max)
-        cost_s = torch.maximum(outputs_test_max - mark_max, mark_zeros)
-        cost_s = nn.Softmax(dim=1)(cost_s)
-        cost_s = -torch.log(cost_s + 1e-5)
-
-        cost_dist = torch.cdist(features_test, mean_out, p=2)
-        cost_dist = nn.Softmax(dim=1)(cost_dist)
-        cost_dist = torch.log(cost_dist + 1e-5)
 
         softmax_out = nn.Softmax(dim=1)(outputs_test)
         cost_log = -torch.log(softmax_out + 1e-5)
@@ -581,11 +562,11 @@ def train_target(args):
         classifier_loss_count += 1   
         entropy_loss_total += entropy_loss
         entropy_loss_count += 1 
-        costlog_loss_total += cost_log.mean()
+        costlog_loss_total += 0
         costlog_loss_count += 1  
-        costs_loss_total += cost_s.mean()
+        costs_loss_total += 0
         costs_loss_count += 1  
-        costdist_loss_total += cost_dist.mean()
+        costdist_loss_total += 0
         costdist_loss_count += 1 
 
         max_hyperplane = outputs_test.max(dim=1).values       
@@ -612,7 +593,7 @@ def train_target(args):
             acc_tr, _ = cal_acc(dset_loaders['target_te'], netF, netB, netC)
             acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
             log_str = 'Iter:{}/{}; Loss (entropy): {:.2f}, Cost (si/distance/logp) = {:.2f} / {:.2f} / {:.2f}, Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(iter_num, max_iter, \
-            	entropy_loss_total/entropy_loss_count, args.wsi*costs_loss_total/costs_loss_count, args.wds*costdist_loss_total/costdist_loss_count, args.wlp*costlog_loss_total/costlog_loss_count, \
+            	classifier_loss_total/classifier_loss_count, args.wsi*costs_loss_total/costs_loss_count, args.wds*costdist_loss_total/costdist_loss_count, args.wlp*costlog_loss_total/costlog_loss_count, \
                 acc_tr, acc, right_sample_count, sum_sample)
             args.out_file.write(log_str + '\n')
             args.out_file.flush()

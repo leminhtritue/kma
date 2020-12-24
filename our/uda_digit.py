@@ -543,7 +543,8 @@ def train_target(args):
             mark_max[:,i] = torch.max(torch.cat((outputs_test_max[:, :i],outputs_test_max[:, i+1:]), dim = 1), dim = 1).values        
 
         # cost_s = nn.Softmax(dim=1)(outputs_test_max - mark_max)
-        cost_s = torch.maximum(outputs_test_max - mark_max, mark_zeros)
+        cost_s = outputs_test_max - mark_max
+        # cost_s = torch.maximum(outputs_test_max - mark_max, mark_zeros)
         cost_s = nn.Softmax(dim=1)(cost_s)
         cost_s = -torch.log(cost_s + 1e-5)
 
