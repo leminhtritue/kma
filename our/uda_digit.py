@@ -455,13 +455,6 @@ def train_target(args):
     netC.load_state_dict(torch.load(args.modelpath))
 
     mean_out = torch.load(args.output_dir + '/source_mean.pt').cuda()
-    print(mean_out.shape)
-    print(mean_out[:,:5])
-    t = netC(mean_out)
-    print(t.shape)
-    _, predict = torch.max(t, 1)
-    print(predict)
-    sys.exit()
 
     # for k, v in netC.named_parameters():
     #     v.requires_grad = False
@@ -498,6 +491,7 @@ def train_target(args):
     sum_sample = 0
     start_output = True
 
+    pdist = nn.PairwiseDistance(p=2)
     while iter_num < max_iter:
         optimizer.zero_grad()
         try:
@@ -548,7 +542,12 @@ def train_target(args):
 
         # cost_s = nn.Softmax(dim=1)(outputs_test_max - mark_max)
         cost_s = -torch.maximum(outputs_test_max - mark_max, mark_zeros)
-        
+
+        print(mean_out.shape)
+        print(features_test.shape)
+        t = torch.cdist(mean_out, features_test, p=2)
+        print(t.shape)
+        sys.exit()
 
         softmax_out = nn.Softmax(dim=1)(outputs_test)
         cost_log = -torch.log(softmax_out + 1e-5)
