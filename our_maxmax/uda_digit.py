@@ -748,5 +748,10 @@ if __name__ == "__main__":
     train_target(args)
 
     cur_acc = test_dataset(args)
-    train
-    print("{},{},{},{}".format(args.wsi, args.wds, args.wlp, cur_acc))
+    flag_trainC = "YES" if args.trainC > 0.0 else "NO"
+    flag_max_in = "YES" if args.max_in > 0.0 else "NO"
+    flag_max_out = "YES" if args.max_out > 0.0 else "NO"
+    flag_div_si = "YES" if args.div_si > 0.0 else "NO"
+    flag_gent = "YES" if args.gent > 0.0 else "NO"
+    flag_cls_par = "YES" if args.cls_par > 0.0 else "NO"
+    print("{},{},{},{},{},{},{}".format(flag_trainC, flag_max_in, flag_max_out, flag_div_si, flag_gent, flag_cls_par, cur_acc))
