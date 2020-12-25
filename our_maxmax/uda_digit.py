@@ -362,11 +362,11 @@ def test_dataset(args):
     # args.modelpath = args.output_dir + '/source_C.pt'   
     # netC.load_state_dict(torch.load(args.modelpath))
 
-    args.modelpath = args.output_dir + '/target_F_par_0.1.pt'   
+    args.modelpath = args.output_dir + '/target_F.pt'   
     netF.load_state_dict(torch.load(args.modelpath))
-    args.modelpath = args.output_dir + '/target_B_par_0.1.pt'   
+    args.modelpath = args.output_dir + '/target_B.pt'   
     netB.load_state_dict(torch.load(args.modelpath))
-    args.modelpath = args.output_dir + '/target_C_par_0.1.pt'   
+    args.modelpath = args.output_dir + '/target_C.pt'   
     netC.load_state_dict(torch.load(args.modelpath))
 
     netF.eval()
@@ -401,11 +401,11 @@ def extract_hyperplane(args):
     # args.modelpath = args.output_dir + '/source_C.pt'   
     # netC.load_state_dict(torch.load(args.modelpath))
 
-    args.modelpath = args.output_dir + '/target_F_par_0.1.pt'   
+    args.modelpath = args.output_dir + '/target_F.pt'   
     netF.load_state_dict(torch.load(args.modelpath))
-    args.modelpath = args.output_dir + '/target_B_par_0.1.pt'   
+    args.modelpath = args.output_dir + '/target_B.pt'   
     netB.load_state_dict(torch.load(args.modelpath))
-    args.modelpath = args.output_dir + '/target_C_par_0.1.pt'   
+    args.modelpath = args.output_dir + '/target_C.pt'   
     netC.load_state_dict(torch.load(args.modelpath))
 
     netF.eval()
@@ -626,9 +626,9 @@ def train_target(args):
             # netC.train()
 
     if args.issave:
-        torch.save(netF.state_dict(), osp.join(args.output_dir, "target_F_" + args.savename + ".pt"))
-        torch.save(netB.state_dict(), osp.join(args.output_dir, "target_B_" + args.savename + ".pt"))
-        torch.save(netC.state_dict(), osp.join(args.output_dir, "target_C_" + args.savename + ".pt"))
+        torch.save(netF.state_dict(), osp.join(args.output_dir, "target_F.pt"))
+        torch.save(netB.state_dict(), osp.join(args.output_dir, "target_B.pt"))
+        torch.save(netC.state_dict(), osp.join(args.output_dir, "target_C.pt"))
 
     # cal_acc_plot(dset_loaders['source_te'], netF, "train_data", "train_label")
     # cal_acc_plot(dset_loaders['test'], netF, "test_data", "test_label")
@@ -696,9 +696,7 @@ if __name__ == "__main__":
     parser.add_argument('--dataset', type=str, default='test')
     parser.add_argument('--lr', type=float, default=0.01, help="learning rate")
     parser.add_argument('--seed', type=int, default=2020, help="random seed")
-    parser.add_argument('--cls_par', type=float, default=0.0) #0.0
     parser.add_argument('--ent_par', type=float, default=1.0)
-    parser.add_argument('--gent', type=float, default=0.1)
     parser.add_argument('--ent', type=bool, default=True)
     parser.add_argument('--bottleneck', type=int, default=256)
     parser.add_argument('--layer', type=str, default="wn", choices=["linear", "wn"])
@@ -714,7 +712,9 @@ if __name__ == "__main__":
     parser.add_argument('--max_in', type=float, default=0.0)
     parser.add_argument('--max_out', type=float, default=0.1)
     parser.add_argument('--div_si', type=float, default=0.1)
-    
+    parser.add_argument('--gent', type=float, default=0.1)
+    parser.add_argument('--cls_par', type=float, default=0.0)
+
     args = parser.parse_args()
     args.class_num = 10
 
@@ -747,7 +747,6 @@ if __name__ == "__main__":
     test_target(args)
     train_target(args)
 
-    # test_dataset(args)
-    # extract_hyperplane(args)
-    # cur_acc = test_dataset(args)
-    # print("{},{},{},{}".format(args.wsi, args.wds, args.wlp, cur_acc))
+    cur_acc = test_dataset(args)
+    train
+    print("{},{},{},{}".format(args.wsi, args.wds, args.wlp, cur_acc))
