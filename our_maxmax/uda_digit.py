@@ -754,4 +754,4 @@ if __name__ == "__main__":
     flag_div_si = "YES" if args.div_si > 0.0 else "NO"
     flag_gent = "YES" if args.gent > 0.0 else "NO"
     flag_cls_par = "YES" if args.cls_par > 0.0 else "NO"
-    print("{},{},{},{},{},{},{}".format(flag_trainC, flag_max_in, flag_max_out, flag_div_si, flag_gent, flag_cls_par, cur_acc))
+    print("{},{},{},{},{},{},{}".format(flag_trainC, flag_max_in, flag_max_out, flag_gent, flag_div_si, flag_cls_par, cur_acc))
