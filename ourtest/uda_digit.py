@@ -173,7 +173,7 @@ def predict_hyperplane(cur_hyperplanse, cur_label):
     predit_right = torch.sum(predict == cur_label)
     predit_right_wrong_hyper = torch.sum(predict_hyperplanes_wrong == label_hyperplanes_wrong)
     predict_right_right_hyper = torch.sum(predict_hyperplanes_right == label_hyperplanes_right)
-    return predit_right, predict.shape[0], predit_right_wrong_hyper, predict_hyperplanes_wrong.shape[0], predict_right_right_hyper, predict_hyperplanes_right.shape[0]
+    return predit_right, predict.shape[0], predit_right_wrong_hyper, predict_hyperplanes_wrong.shape[0], predict_right_right_hyper, predict_hyperplanes_right.shape[0], predict
 
 def cal_acc_plot(loader, netF, ouput_name, label_name):
     start_test = True
@@ -609,14 +609,14 @@ def train_target(args):
             netF.eval()
             netB.eval()
             netC.eval()
-            
+
             acc_tr, _ = cal_acc(dset_loaders['target_te'], netF, netB, netC)
             acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
 
             cur_hyperplanse, cur_label = get_hyperplane(dset_loaders['target'], netF, netB, netC)
-            sample_right_train, sample_all_train, wrong_hyper_right_train, wrong_hyper_all_train, right_hyper_right_train, right_hyper_all_train  = predict_hyperplane(cur_hyperplanse, cur_label)
+            sample_right_train, sample_all_train, wrong_hyper_right_train, wrong_hyper_all_train, right_hyper_right_train, right_hyper_all_train, predict  = predict_hyperplane(cur_hyperplanse, cur_label)
             cur_hyperplanse, cur_label = get_hyperplane(dset_loaders['test'], netF, netB, netC)
-            sample_right_test, sample_all_test, wrong_hyper_right_test, wrong_hyper_all_test, right_hyper_right_test, right_hyper_all_test = predict_hyperplane(cur_hyperplanse, cur_label)
+            sample_right_test, sample_all_test, wrong_hyper_right_test, wrong_hyper_all_test, right_hyper_right_test, right_hyper_all_test, _ = predict_hyperplane(cur_hyperplanse, cur_label)
 
             log_str = 'Iter:{}/{}; Loss (entropy): {:.2f}, Cost (si/distance/logp) = {:.2f} / {:.2f} / {:.2f}, Accuracy target (train/test) = {:.2f}% / {:.2f}%'.format(iter_num, max_iter, \
             	classifier_loss_total/classifier_loss_count, args.wsi*costs_loss_total/costs_loss_count, args.wds*costdist_loss_total/costdist_loss_count, args.wlp*costlog_loss_total/costlog_loss_count, \
