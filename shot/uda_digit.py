@@ -314,7 +314,7 @@ def train_target(args):
             mem_label = torch.from_numpy(mem_label).cuda()
             netF.train()
             netB.train()
-            netc.train()
+            netC.train()
 
         iter_num += 1
         lr_scheduler(optimizer, iter_num=iter_num, max_iter=max_iter)
