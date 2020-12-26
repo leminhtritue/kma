@@ -598,10 +598,10 @@ def train_target(args):
             _, predict = torch.max(all_output, 1)
             acc_tr, _ = cal_acc(dset_loaders['target_te'], netF, netB, netC)
             acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
-            cur_hyperplanse, cur_label = get_hyperplane(dset_loaders['target_te'], netF, netB, netC)
+            cur_hyperplanse, cur_label = get_hyperplane(dset_loaders['target'], netF, netB, netC)
             print(cur_hyperplanse.shape, cur_label.shape)
             sys.exit()
-            
+
             log_str = 'Iter:{}/{}; Loss (entropy): {:.2f}, Cost (si/distance/logp) = {:.2f} / {:.2f} / {:.2f}, Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(iter_num, max_iter, \
             	classifier_loss_total/classifier_loss_count, args.wsi*costs_loss_total/costs_loss_count, args.wds*costdist_loss_total/costdist_loss_count, args.wlp*costlog_loss_total/costlog_loss_count, \
                 acc_tr, acc, right_sample_count, sum_sample)
