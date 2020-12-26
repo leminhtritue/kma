@@ -161,6 +161,20 @@ def get_hyperplane(loader, netF, netB, netC):
                 all_label = torch.cat((all_label, labels.float()), 0)
     return all_output, all_label
 
+def predict_hyperplane(cur_hyperplanse, cur_label):
+    cur_hyperplanse_max, predict = torch.max(cur_hyperplanse, 1)
+    cur_hyperplanse_max[cur_hyperplanse_max > 0] = 1.0
+    cur_hyperplanse_max[cur_hyperplanse_max < 0] = 0.0
+    
+    predict_hyperplanes_wrong = predict[cur_hyperplanse_max == 0.0]
+    predict_hyperplanes_right = predict[cur_hyperplanse_max == 1.0]
+    label_hyperplanes_wrong = cur_label[cur_hyperplanse_max == 0.0]
+    label_hyperplanes_right = cur_label[cur_hyperplanse_max == 1.0]
+    predit_right = torch.sum(predict == cur_label)
+    predit_right_wrong_hyper = torch.sum(predict_hyperplanes_wrong == label_hyperplanes_wrong)
+    predict_right_right_hyper = torch.sum(predict_hyperplanes_right == label_hyperplanes_right)
+    return predit_right, predict.shape[0], predit_right_wrong_hyper, predict_hyperplanes_wrong.shape[0], predict_right_right_hyper, predict_hyperplanes_right.shape[0]
+
 def cal_acc_plot(loader, netF, ouput_name, label_name):
     start_test = True
     with torch.no_grad():
@@ -600,31 +614,23 @@ def train_target(args):
             acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
 
             cur_hyperplanse, cur_label = get_hyperplane(dset_loaders['target'], netF, netB, netC)
-            cur_hyperplanse_max, predict = torch.max(cur_hyperplanse, 1)
-            cur_hyperplanse_max[cur_hyperplanse_max > 0] = 1.0
-            cur_hyperplanse_max[cur_hyperplanse_max < 0] = 0.0
-            
-            predict_hyperplanes_wrong = predict[cur_hyperplanse_max == 0.0]
-            predict_hyperplanes_right = predict[cur_hyperplanse_max == 1.0]
-            label_hyperplanes_wrong = cur_label[cur_hyperplanse_max == 0.0]
-            label_hyperplanes_right = cur_label[cur_hyperplanse_max == 1.0]
-            print(predict_hyperplanes_wrong.shape, predict_hyperplanes_right.shape, label_hyperplanes_wrong.shape, label_hyperplanes_right.shape)
-            print(cur_hyperplanse_max.shape[0] - cur_hyperplanse_max.sum(), cur_hyperplanse_max.sum())
-            t = torch.sum(predict == cur_label)
-            print(t, predict.shape[0], t/predict.shape[0])
-            t = torch.sum(predict_hyperplanes_wrong == label_hyperplanes_wrong)
-            print(t, predict_hyperplanes_wrong.shape[0], t/predict_hyperplanes_wrong.shape[0])
-            t = torch.sum(predict_hyperplanes_right == label_hyperplanes_right)
-            print(t, predict_hyperplanes_right.shape[0], t/predict_hyperplanes_right.shape[0])
+            sample_right_train, sample_all_train, wrong_hyper_right_train, wrong_hyper_all_train, right_hyper_right_train, right_hyper_all_train  = predict_hyperplane(cur_hyperplanse, cur_label)
+            cur_hyperplanse, cur_label = get_hyperplane(dset_loaders['test'], netF, netB, netC)
+            sample_right_test, sample_all_test, wrong_hyper_right_test, wrong_hyper_all_test, right_hyper_right_test, right_hyper_all_test = predict_hyperplane(cur_hyperplanse, cur_label)
 
-
-            log_str = 'Iter:{}/{}; Loss (entropy): {:.2f}, Cost (si/distance/logp) = {:.2f} / {:.2f} / {:.2f}, Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(iter_num, max_iter, \
+            log_str = 'Iter:{}/{}; Loss (entropy): {:.2f}, Cost (si/distance/logp) = {:.2f} / {:.2f} / {:.2f}, Accuracy target (train/test) = {:.2f}% / {:.2f}%'.format(iter_num, max_iter, \
             	classifier_loss_total/classifier_loss_count, args.wsi*costs_loss_total/costs_loss_count, args.wds*costdist_loss_total/costdist_loss_count, args.wlp*costlog_loss_total/costlog_loss_count, \
-                acc_tr, acc, cur_hyperplanse_max.sum(), cur_hyperplanse_max.shape[0])
+                acc_tr, acc)
             args.out_file.write(log_str + '\n')
             args.out_file.flush()
             print(log_str)
+            print("Train: moved samples: {}/{}, Acc (all/moved/non-move): {}% / {}% / {}%.".\
+                format(right_hyper_right_train, sample_all_train, sample_right_train/sample_all_train, wrong_hyper_right_train/wrong_hyper_all_train, right_hyper_right_train/right_hyper_all_train))
+            print("Test: moved samples: {}/{}, Acc (all/moved/non-move): {}% / {}% / {}%.".\
+                format(right_hyper_right_test, sample_all_test, sample_right_test/sample_all_test, wrong_hyper_right_test/wrong_hyper_all_test, right_hyper_right_test/right_hyper_all_test))
             print(collections.Counter(predict.numpy()))
+            print(sample_right_train, sample_all_train, wrong_hyper_right_train, wrong_hyper_all_train, right_hyper_right_train, right_hyper_all_train)
+            print(sample_right_test, sample_all_test, wrong_hyper_right_test, wrong_hyper_all_test, right_hyper_right_test, right_hyper_all_test)
             print()
             sys.exit()
 
