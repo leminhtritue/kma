@@ -507,14 +507,14 @@ def train_target(args):
             continue
 
         if iter_num % interval_iter == 0 and args.cls_par > 0:
-            netF.eval()
-            netB.eval()
-            netC.eval()
+            # netF.eval()
+            # netB.eval()
+            # netC.eval()
             mem_label = obtain_label(dset_loaders['target_te'], netF, netB, netC, args)
             mem_label = torch.from_numpy(mem_label).cuda()
-            netF.train()
-            netB.train()
-            netC.train()
+            # netF.train()
+            # netB.train()
+            # netC.train()
 
         iter_num += 1
         lr_scheduler(optimizer, iter_num=iter_num, max_iter=max_iter)
