@@ -281,8 +281,8 @@ def train_target(args):
         param_group += [{'params': v, 'lr': args.lr}]
     for k, v in netB.named_parameters():
         param_group += [{'params': v, 'lr': args.lr}]
-    for k, v in netC.named_parameters():
-        param_group += [{'params': v, 'lr': args.lr}]    
+    # for k, v in netC.named_parameters():
+    #     param_group += [{'params': v, 'lr': args.lr}]    
 
     optimizer = optim.SGD(param_group)
     optimizer = op_copy(optimizer)
