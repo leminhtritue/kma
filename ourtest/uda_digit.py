@@ -601,9 +601,16 @@ def train_target(args):
 
             cur_hyperplanse, cur_label = get_hyperplane(dset_loaders['target'], netF, netB, netC)
             cur_hyperplanse_max, predict = torch.max(cur_hyperplanse, 1)
-            cur_hyperplanse_max[cur_hyperplanse_max > 0] = 1
-            cur_hyperplanse_max[cur_hyperplanse_max < 0] = 0
+            cur_hyperplanse_max[cur_hyperplanse_max > 0] = 1.0
+            cur_hyperplanse_max[cur_hyperplanse_max < 0] = 0.0
             print(cur_hyperplanse.shape, cur_label.shape, predict.shape)
+            
+            predict_hyperplanes_wrong = predict[cur_hyperplanse_max == 0.0]
+            predict_hyperplanes_right = predict[cur_hyperplanse_max == 1.0]
+            label_hyperplanes_wrong = cur_label[cur_hyperplanse_max == 0.0]
+            label_hyperplanes_right = cur_label[cur_hyperplanse_max == 1.0]
+            print(predict_hyperplanes_wrong.shape, predict_hyperplanes_right.shape, label_hyperplanes_wrong.shape, label_hyperplanes_right.shape)
+            print(cur_hyperplanse_max.shape[0] - cur_hyperplanse_max.sum(), cur_hyperplanse_max.shape[0])
 
             log_str = 'Iter:{}/{}; Loss (entropy): {:.2f}, Cost (si/distance/logp) = {:.2f} / {:.2f} / {:.2f}, Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(iter_num, max_iter, \
             	classifier_loss_total/classifier_loss_count, args.wsi*costs_loss_total/costs_loss_count, args.wds*costdist_loss_total/costdist_loss_count, args.wlp*costlog_loss_total/costlog_loss_count, \
