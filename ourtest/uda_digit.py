@@ -598,9 +598,15 @@ def train_target(args):
             _, predict = torch.max(all_output, 1)
             acc_tr, _ = cal_acc(dset_loaders['target_te'], netF, netB, netC)
             acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
+
             cur_hyperplanse, cur_label = get_hyperplane(dset_loaders['target'], netF, netB, netC)
+            cur_hyperplanse_max = cur_hyperplanse.max(dim=1).values
+            cur_hyperplanse_max[cur_hyperplanse_max > 0] = 1
+            cur_hyperplanse_max[cur_hyperplanse_max < 0] = 0
             print(cur_hyperplanse.shape, cur_label.shape)
-            sys.exit()
+            print(cur_hyperplanse_max.shape)
+            print(cur_hyperplanse_max.sum())
+
 
             log_str = 'Iter:{}/{}; Loss (entropy): {:.2f}, Cost (si/distance/logp) = {:.2f} / {:.2f} / {:.2f}, Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(iter_num, max_iter, \
             	classifier_loss_total/classifier_loss_count, args.wsi*costs_loss_total/costs_loss_count, args.wds*costdist_loss_total/costdist_loss_count, args.wlp*costlog_loss_total/costlog_loss_count, \
@@ -610,6 +616,7 @@ def train_target(args):
             print(log_str)
             print(collections.Counter(predict.numpy()))
             print()
+            sys.exit()
 
             classifier_loss_total = 0.0
             classifier_loss_count = 0
