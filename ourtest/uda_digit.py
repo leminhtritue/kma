@@ -362,11 +362,11 @@ def test_dataset(args):
     # args.modelpath = args.output_dir + '/source_C.pt'   
     # netC.load_state_dict(torch.load(args.modelpath))
 
-    args.modelpath = args.output_dir + '/target_F_par_0.1.pt'   
+    args.modelpath = args.output_dir + '/target_F.pt'   
     netF.load_state_dict(torch.load(args.modelpath))
-    args.modelpath = args.output_dir + '/target_B_par_0.1.pt'   
+    args.modelpath = args.output_dir + '/target_B.pt'   
     netB.load_state_dict(torch.load(args.modelpath))
-    args.modelpath = args.output_dir + '/target_C_par_0.1.pt'   
+    args.modelpath = args.output_dir + '/target_C.pt'   
     netC.load_state_dict(torch.load(args.modelpath))
 
     netF.eval()
@@ -401,11 +401,11 @@ def extract_hyperplane(args):
     # args.modelpath = args.output_dir + '/source_C.pt'   
     # netC.load_state_dict(torch.load(args.modelpath))
 
-    args.modelpath = args.output_dir + '/target_F_par_0.0.pt'   
+    args.modelpath = args.output_dir + '/target_F.pt'   
     netF.load_state_dict(torch.load(args.modelpath))
-    args.modelpath = args.output_dir + '/target_B_par_0.0.pt'   
+    args.modelpath = args.output_dir + '/target_B.pt'   
     netB.load_state_dict(torch.load(args.modelpath))
-    args.modelpath = args.output_dir + '/target_C_par_0.0.pt'   
+    args.modelpath = args.output_dir + '/target_C.pt'   
     netC.load_state_dict(torch.load(args.modelpath))
 
     netF.eval()
@@ -523,17 +523,6 @@ def train_target(args):
         features_test = netB(netF(inputs_test))
         outputs_test = netC(features_test)
 
-        # if args.cls_par > 0:
-        #     pred = mem_label[tar_idx]
-        #     classifier_loss = args.cls_par * nn.CrossEntropyLoss()(outputs_test, pred)
-        # else:
-        #     classifier_loss = torch.tensor(0.0).cuda()
-
-
-        # softmax_out = nn.Softmax(dim=1)(outputs_test)
-        # entropy_loss = torch.mean(loss.Entropy(softmax_out))
-        # classifier_loss = entropy_loss
-
         mark_max = torch.zeros(outputs_test.size()).cuda()
         mark_zeros = torch.zeros(outputs_test.size()).cuda()
 
@@ -550,23 +539,15 @@ def train_target(args):
         else:
             cost_s = outputs_test_max - mark_max
         
-        cost_s = nn.Softmax(dim=1)(cost_s)
-        cost_s = -torch.log(cost_s + 1e-5)
-
-        cost_dist = torch.cdist(features_test, mean_out, p=2)
-        cost_dist = nn.Softmax(dim=1)(cost_dist)
-        cost_dist = torch.log(cost_dist + 1e-5)
-
-        softmax_out = nn.Softmax(dim=1)(outputs_test)
-        cost_log = -torch.log(softmax_out + 1e-5)
-        cost = args.wsi * cost_s + args.wds * cost_dist + args.wlp * cost_log
-        # print(cost_s.mean())
-        # print(cost_log.mean())
-
-        entropy_raw = softmax_out * cost
+        softmax_si = nn.Softmax(dim=1)(cost_s)
+        entropy_raw = softmax_si * (-torch.log(softmax_si + 1e-5))
         entropy_raw = torch.sum(entropy_raw, dim=1)         
-        # entropy_raw = loss.Entropy(softmax_out)
         entropy_loss = torch.mean(entropy_raw)
+
+        if args.div_si > 0.0:
+            softmax_out = softmax_si
+        else:
+            softmax_out = nn.Softmax(dim=1)(outputs_test)
         if args.gent > 0:
             msoftmax = softmax_out.mean(dim=0)
             entropy_loss -= torch.sum(-msoftmax * torch.log(msoftmax + 1e-5))
@@ -587,11 +568,11 @@ def train_target(args):
         classifier_loss_count += 1   
         entropy_loss_total += entropy_loss
         entropy_loss_count += 1 
-        costlog_loss_total += cost_log.mean()
+        costlog_loss_total += 0
         costlog_loss_count += 1  
-        costs_loss_total += cost_s.mean()
+        costs_loss_total += 0
         costs_loss_count += 1  
-        costdist_loss_total += cost_dist.mean()
+        costdist_loss_total += 0
         costdist_loss_count += 1 
 
         max_hyperplane = outputs_test.max(dim=1).values       
@@ -618,7 +599,7 @@ def train_target(args):
             acc_tr, _ = cal_acc(dset_loaders['target_te'], netF, netB, netC)
             acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
             log_str = 'Iter:{}/{}; Loss (entropy): {:.2f}, Cost (si/distance/logp) = {:.2f} / {:.2f} / {:.2f}, Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(iter_num, max_iter, \
-            	entropy_loss_total/entropy_loss_count, args.wsi*costs_loss_total/costs_loss_count, args.wds*costdist_loss_total/costdist_loss_count, args.wlp*costlog_loss_total/costlog_loss_count, \
+            	classifier_loss_total/classifier_loss_count, args.wsi*costs_loss_total/costs_loss_count, args.wds*costdist_loss_total/costdist_loss_count, args.wlp*costlog_loss_total/costlog_loss_count, \
                 acc_tr, acc, right_sample_count, sum_sample)
             args.out_file.write(log_str + '\n')
             args.out_file.flush()
@@ -645,9 +626,9 @@ def train_target(args):
             # netC.train()
 
     if args.issave:
-        torch.save(netF.state_dict(), osp.join(args.output_dir, "target_F_" + args.savename + ".pt"))
-        torch.save(netB.state_dict(), osp.join(args.output_dir, "target_B_" + args.savename + ".pt"))
-        torch.save(netC.state_dict(), osp.join(args.output_dir, "target_C_" + args.savename + ".pt"))
+        torch.save(netF.state_dict(), osp.join(args.output_dir, "target_F.pt"))
+        torch.save(netB.state_dict(), osp.join(args.output_dir, "target_B.pt"))
+        torch.save(netC.state_dict(), osp.join(args.output_dir, "target_C.pt"))
 
     # cal_acc_plot(dset_loaders['source_te'], netF, "train_data", "train_label")
     # cal_acc_plot(dset_loaders['test'], netF, "test_data", "test_label")
@@ -715,15 +696,13 @@ if __name__ == "__main__":
     parser.add_argument('--dataset', type=str, default='test')
     parser.add_argument('--lr', type=float, default=0.01, help="learning rate")
     parser.add_argument('--seed', type=int, default=2020, help="random seed")
-    parser.add_argument('--cls_par', type=float, default=0.0) #0.0
     parser.add_argument('--ent_par', type=float, default=1.0)
-    parser.add_argument('--gent', type=float, default=0.1)
     parser.add_argument('--ent', type=bool, default=True)
     parser.add_argument('--bottleneck', type=int, default=256)
     parser.add_argument('--layer', type=str, default="wn", choices=["linear", "wn"])
     parser.add_argument('--classifier', type=str, default="bn", choices=["ori", "bn"])
     parser.add_argument('--smooth', type=float, default=0.01)   
-    parser.add_argument('--output', type=str, default='ckps_digits_000')
+    parser.add_argument('--output', type=str, default='ckps_digits_m2u')
     parser.add_argument('--issave', type=bool, default=True)
     parser.add_argument('--gamma', type=float, default=0.05)
     parser.add_argument('--wsi', type=float, default=1.0)
@@ -732,6 +711,9 @@ if __name__ == "__main__":
     parser.add_argument('--trainC', type=float, default=0.0)
     parser.add_argument('--max_in', type=float, default=0.0)
     parser.add_argument('--max_out', type=float, default=0.1)
+    parser.add_argument('--div_si', type=float, default=0.1)
+    parser.add_argument('--gent', type=float, default=0.1)
+    parser.add_argument('--cls_par', type=float, default=0.0)
 
     args = parser.parse_args()
     args.class_num = 10
@@ -765,7 +747,11 @@ if __name__ == "__main__":
     test_target(args)
     train_target(args)
 
-    # test_dataset(args)
-    # extract_hyperplane(args)
     cur_acc = test_dataset(args)
-    print("{},{},{},{}".format(args.wsi, args.wds, args.wlp, cur_acc))
+    flag_trainC = "YES" if args.trainC > 0.0 else "NO"
+    flag_max_in = "YES" if args.max_in > 0.0 else "NO"
+    flag_max_out = "YES" if args.max_out > 0.0 else "NO"
+    flag_div_si = "YES" if args.div_si > 0.0 else "NO"
+    flag_gent = "YES" if args.gent > 0.0 else "NO"
+    flag_cls_par = "YES" if args.cls_par > 0.0 else "NO"
+    print("{},{},{},{},{},{},{}".format(flag_trainC, flag_max_in, flag_max_out, flag_gent, flag_div_si, flag_cls_par, cur_acc))
