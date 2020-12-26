@@ -611,11 +611,11 @@ def train_target(args):
             print(predict_hyperplanes_wrong.shape, predict_hyperplanes_right.shape, label_hyperplanes_wrong.shape, label_hyperplanes_right.shape)
             print(cur_hyperplanse_max.shape[0] - cur_hyperplanse_max.sum(), cur_hyperplanse_max.sum())
             t = torch.sum(predict == cur_label)
-            print(t, t/predict.shape[0])
+            print(t, predict.shape[0], t/predict.shape[0])
             t = torch.sum(predict_hyperplanes_wrong == label_hyperplanes_wrong)
-            print(t, t/predict_hyperplanes_wrong.shape[0])
+            print(t, predict_hyperplanes_wrong.shape[0], t/predict_hyperplanes_wrong.shape[0])
             t = torch.sum(predict_hyperplanes_right == label_hyperplanes_right)
-            print(t, t/predict_hyperplanes_right.shape[0])
+            print(t, predict_hyperplanes_right.shape[0], t/predict_hyperplanes_right.shape[0])
 
 
             log_str = 'Iter:{}/{}; Loss (entropy): {:.2f}, Cost (si/distance/logp) = {:.2f} / {:.2f} / {:.2f}, Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(iter_num, max_iter, \
