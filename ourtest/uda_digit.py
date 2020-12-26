@@ -629,10 +629,7 @@ def train_target(args):
             print("Test: moved samples: {}/{}, Acc (all/moved/non-move): {:.2f}% / {:.2f}% / {:.2f}%.".\
                 format(right_hyper_right_test, sample_all_test, 100*sample_right_test/sample_all_test, 100*right_hyper_right_test/right_hyper_all_test, 100*wrong_hyper_right_test/wrong_hyper_all_test))
             print(collections.Counter(predict.numpy()))
-            print(sample_right_train, sample_all_train, wrong_hyper_right_train, wrong_hyper_all_train, right_hyper_right_train, right_hyper_all_train)
-            print(sample_right_test, sample_all_test, wrong_hyper_right_test, wrong_hyper_all_test, right_hyper_right_test, right_hyper_all_test)
             print()
-            sys.exit()
 
             classifier_loss_total = 0.0
             classifier_loss_count = 0
