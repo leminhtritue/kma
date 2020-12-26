@@ -702,7 +702,7 @@ if __name__ == "__main__":
     parser.add_argument('--layer', type=str, default="wn", choices=["linear", "wn"])
     parser.add_argument('--classifier', type=str, default="bn", choices=["ori", "bn"])
     parser.add_argument('--smooth', type=float, default=0.01)   
-    parser.add_argument('--output', type=str, default='ckps_digits_000')
+    parser.add_argument('--output', type=str, default='ckps_digits_m2u')
     parser.add_argument('--issave', type=bool, default=True)
     parser.add_argument('--gamma', type=float, default=0.05)
     parser.add_argument('--wsi', type=float, default=1.0)
