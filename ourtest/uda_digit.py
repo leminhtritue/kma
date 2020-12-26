@@ -159,7 +159,7 @@ def get_hyperplane(loader, netF, netB, netC):
             else:
                 all_output = torch.cat((all_output, outputs.float().cpu()), 0)
                 all_label = torch.cat((all_label, labels.float()), 0)
-    return all_output
+    return all_output, all_label
 
 def cal_acc_plot(loader, netF, ouput_name, label_name):
     start_test = True
@@ -412,7 +412,7 @@ def extract_hyperplane(args):
     netB.eval()
     netC.eval()
 
-    hyperplane_score = get_hyperplane(dset_loaders[args.dataset], netF, netB, netC)
+    hyperplane_score, _ = get_hyperplane(dset_loaders[args.dataset], netF, netB, netC)
     hyperplane_score_abs = torch.abs(hyperplane_score)
     t = netC.get_weight()
     hyperplane_score_abs = hyperplane_score_abs.cuda()
@@ -598,6 +598,10 @@ def train_target(args):
             _, predict = torch.max(all_output, 1)
             acc_tr, _ = cal_acc(dset_loaders['target_te'], netF, netB, netC)
             acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
+            cur_hyperplanse, cur_label = get_hyperplane(dset_loaders['target_te'], netF, netB, netC)
+            print(cur_hyperplanse.shape, cur_label.shape)
+            sys.exit()
+            
             log_str = 'Iter:{}/{}; Loss (entropy): {:.2f}, Cost (si/distance/logp) = {:.2f} / {:.2f} / {:.2f}, Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(iter_num, max_iter, \
             	classifier_loss_total/classifier_loss_count, args.wsi*costs_loss_total/costs_loss_count, args.wds*costdist_loss_total/costdist_loss_count, args.wlp*costlog_loss_total/costlog_loss_count, \
                 acc_tr, acc, right_sample_count, sum_sample)
