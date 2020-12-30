@@ -156,31 +156,31 @@ def extract_plot(args):
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
     netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
 
-    args.modelpath = args.output_dir + '/source_F.pt'   
-    netF.load_state_dict(torch.load(args.modelpath))
-    args.modelpath = args.output_dir + '/source_B.pt'   
-    netB.load_state_dict(torch.load(args.modelpath))
-    args.modelpath = args.output_dir + '/source_C.pt'   
-    netC.load_state_dict(torch.load(args.modelpath))
-    netF.eval()
-    netB.eval()
-    netC.eval()
-
-    cal_acc_plot(dset_loaders['source_tr'], netF, netB, "source_train_data", "source_train_label")
-    cal_acc_plot(dset_loaders['source_te'], netF, netB, "source_test_data", "source_test_label")
-
-    # args.modelpath = args.output_dir + '/target_F_par_0.0.pt'   
+    # args.modelpath = args.output_dir + '/source_F.pt'   
     # netF.load_state_dict(torch.load(args.modelpath))
-    # args.modelpath = args.output_dir + '/target_B_par_0.0.pt'   
+    # args.modelpath = args.output_dir + '/source_B.pt'   
     # netB.load_state_dict(torch.load(args.modelpath))
-    # args.modelpath = args.output_dir + '/target_C_par_0.0.pt'   
+    # args.modelpath = args.output_dir + '/source_C.pt'   
     # netC.load_state_dict(torch.load(args.modelpath))
     # netF.eval()
     # netB.eval()
     # netC.eval()
 
-    # cal_acc_plot(dset_loaders['target_te'], netF, netB, "target_train_data", "target_train_label")
-    # cal_acc_plot(dset_loaders['test'], netF, netB, "target_test_data", "target_test_label")
+    # cal_acc_plot(dset_loaders['source_tr'], netF, netB, "source_train_data", "source_train_label")
+    # cal_acc_plot(dset_loaders['source_te'], netF, netB, "source_test_data", "source_test_label")
+
+    args.modelpath = args.output_dir + '/target_F_par_0.0.pt'   
+    netF.load_state_dict(torch.load(args.modelpath))
+    args.modelpath = args.output_dir + '/target_B_par_0.0.pt'   
+    netB.load_state_dict(torch.load(args.modelpath))
+    args.modelpath = args.output_dir + '/target_C_par_0.0.pt'   
+    netC.load_state_dict(torch.load(args.modelpath))
+    netF.eval()
+    netB.eval()
+    netC.eval()
+
+    cal_acc_plot(dset_loaders['target_te'], netF, netB, "target_train_data", "target_train_label")
+    cal_acc_plot(dset_loaders['test'], netF, netB, "target_test_data", "target_test_label")
 
 def cal_acc(loader, netF, netB, netC):
     start_test = True
