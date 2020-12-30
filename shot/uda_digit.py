@@ -169,11 +169,11 @@ def extract_plot(args):
     # cal_acc_plot(dset_loaders['source_tr'], netF, netB, "source_train_data", "source_train_label")
     # cal_acc_plot(dset_loaders['source_te'], netF, netB, "source_test_data", "source_test_label")
 
-    args.modelpath = args.output_dir + '/target_F_par_0.0.pt'   
+    args.modelpath = args.output_dir + '/target_F_par_0.1.pt'   
     netF.load_state_dict(torch.load(args.modelpath))
-    args.modelpath = args.output_dir + '/target_B_par_0.0.pt'   
+    args.modelpath = args.output_dir + '/target_B_par_0.1.pt'   
     netB.load_state_dict(torch.load(args.modelpath))
-    args.modelpath = args.output_dir + '/target_C_par_0.0.pt'   
+    args.modelpath = args.output_dir + '/target_C_par_0.1.pt'   
     netC.load_state_dict(torch.load(args.modelpath))
     netF.eval()
     netB.eval()
@@ -529,6 +529,6 @@ if __name__ == "__main__":
 
     extract_plot(args)
     sys.exit()
-    
+
     test_target(args)
     train_target(args)
