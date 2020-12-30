@@ -660,35 +660,36 @@ def obtain_label(loader, netF, netB, netC, args, c=None):
     
     all_fea = torch.cat((all_fea, torch.ones(all_fea.size(0), 1)), 1)
     all_fea = (all_fea.t() / torch.norm(all_fea, p=2, dim=1)).t()
-    all_fea = all_fea.float().cpu().numpy() #60000x4097
+    # all_fea = all_fea.float().cpu().numpy() #60000x4097
+    all_fea = all_fea.float().cpu()
 
-    print("a")
-    print(all_fea.shape)
+    # print("a")
+    # print(all_fea.shape)
     perm = torch.randperm(60000)
-    idx = perm[:200]
+    idx = perm[:500]
     all_fea_1 = all_fea[idx]
     distance = cdist(all_fea, all_fea_1, p=2)
-    print(distance.shape)
+    # print(distance.shape)
     idx = torch.argsort(distance, dim=1)
-    print(idx.shape)
+    # print(idx.shape)
     all_label_t = all_label[idx[:, :100]]
-    print(all_label_t.shape)
+    # print(all_label_t.shape)
     pred_label = torch.mode(all_label_t, dim = 1)
-    print(pred_label.shape)
+    # print(pred_label.shape)
     # pred_label = torch.ones(60000)
-    sys.exit()
+    # sys.exit()
 
-    for i in range(all_fea.size(0)):
-    	if (i % 1 == 0):
-    		print(i)
-    	distance = torch.unsqueeze(torch.sum((all_fea - all_fea[i]) * (all_fea - all_fea[i]), dim = 1), 0)
-    	print(distance.shape)
+    # for i in range(all_fea.size(0)):
+    	# if (i % 1 == 0):
+    		# print(i)
+    	# distance = torch.unsqueeze(torch.sum((all_fea - all_fea[i]) * (all_fea - all_fea[i]), dim = 1), 0)
+    	# print(distance.shape)
     	# distance = cdist(all_fea[i], all_fea, p=2)
     	# print(distance.shape)
-    	idx = torch.argsort(distance, dim=1)
+    	# idx = torch.argsort(distance, dim=1)
     	# print(idx.shape)
     	# print(idx[0, :10])
-    	all_label_t = all_label[idx[0, :10]]
+    	# all_label_t = all_label[idx[0, :10]]
     	# print(all_label_t.shape)
     	# print(all_label_t)
     	# print(torch.mode(all_label_t))
@@ -701,6 +702,7 @@ def obtain_label(loader, netF, netB, netC, args, c=None):
     # dd = cdist(all_fea, initc, 'cosine')
     # pred_label = dd.argmin(axis=1)
     # acc = np.sum(pred_label == all_label.float().numpy()) / len(all_fea)
+    acc = np.sum(pred_label == all_label.float()) / len(all_fea)
 
     # for round in range(1):
     #     aff = np.eye(K)[pred_label]
