@@ -1,0 +1,44 @@
+==========================================
+gpu_id:0
+s:0
+t:1
+max_epoch:500
+batch_size:64
+worker:4
+dset:s2m
+dataset:test
+lr:0.01
+seed:2020
+ent_par:1.0
+ent:True
+bottleneck:256
+layer:wn
+classifier:bn
+smooth:0.01
+output:ckps_digits_s2m
+issave:True
+gamma:0.05
+wsi:1.0
+wds:1.0
+wlp:1.0
+trainC:0.0
+max_in:0.0
+max_out:0.0
+div_si:0.0
+gent:0.1
+cls_par:0.1
+class_num:10
+output_dir:ckps_digits_s2m/seed2020/s2m
+out_file:<_io.TextIOWrapper name='ckps_digits_s2m/seed2020/s2m/log_src.txt' mode='w' encoding='UTF-8'>
+
+Task: s2m, Iter:57250/572500; Accuracy source (train/test) = 95.75%/ 91.93%, Loss = 0.04
+Task: s2m, Iter:114500/572500; Accuracy source (train/test) = 99.99%/ 92.46%, Loss = 0.00
+Task: s2m, Iter:171750/572500; Accuracy source (train/test) = 100.00%/ 92.26%, Loss = 0.00
+Task: s2m, Iter:229000/572500; Accuracy source (train/test) = 100.00%/ 92.16%, Loss = 0.00
+Task: s2m, Iter:286250/572500; Accuracy source (train/test) = 100.00%/ 91.98%, Loss = 0.00
+Task: s2m, Iter:343500/572500; Accuracy source (train/test) = 100.00%/ 91.82%, Loss = 0.00
+Task: s2m, Iter:400750/572500; Accuracy source (train/test) = 100.00%/ 91.90%, Loss = 0.00
+Task: s2m, Iter:458000/572500; Accuracy source (train/test) = 100.00%/ 91.67%, Loss = 0.00
+Task: s2m, Iter:515250/572500; Accuracy source (train/test) = 100.00%/ 91.88%, Loss = 0.00
+Task: s2m, Iter:572500/572500; Accuracy source (train/test) = 100.00%/ 91.78%, Loss = 0.00
+Task: s2m, Source model accuracy on target test = 61.33%
