@@ -669,7 +669,7 @@ def obtain_label(loader, netF, netB, netC, args, c=None):
     all_fea_1 = all_fea[idx]
     distance = cdist(all_fea, all_fea_1, p=2)
     print(distance.shape)
-    pred_label = torch.ones(all_fea.size(0))
+    # pred_label = torch.ones(60000)
     sys.exit()
 
     for i in range(all_fea.size(0)):
@@ -687,10 +687,6 @@ def obtain_label(loader, netF, netB, netC, args, c=None):
     	# print(all_label_t)
     	# print(torch.mode(all_label_t))
     	# sys.exit()
-
-
-
-    sys.exit()
 
     # K = all_output.size(1)
     # aff = all_output.float().cpu().numpy()
