@@ -664,7 +664,10 @@ def obtain_label(loader, netF, netB, netC, args, c=None):
     # all_fea = all_fea.float().cpu().numpy() #60000x4097
 
     print("a")
-    distance = cdist(all_fea, all_fea, p=2)
+    perm = torch.randperm(all_fea.size(0))
+    idx = perm[:10000]
+    all_fea_1 = all_fea[idx]
+    distance = cdist(all_fea, all_fea_1, p=2)
     print(distance.shape)
     sys.exit()
 
