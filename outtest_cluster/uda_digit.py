@@ -717,6 +717,7 @@ def obtain_label(loader, netF, netB, netC, args, c=None):
     args.out_file.write(log_str + '\n')
     args.out_file.flush()
     print(log_str+'\n')
+    pred_label = pred_label.numpy()
     return pred_label.astype('int')
 
 if __name__ == "__main__":
