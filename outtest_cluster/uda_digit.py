@@ -673,7 +673,7 @@ def obtain_label(loader, netF, netB, netC, args, c=None):
     for i in range(all_fea.size(0)):
     	if (i % 100 == 0):
     		print(i)
-    	distance = torch.sum((all_fea - all_fea[i]) * (all_fea - all_fea[i]), dim = 1).t()
+    	distance = torch.unsqueeze(torch.sum((all_fea - all_fea[i]) * (all_fea - all_fea[i]), dim = 1), 0)
     	print(distance.shape)
     	# distance = cdist(all_fea[i], all_fea, p=2)
     	# print(distance.shape)
