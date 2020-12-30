@@ -659,17 +659,19 @@ def obtain_label(loader, netF, netB, netC, args, c=None):
     accuracy = torch.sum(torch.squeeze(predict).float() == all_label).item() / float(all_label.size()[0])
 
     
-    # all_fea = torch.cat((all_fea, torch.ones(all_fea.size(0), 1)), 1)
-    # all_fea = (all_fea.t() / torch.norm(all_fea, p=2, dim=1)).t()
-    # all_fea = all_fea.float().cpu().numpy() #60000x4097
+    all_fea = torch.cat((all_fea, torch.ones(all_fea.size(0), 1)), 1)
+    all_fea = (all_fea.t() / torch.norm(all_fea, p=2, dim=1)).t()
+    all_fea = all_fea.float().cpu().numpy() #60000x4097
 
-    # print("a")
-    # perm = torch.randperm(all_fea.size(0))
-    # idx = perm[:5000]
-    # all_fea_1 = all_fea[idx]
-    # distance = cdist(all_fea, all_fea_1, p=2)
-    # print(distance.shape)
-    # pred_label = torch.ones(all_fea.size(0))
+    print("a")
+    perm = torch.randperm(all_fea.size(0))
+    idx = perm[:100]
+    all_fea_1 = all_fea[idx]
+    distance = cdist(all_fea, all_fea_1, p=2)
+    print(distance.shape)
+    pred_label = torch.ones(all_fea.size(0))
+    sys.exit()
+
     for i in range(all_fea.size(0)):
     	if (i % 1 == 0):
     		print(i)
