@@ -1,0 +1,25 @@
+==========================================
+gpu_id:0
+s:0
+t:1
+max_epoch:30
+batch_size:64
+worker:4
+dset:s2m
+lr:0.01
+seed:2020
+cls_par:0.1
+ent_par:1.0
+gent:True
+ent:True
+bottleneck:256
+layer:wn
+classifier:bn
+smooth:0.1
+output:ckps_digits_000
+issave:True
+class_num:10
+output_dir:ckps_digits_000/seed2020/s2m
+savename:par_0.1
+out_file:<_io.TextIOWrapper name='ckps_digits_000/seed2020/s2m/log_tar_par_0.1.txt' mode='w' encoding='UTF-8'>
+
