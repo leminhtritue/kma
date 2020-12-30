@@ -672,7 +672,7 @@ def obtain_label(loader, netF, netB, netC, args, c=None):
     # print(distance.shape)
     idx = torch.argsort(distance, dim=1)
     # print(idx.shape)
-    all_label_t = all_label[idx[:, :100]]
+    all_label_t = predict[idx[:, :100]]
     # print(all_label_t.shape)
     pred_label = torch.mode(all_label_t, dim = 1)
     # print(pred_label.shape)
