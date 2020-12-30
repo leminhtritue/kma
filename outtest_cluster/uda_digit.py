@@ -663,9 +663,9 @@ def obtain_label(loader, netF, netB, netC, args, c=None):
     all_fea = torch.cat((all_fea, torch.ones(all_fea.size(0), 1)), 1)
     print(all_fea.shape)
     print(all_fea.t().shape)
+    print(torch.norm(all_fea, p=2, dim=1).shape)
     all_fea = (all_fea.t() / torch.norm(all_fea, p=2, dim=1)).t()
     all_fea = all_fea.float().cpu().numpy()
-    print(torch.norm(all_fea, p=2, dim=1).shape)
     print(all_fea.shape)
     sys.exit()
 
