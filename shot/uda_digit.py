@@ -527,8 +527,8 @@ if __name__ == "__main__":
     args.out_file.write(print_args(args)+'\n')
     args.out_file.flush()
 
-    # extract_plot(args)
-    # sys.exit()
+    extract_plot(args)
+    sys.exit()
     
     test_target(args)
     train_target(args)
