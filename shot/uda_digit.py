@@ -526,5 +526,9 @@ if __name__ == "__main__":
     args.out_file = open(osp.join(args.output_dir, 'log_tar_' + args.savename + '.txt'), 'w')
     args.out_file.write(print_args(args)+'\n')
     args.out_file.flush()
+
+    extract_plot(args)
+    sys.exit()
+    
     test_target(args)
     train_target(args)
