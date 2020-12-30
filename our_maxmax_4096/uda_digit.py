@@ -161,34 +161,6 @@ def get_hyperplane(loader, netF, netB, netC):
                 all_label = torch.cat((all_label, labels.float()), 0)
     return all_output
 
-def cal_acc_plot(loader, netF, ouput_name, label_name):
-    start_test = True
-    with torch.no_grad():
-        iter_test = iter(loader)
-        for i in range(len(loader)):
-            data = iter_test.next()
-            inputs = data[0]
-            labels = data[1]
-            inputs = inputs.cuda()
-            outputs = netF(inputs)
-            if start_test:
-                all_output = outputs.float().cpu()
-                all_label = labels.float()
-                start_test = False
-            else:
-                all_output = torch.cat((all_output, outputs.float().cpu()), 0)
-                all_label = torch.cat((all_label, labels.float()), 0)
-    print(all_output.shape)
-    print(all_label.shape)
-    all_output_np = all_output.numpy()
-    all_label_np = all_label.numpy()
-    np.save(ouput_name, all_output_np)
-    np.save(label_name, all_label_np)
-    # _, predict = torch.max(all_output, 1)
-    # accuracy = torch.sum(torch.squeeze(predict).float() == all_label).item() / float(all_label.size()[0])
-    # mean_ent = torch.mean(loss.Entropy(nn.Softmax(dim=1)(all_output))).cpu().data.item()
-    # return accuracy*100, mean_ent
-
 def get_feature_label(loader, netF, netB, netC):
     start_test = True
     with torch.no_grad():
@@ -309,6 +281,56 @@ def train_source(args):
     torch.save(best_netC, osp.join(args.output_dir, "source_C.pt"))
 
     return netF, netB, netC
+
+def cal_acc_plot(loader, netF, netB, ouput_name, label_name):
+    start_test = True
+    with torch.no_grad():
+        iter_test = iter(loader)
+        for i in range(len(loader)):
+            data = iter_test.next()
+            inputs = data[0]
+            labels = data[1]
+            inputs = inputs.cuda()
+            outputs = netF(inputs)
+            if start_test:
+                all_output = outputs.float().cpu()
+                all_label = labels.float()
+                start_test = False
+            else:
+                all_output = torch.cat((all_output, outputs.float().cpu()), 0)
+                all_label = torch.cat((all_label, labels.float()), 0)
+    print(all_output.shape)
+    print(all_label.shape)
+    all_output_np = all_output.numpy()
+    all_label_np = all_label.numpy()
+    np.save(ouput_name, all_output_np)
+    np.save(label_name, all_label_np)
+
+def extract_plot(args):
+    dset_loaders = digit_load(args)
+    ## set base network
+    if args.dset == 'u2m':
+        netF = network.LeNetBase().cuda()
+    elif args.dset == 'm2u':
+        netF = network.LeNetBase().cuda()  
+    elif args.dset == 's2m':
+        netF = network.DTNBase().cuda()
+
+    netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
+    # netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
+    netC = network.feat_classifier(type="linear", class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
+
+    args.modelpath = args.output_dir + '/source_F.pt'   
+    netF.load_state_dict(torch.load(args.modelpath))
+    args.modelpath = args.output_dir + '/source_B.pt'   
+    netB.load_state_dict(torch.load(args.modelpath))
+    args.modelpath = args.output_dir + '/source_C.pt'   
+    netC.load_state_dict(torch.load(args.modelpath))
+    netF.eval()
+    netB.eval()
+    netC.eval()
+
+    cal_acc_plot(dset_loaders['source_te'], netF, netB, "source_data", "source_label")
 
 def test_target(args):
     dset_loaders = digit_load(args)
@@ -744,6 +766,8 @@ if __name__ == "__main__":
     args.out_file.write(print_args(args)+'\n')
     args.out_file.flush()
 
+    extract_plot(args)
+    sys.exit()
     test_target(args)
     train_target(args)
 
