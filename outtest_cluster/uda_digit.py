@@ -673,8 +673,10 @@ def obtain_label(loader, netF, netB, netC, args, c=None):
     for i in range(all_fea.size(0)):
     	if (i % 100 == 0):
     		print(i)
-    	distance = cdist(all_fea[i], all_fea, p=2)
+    	distance = torch.sum((all_fea - all_fea[i]) * (all_fea - all_fea[i]), dim = 1)
     	print(distance.shape)
+    	# distance = cdist(all_fea[i], all_fea, p=2)
+    	# print(distance.shape)
     	idx = torch.argsort(distance, dim=1)
     	print(idx.shape)
     	all_label_t = all_label[idx[:100]]
