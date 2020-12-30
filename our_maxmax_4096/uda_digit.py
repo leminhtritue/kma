@@ -320,17 +320,17 @@ def extract_plot(args):
     # netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
     netC = network.feat_classifier(type="linear", class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
 
-    args.modelpath = args.output_dir + '/source_F.pt'   
+    args.modelpath = args.output_dir + '/target_F.pt'   
     netF.load_state_dict(torch.load(args.modelpath))
-    args.modelpath = args.output_dir + '/source_B.pt'   
+    args.modelpath = args.output_dir + '/target_B.pt'   
     netB.load_state_dict(torch.load(args.modelpath))
-    args.modelpath = args.output_dir + '/source_C.pt'   
+    args.modelpath = args.output_dir + '/target_C.pt'   
     netC.load_state_dict(torch.load(args.modelpath))
     netF.eval()
     netB.eval()
     netC.eval()
 
-    cal_acc_plot(dset_loaders['source_te'], netF, netB, "source_data", "source_label")
+    cal_acc_plot(dset_loaders['test'], netF, netB, "source_data", "source_label")
 
 def test_target(args):
     dset_loaders = digit_load(args)
