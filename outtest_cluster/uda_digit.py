@@ -668,7 +668,7 @@ def obtain_label(loader, netF, netB, netC, args, c=None):
     perm = torch.randperm(60000)
     idx = perm[:200]
     all_fea_1 = all_fea[idx]
-    distance = cdist(all_fea, all_fea_1, p=2)
+    distance = torch.cdist(all_fea, all_fea_1, p=2)
     # print(distance.shape)
     idx = torch.argsort(distance, dim=1)
     # print(idx.shape)
