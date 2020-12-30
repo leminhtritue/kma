@@ -658,23 +658,22 @@ def obtain_label(loader, netF, netB, netC, args, c=None):
     _, predict = torch.max(all_output, 1)
     accuracy = torch.sum(torch.squeeze(predict).float() == all_label).item() / float(all_label.size()[0])
 
-    print(all_output.shape)
     
     all_fea = torch.cat((all_fea, torch.ones(all_fea.size(0), 1)), 1)
-    print(all_fea.shape)
-    print(all_fea.t().shape)
-    print(torch.norm(all_fea, p=2, dim=1).shape)
     all_fea = (all_fea.t() / torch.norm(all_fea, p=2, dim=1)).t()
-    all_fea = all_fea.float().cpu().numpy()
-    print(all_fea.shape)
-    sys.exit()
+    all_fea = all_fea.float().cpu().numpy() #60000x4097
 
     K = all_output.size(1)
     aff = all_output.float().cpu().numpy()
+    print(aff.shape, all_fea.shape)
     initc = aff.transpose().dot(all_fea)
+    print(initc.shape, aff.sum(axis=0).shape, aff.sum(axis=0)[:,None].shape)
     initc = initc / (1e-8 + aff.sum(axis=0)[:,None])
     dd = cdist(all_fea, initc, 'cosine')
+    print(initc.shape, dd.shape)
     pred_label = dd.argmin(axis=1)
+    print(pred_label.shape)
+    sys.exit()
     acc = np.sum(pred_label == all_label.float().numpy()) / len(all_fea)
 
     for round in range(1):
