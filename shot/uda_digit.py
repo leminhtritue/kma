@@ -144,6 +144,7 @@ def cal_acc_plot(loader, netF, netB, ouput_name, label_name):
     np.save(label_name, all_label_np)
 
 def extract_plot(args):
+    print("Extract plot begin")
     dset_loaders = digit_load(args)
     ## set base network
     if args.dset == 'u2m':
@@ -179,8 +180,10 @@ def extract_plot(args):
     netB.eval()
     netC.eval()
 
+    print("Extract plot")
     cal_acc_plot(dset_loaders['target_te'], netF, netB, "target_train_data", "target_train_label")
     cal_acc_plot(dset_loaders['test'], netF, netB, "target_test_data", "target_test_label")
+    print("Extract plot end")
 
 def cal_acc(loader, netF, netB, netC):
     start_test = True
