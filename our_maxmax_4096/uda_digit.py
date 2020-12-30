@@ -188,7 +188,8 @@ def train_source(args):
     elif args.dset == 'm2u':
         netF = network.LeNetBase().cuda()  
     elif args.dset == 's2m':
-        netF = network.DTNBase().cuda()
+        # netF = network.DTNBase().cuda()
+        netF = network.LeNetBase().cuda()  
 
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
     # netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
@@ -316,7 +317,8 @@ def extract_plot(args):
     elif args.dset == 'm2u':
         netF = network.LeNetBase().cuda()  
     elif args.dset == 's2m':
-        netF = network.DTNBase().cuda()
+        # netF = network.DTNBase().cuda()
+        netF = network.LeNetBase().cuda()
 
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
     # netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
@@ -357,7 +359,8 @@ def test_target(args):
     elif args.dset == 'm2u':
         netF = network.LeNetBase().cuda()  
     elif args.dset == 's2m':
-        netF = network.DTNBase().cuda()
+        # netF = network.DTNBase().cuda()
+        netF = network.LeNetBase().cuda()
 
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
     # netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
@@ -388,7 +391,8 @@ def test_dataset(args):
     elif args.dset == 'm2u':
         netF = network.LeNetBase().cuda()  
     elif args.dset == 's2m':
-        netF = network.DTNBase().cuda()
+        # netF = network.DTNBase().cuda()
+        netF = network.LeNetBase().cuda()
 
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
     # netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
@@ -427,7 +431,8 @@ def extract_hyperplane(args):
     elif args.dset == 'm2u':
         netF = network.LeNetBase().cuda()  
     elif args.dset == 's2m':
-        netF = network.DTNBase().cuda()
+        # netF = network.DTNBase().cuda()
+        netF = network.LeNetBase().cuda()
 
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
     # netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
@@ -480,7 +485,8 @@ def train_target(args):
     elif args.dset == 'm2u':
         netF = network.LeNetBase().cuda()  
     elif args.dset == 's2m':
-        netF = network.DTNBase().cuda()
+        # netF = network.DTNBase().cuda()
+        netF = network.LeNetBase().cuda()
 
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
     # netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
