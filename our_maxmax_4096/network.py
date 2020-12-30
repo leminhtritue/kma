@@ -137,6 +137,7 @@ class DTNBase(nn.Module):
                 nn.Conv2d(3, 64, kernel_size=5, stride=2, padding=2),
                 # nn.BatchNorm2d(64),
                 # nn.Dropout2d(0.1),
+                nn.MaxPool2d(2),
                 nn.ReLU(),
                 nn.Conv2d(64, 128, kernel_size=5, stride=2, padding=2),
                 # nn.BatchNorm2d(128),
