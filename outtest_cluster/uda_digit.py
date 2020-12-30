@@ -669,6 +669,12 @@ def obtain_label(loader, netF, netB, netC, args, c=None):
     all_fea_1 = all_fea[idx]
     distance = cdist(all_fea, all_fea_1, p=2)
     print(distance.shape)
+    idx = torch.argsort(distance, dim=1)
+    print(idx.shape)
+    all_label_t = all_label[idx[:, :100]]
+    print(all_label_t.shape)
+    pred_label = torch.mode(all_label_t, dim = 1)
+    print(pred_label.shape)
     # pred_label = torch.ones(60000)
     sys.exit()
 
