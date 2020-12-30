@@ -658,15 +658,15 @@ def obtain_label(loader, netF, netB, netC, args, c=None):
     _, predict = torch.max(all_output, 1)
     accuracy = torch.sum(torch.squeeze(predict).float() == all_label).item() / float(all_label.size()[0])
 
-    print(all_output.shape)
+    # print(all_output.shape)
     
     all_fea = torch.cat((all_fea, torch.ones(all_fea.size(0), 1)), 1)
-    print(all_fea.shape)
+    # print(all_fea.shape)
     all_fea = (all_fea.t() / torch.norm(all_fea, p=2, dim=1)).t()
     all_fea = all_fea.float().cpu().numpy()
-    print(all_fea.t().shape)
-    print(torch.norm(all_fea, p=2, dim=1).shape)
-    print(all_fea.shape)
+    # print(all_fea.t().shape)
+    # print(torch.norm(all_fea, p=2, dim=1).shape)
+    # print(all_fea.shape)
 
     K = all_output.size(1)
     aff = all_output.float().cpu().numpy()
@@ -750,7 +750,7 @@ if __name__ == "__main__":
     args.out_file.write(print_args(args)+'\n')
     args.out_file.flush()
 
-    # test_target(args)
+    test_target(args)
     train_target(args)
 
     cur_acc = test_dataset(args)
