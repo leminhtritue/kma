@@ -663,12 +663,26 @@ def obtain_label(loader, netF, netB, netC, args, c=None):
     # all_fea = (all_fea.t() / torch.norm(all_fea, p=2, dim=1)).t()
     # all_fea = all_fea.float().cpu().numpy() #60000x4097
 
-    print("a")
-    perm = torch.randperm(all_fea.size(0))
-    idx = perm[:5000]
-    all_fea_1 = all_fea[idx]
-    distance = cdist(all_fea, all_fea_1, p=2)
-    print(distance.shape)
+    # print("a")
+    # perm = torch.randperm(all_fea.size(0))
+    # idx = perm[:5000]
+    # all_fea_1 = all_fea[idx]
+    # distance = cdist(all_fea, all_fea_1, p=2)
+    # print(distance.shape)
+    # pred_label = torch.ones(all_fea.size(0))
+    for i in range(all_fea.size(0)):
+    	if (i % 100 == 0):
+    		print(i)
+    	distance = cdist(all_fea[i], all_fea, p=2)
+    	print(distance.shape)
+    	idx = torch.argsort(distance, dim=1)
+    	print(idx.shape)
+    	all_label_t = all_label[idx[:100]]
+    	print(all_label_t.shape)
+    	sys.exit()
+
+
+
     sys.exit()
 
     # K = all_output.size(1)
