@@ -680,7 +680,7 @@ def obtain_label(loader, netF, netB, netC, args, c=None):
     	idx = torch.argsort(distance, dim=1)
     	print(idx.shape)
     	print(idx[0, :10])
-    	all_label_t = all_label[0,idx[:10]]
+    	all_label_t = all_label[idx[0, :10]]
     	print(all_label_t.shape)
     	print(all_label_t)
     	print(torch.mode(all_label_t))
