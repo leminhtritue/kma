@@ -657,13 +657,13 @@ def obtain_label(loader, netF, netB, netC, args, c=None):
     all_output = nn.Softmax(dim=1)(all_output)
     _, predict = torch.max(all_output, 1)
     accuracy = torch.sum(torch.squeeze(predict).float() == all_label).item() / float(all_label.size()[0])
-
     
     all_fea = torch.cat((all_fea, torch.ones(all_fea.size(0), 1)), 1)
     all_fea = (all_fea.t() / torch.norm(all_fea, p=2, dim=1)).t()
     all_fea = all_fea.float().cpu().numpy() #60000x4097
 
     print("a")
+    print(all_fea.shape)
     perm = torch.randperm(all_fea.size(0))
     idx = perm[:1000]
     all_fea_1 = all_fea[idx]
