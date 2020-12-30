@@ -246,7 +246,9 @@ def train_source(args):
             netC.eval()
             acc_s_tr, _ = cal_acc(dset_loaders['source_tr'], netF, netB, netC)
             acc_s_te, _ = cal_acc(dset_loaders['source_te'], netF, netB, netC)
-            log_str = 'Task: {}, Iter:{}/{}; Accuracy source (train/test) = {:.2f}%/ {:.2f}%, Loss = {:.2f}'.format(args.dset, iter_num, max_iter, acc_s_tr, acc_s_te, total_loss/count_loss)
+            acc_t_te, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
+            log_str = 'Task: {}, Iter:{}/{}; Accuracy source (train/test sr/ test tgt) = {:.2f}% / {:.2f}% / {:.2f}%, Loss = {:.2f}'.format(args.dset, \
+                iter_num, max_iter, acc_s_tr, acc_s_te, acc_t_te, total_loss/count_loss)
             total_loss = 0.0
             count_loss = 0
             args.out_file.write(log_str + '\n')
