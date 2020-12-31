@@ -728,10 +728,10 @@ if __name__ == "__main__":
     parser.add_argument('--gpu_id', type=str, nargs='?', default='0', help="device id to run")
     parser.add_argument('--s', type=int, default=0, help="source")
     parser.add_argument('--t', type=int, default=1, help="target")
-    parser.add_argument('--max_epoch', type=int, default=5, help="maximum epoch") #30
+    parser.add_argument('--max_epoch', type=int, default=30, help="maximum epoch") #30
     parser.add_argument('--batch_size', type=int, default=64, help="batch_size")
     parser.add_argument('--worker', type=int, default=4, help="number of workers")
-    parser.add_argument('--dset', type=str, default='s2m', choices=['u2m', 'm2u','s2m']) #m2u
+    parser.add_argument('--dset', type=str, default='m2u', choices=['u2m', 'm2u','s2m']) #m2u
     parser.add_argument('--dataset', type=str, default='test')
     parser.add_argument('--lr', type=float, default=0.01, help="learning rate")
     parser.add_argument('--seed', type=int, default=2020, help="random seed")
@@ -741,7 +741,7 @@ if __name__ == "__main__":
     parser.add_argument('--layer', type=str, default="wn", choices=["linear", "wn"])
     parser.add_argument('--classifier', type=str, default="bn", choices=["ori", "bn"])
     parser.add_argument('--smooth', type=float, default=0.01)   
-    parser.add_argument('--output', type=str, default='ckps_digits_s2m_61') #ckps_digits_m2u
+    parser.add_argument('--output', type=str, default='ckps_digits_m2u') #ckps_digits_m2u
     parser.add_argument('--issave', type=bool, default=True)
     parser.add_argument('--gamma', type=float, default=0.05)
     parser.add_argument('--wsi', type=float, default=1.0)
@@ -783,11 +783,11 @@ if __name__ == "__main__":
     args.out_file.write(print_args(args)+'\n')
     args.out_file.flush()
 
-    print("target", test_dataset(args))
-    extract_plot(args)
-    sys.exit()
-    # test_target(args)
-    # train_target(args)
+    # print("target", test_dataset(args))
+    # extract_plot(args)
+    # sys.exit()
+    test_target(args)
+    train_target(args)
 
     cur_acc = test_dataset(args)
     flag_trainC = "YES" if args.trainC > 0.0 else "NO"
