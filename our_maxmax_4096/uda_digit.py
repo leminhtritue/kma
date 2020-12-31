@@ -515,9 +515,9 @@ def train_target(args):
     # interval_iter = max_iter // args.interval
     iter_num = 0
 
-    # netF.train()
-    # netB.train()
-    # netC.train()
+    netF.train()
+    netB.train()
+    netC.train()
 
     classifier_loss_total = 0.0
     classifier_loss_count = 0
@@ -546,14 +546,14 @@ def train_target(args):
             continue
 
         if iter_num % interval_iter == 0 and args.cls_par > 0:
-            # netF.eval()
-            # netB.eval()
-            # netC.eval()
+            netF.eval()
+            netB.eval()
+            netC.eval()
             mem_label = obtain_label(dset_loaders['target_te'], netF, netB, netC, args)
             mem_label = torch.from_numpy(mem_label).cuda()
-            # netF.train()
-            # netB.train()
-            # netC.train()
+            netF.train()
+            netB.train()
+            netC.train()
 
         iter_num += 1
         lr_scheduler(optimizer, iter_num=iter_num, max_iter=max_iter)
@@ -660,9 +660,9 @@ def train_target(args):
             sum_sample = 0
             start_output = True
 
-            # netF.train()
-            # netB.train()
-            # netC.train()
+            netF.train()
+            netB.train()
+            netC.train()
 
     if args.issave:
         torch.save(netF.state_dict(), osp.join(args.output_dir, "target_F.pt"))
@@ -783,8 +783,8 @@ if __name__ == "__main__":
     args.out_file.write(print_args(args)+'\n')
     args.out_file.flush()
 
-    extract_plot(args)
-    sys.exit()
+    # extract_plot(args)
+    # sys.exit()
     test_target(args)
     train_target(args)
 
