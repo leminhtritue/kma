@@ -783,10 +783,11 @@ if __name__ == "__main__":
     args.out_file.write(print_args(args)+'\n')
     args.out_file.flush()
 
-    # extract_plot(args)
-    # sys.exit()
-    test_target(args)
-    train_target(args)
+    print("target", test_dataset(args))
+    extract_plot(args)
+    sys.exit()
+    # test_target(args)
+    # train_target(args)
 
     cur_acc = test_dataset(args)
     flag_trainC = "YES" if args.trainC > 0.0 else "NO"
