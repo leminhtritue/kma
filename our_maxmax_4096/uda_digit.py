@@ -293,7 +293,7 @@ def cal_acc_plot(loader, netF, netB, ouput_name, label_name):
             inputs = data[0]
             labels = data[1]
             inputs = inputs.cuda()
-            outputs = netB(netF(inputs))
+            outputs = netF(inputs)
             if start_test:
                 all_output = outputs.float().cpu()
                 all_label = labels.float()
@@ -783,8 +783,8 @@ if __name__ == "__main__":
     args.out_file.write(print_args(args)+'\n')
     args.out_file.flush()
 
-    # extract_plot(args)
-    # sys.exit()
+    extract_plot(args)
+    sys.exit()
     test_target(args)
     train_target(args)
 
