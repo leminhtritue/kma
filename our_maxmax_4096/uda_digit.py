@@ -350,9 +350,7 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
     idx = torch.topk(dist_420_4096, 100, dim=1,largest=False).indices
     pred_420_top100all = predict[idx]
     pred_420_top100mode = torch.mode(pred_420_top100all, dim = 1).values
-    print(collections.Counter(all_output_10_420_clone.cpu().numpy()))
 
-    print("Stat")
     t = collections.Counter(all_label_420.cpu().numpy())
     counter = torch.zeros((10, 10))
 
@@ -361,9 +359,7 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
     	print(current_pred.shape[0])
     	for j in range(10):
     		counter[i,j] = (current_pred==j).sum()
-    print(counter)
     np.savetxt("counter.csv", counter.cpu().numpy(), delimiter=",")
-    sys.exit()
 
     all_label_420 = torch.unsqueeze(all_label_420, 1)
     pred_420 = torch.unsqueeze(pred_420, 1)
