@@ -356,7 +356,6 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
 
     for i in range(10):
     	current_pred = pred_420[all_label_420 == i]
-    	print(current_pred.shape[0])
     	for j in range(10):
     		counter[i,j] = (current_pred==j).sum()
     np.savetxt("counter.csv", counter.cpu().numpy(), delimiter=",")
