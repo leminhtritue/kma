@@ -309,8 +309,8 @@ def cal_acc_plot(loader, netF, netB, ouput_name, label_name):
     np.save(label_name, all_label_np)
 
 def extract_plot(args):
-	print("abac")
-	sys.exit()
+    print("abac")
+    sys.exit()
     dset_loaders = digit_load(args)
     ## set base network
     if args.dset == 'u2m':
