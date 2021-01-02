@@ -328,14 +328,25 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
                 all_output_4096 = torch.cat((all_output_4096, outputs_4096.float().cpu()), 0)
                 all_output_10 = torch.cat((all_output_10, outputs_10.float().cpu()), 0)
                 all_label = torch.cat((all_label, labels.float()), 0)
+
+    _, predict = torch.max(all_output_10, 1)
+
     print(all_output_4096.shape)
     print(all_output_10.shape)
     print(all_label.shape)
-    _, predict = torch.max(all_output_10, 1)
-    t = all_output_4096[predict == all_label]
-    print(t.shape)
-    accuracy = torch.sum(torch.squeeze(predict).float() == all_label).item() / float(all_label.size()[0])
-    print(accuracy*100)
+    print(predict.shape)
+    print()
+
+    flag_420 = (predict != all_label)
+    all_output_4096_420 = all_output_4096[flag_420]
+    predict_420 = predict[flag_420]
+    all_label_420 = all_label[flag_420]
+
+    print(all_output_4096_420.shape)
+    print(predict_420.shape)
+    print(all_label_420.shape)
+    print()
+    
     sys.exit()
 
 def extract_plot(args):
