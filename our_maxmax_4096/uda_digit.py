@@ -349,13 +349,14 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
     idx = torch.topk(dist_420_4096, 100, dim=1,largest=False).indices
     pred_420_top100all = predict[idx]
     pred_420_top100mode = torch.mode(pred_420_top100all, dim = 1).values
+    print(collections.Counter(all_output_10_420_clone.cpu().numpy()))
 
     all_label_420 = torch.unsqueeze(all_label_420, 1)
     pred_420 = torch.unsqueeze(pred_420, 1)
     pred_420_top100mode = torch.unsqueeze(pred_420_top100mode, 1)
-    all_out = torch.cat((all_output_10_420, all_label_420, pred_420, pred_420_top100mode), 1)
+    all_output_10_420_clone = torch.unsqueeze(all_output_10_420_clone, 1)
+    all_out = torch.cat((all_output_10_420, all_label_420, pred_420, pred_420_top100mode, all_output_10_420_clone), 1)
 
-    print(collections.Counter(all_output_10_420_clone.cpu().numpy()))
     print((pred_420_top100mode == all_label_420).sum())
     print((pred_420 == all_label_420).sum())
     print(all_out.shape)
