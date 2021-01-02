@@ -371,8 +371,6 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
     print(all_out.shape)
     np.savetxt("out_numpy.csv", all_out.cpu().numpy(), delimiter=",")
 
-
-
     sys.exit()
 
 def extract_plot(args):
@@ -414,7 +412,6 @@ def extract_plot(args):
 
     # cal_acc_plot(dset_loaders['target_te'], netF, netB, "target_train_data", "target_train_label")
     # cal_acc_plot(dset_loaders['test'], netF, netB, "target_test_data", "target_test_label")
-    # cal_acc_plot(dset_loaders['test'], netF, netB, netC, "target_test_data", "target_test_label")
     cal_acc_knn(dset_loaders['test'], netF, netB, netC, "target_test_data", "target_test_label")
 
 

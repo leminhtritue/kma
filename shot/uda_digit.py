@@ -143,8 +143,72 @@ def cal_acc_plot(loader, netF, netB, ouput_name, label_name):
     np.save(ouput_name, all_output_np)
     np.save(label_name, all_label_np)
 
+def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
+    start_test = True
+    with torch.no_grad():
+        iter_test = iter(loader)
+        for i in range(len(loader)):
+            data = iter_test.next()
+            inputs = data[0]
+            labels = data[1]
+            inputs = inputs.cuda()
+            outputs_4096 = netB(netF(inputs))
+            outputs_10 = netC(outputs_4096)
+            if start_test:
+                all_output_4096 = outputs_4096.float()
+                all_output_10 = outputs_10.float()
+                all_label = labels.float()
+                start_test = False
+            else:
+                all_output_4096 = torch.cat((all_output_4096, outputs_4096.float()), 0)
+                all_output_10 = torch.cat((all_output_10, outputs_10.float()), 0)
+                all_label = torch.cat((all_label, labels.float()), 0)
+
+    _, predict = torch.max(all_output_10, 1)
+
+
+    all_label = all_label.cuda()
+
+    flag_420 = (predict != all_label)
+    all_output_4096_420 = all_output_4096[flag_420]
+    all_output_10_420 = all_output_10[flag_420]
+    pred_420 = predict[flag_420]
+    all_label_420 = all_label[flag_420]
+
+    all_output_10_420_clone = all_output_10_420.clone()
+    all_output_10_420_clone[all_output_10_420_clone < 0] = 0
+    all_output_10_420_clone[all_output_10_420_clone > 0] = 1
+    all_output_10_420_clone = all_output_10_420_clone.sum(dim = 1)
+
+    dist_420_4096 = torch.cdist(all_output_4096_420, all_output_4096, p=2)
+    idx = torch.topk(dist_420_4096, 100, dim=1,largest=False).indices
+    pred_420_top100all = predict[idx]
+    pred_420_top100mode = torch.mode(pred_420_top100all, dim = 1).values
+
+    t = collections.Counter(all_label_420.cpu().numpy())
+    counter = torch.zeros((10, 10))
+
+    for i in range(10):
+        current_pred = pred_420[all_label_420 == i]
+        for j in range(10):
+            counter[i,j] = (current_pred==j).sum()
+    np.savetxt("counter.csv", counter.cpu().numpy(), delimiter=",")
+
+    all_label_420 = torch.unsqueeze(all_label_420, 1)
+    pred_420 = torch.unsqueeze(pred_420, 1)
+    pred_420_top100mode = torch.unsqueeze(pred_420_top100mode, 1)
+    all_output_10_420_clone = torch.unsqueeze(all_output_10_420_clone, 1)
+    all_out = torch.cat((all_output_10_420, all_label_420, pred_420, pred_420_top100mode, all_output_10_420_clone), 1)
+
+    print((pred_420_top100mode == all_label_420).sum())
+    print((pred_420 == all_label_420).sum())
+    print(all_out.shape)
+    np.savetxt("out_numpy.csv", all_out.cpu().numpy(), delimiter=",")
+
+    sys.exit()
+
+
 def extract_plot(args):
-    print("Extract plot begin")
     dset_loaders = digit_load(args)
     ## set base network
     if args.dset == 'u2m':
@@ -157,33 +221,32 @@ def extract_plot(args):
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
     netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
 
-    args.modelpath = args.output_dir + '/source_F.pt'   
-    netF.load_state_dict(torch.load(args.modelpath))
-    args.modelpath = args.output_dir + '/source_B.pt'   
-    netB.load_state_dict(torch.load(args.modelpath))
-    args.modelpath = args.output_dir + '/source_C.pt'   
-    netC.load_state_dict(torch.load(args.modelpath))
-    netF.eval()
-    netB.eval()
-    netC.eval()
-
-    cal_acc_plot(dset_loaders['source_tr'], netF, netB, "source_train_data", "source_train_label")
-    cal_acc_plot(dset_loaders['source_te'], netF, netB, "source_test_data", "source_test_label")
-
-    # args.modelpath = args.output_dir + '/target_F_par_0.1.pt'   
+    # args.modelpath = args.output_dir + '/source_F.pt'   
     # netF.load_state_dict(torch.load(args.modelpath))
-    # args.modelpath = args.output_dir + '/target_B_par_0.1.pt'   
+    # args.modelpath = args.output_dir + '/source_B.pt'   
     # netB.load_state_dict(torch.load(args.modelpath))
-    # args.modelpath = args.output_dir + '/target_C_par_0.1.pt'   
+    # args.modelpath = args.output_dir + '/source_C.pt'   
     # netC.load_state_dict(torch.load(args.modelpath))
     # netF.eval()
     # netB.eval()
     # netC.eval()
 
-    # print("Extract plot")
+    # cal_acc_plot(dset_loaders['source_tr'], netF, netB, "source_train_data", "source_train_label")
+    # cal_acc_plot(dset_loaders['source_te'], netF, netB, "source_test_data", "source_test_label")
+
+    args.modelpath = args.output_dir + '/target_F_par_0.1.pt'   
+    netF.load_state_dict(torch.load(args.modelpath))
+    args.modelpath = args.output_dir + '/target_B_par_0.1.pt'   
+    netB.load_state_dict(torch.load(args.modelpath))
+    args.modelpath = args.output_dir + '/target_C_par_0.1.pt'   
+    netC.load_state_dict(torch.load(args.modelpath))
+    netF.eval()
+    netB.eval()
+    netC.eval()
+
     # cal_acc_plot(dset_loaders['target_te'], netF, netB, "target_train_data", "target_train_label")
     # cal_acc_plot(dset_loaders['test'], netF, netB, "target_test_data", "target_test_label")
-    # print("Extract plot end")
+    cal_acc_knn(dset_loaders['test'], netF, netB, netC, "target_test_data", "target_test_label")
 
 def cal_acc(loader, netF, netB, netC):
     start_test = True
