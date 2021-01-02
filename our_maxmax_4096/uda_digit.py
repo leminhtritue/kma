@@ -332,6 +332,8 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
     print(all_output_10.shape)
     print(all_label.shape)
     _, predict = torch.max(all_output_10, 1)
+    t = all_output_4096[predict == all_label]
+    print(t.shape)
     accuracy = torch.sum(torch.squeeze(predict).float() == all_label).item() / float(all_label.size()[0])
     print(accuracy*100)
     sys.exit()
