@@ -284,7 +284,7 @@ def train_source(args):
 
     return netF, netB, netC
 
-def cal_acc_plot(loader, netF, netB, ouput_name, label_name):
+def cal_acc_plot(loader, netF, netB, netC, ouput_name, label_name):
     start_test = True
     with torch.no_grad():
         iter_test = iter(loader)
@@ -293,7 +293,7 @@ def cal_acc_plot(loader, netF, netB, ouput_name, label_name):
             inputs = data[0]
             labels = data[1]
             inputs = inputs.cuda()
-            outputs = netB(netF(inputs))
+            outputs = netC(netB(netF(inputs)))
             if start_test:
                 all_output = outputs.float().cpu()
                 all_label = labels.float()
@@ -345,8 +345,9 @@ def extract_plot(args):
     netB.eval()
     netC.eval()
 
-    cal_acc_plot(dset_loaders['target_te'], netF, netB, "target_train_data", "target_train_label")
-    cal_acc_plot(dset_loaders['test'], netF, netB, "target_test_data", "target_test_label")
+    # cal_acc_plot(dset_loaders['target_te'], netF, netB, "target_train_data", "target_train_label")
+    # cal_acc_plot(dset_loaders['test'], netF, netB, "target_test_data", "target_test_label")
+    cal_acc_plot(dset_loaders['test'], netF, netB, netC, "target_test_data", "target_test_label")
 
 
 def test_target(args):
@@ -783,7 +784,7 @@ if __name__ == "__main__":
     args.out_file.write(print_args(args)+'\n')
     args.out_file.flush()
 
-    print("target", test_dataset(args))
+    # print("target", test_dataset(args))
     extract_plot(args)
     sys.exit()
     test_target(args)
