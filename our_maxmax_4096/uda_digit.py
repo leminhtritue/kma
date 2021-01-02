@@ -320,13 +320,13 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
             outputs_4096 = netB(netF(inputs))
             outputs_10 = netC(outputs_4096)
             if start_test:
-                all_output_4096 = outputs_4096.float().cpu()
-                all_output_10 = outputs_10.float().cpu()
+                all_output_4096 = outputs_4096.float()()
+                all_output_10 = outputs_10.float()()
                 all_label = labels.float()
                 start_test = False
             else:
-                all_output_4096 = torch.cat((all_output_4096, outputs_4096.float().cpu()), 0)
-                all_output_10 = torch.cat((all_output_10, outputs_10.float().cpu()), 0)
+                all_output_4096 = torch.cat((all_output_4096, outputs_4096.float()()), 0)
+                all_output_10 = torch.cat((all_output_10, outputs_10.float()()), 0)
                 all_label = torch.cat((all_label, labels.float()), 0)
 
     _, predict = torch.max(all_output_10, 1)
@@ -346,7 +346,13 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
     print(predict_420.shape)
     print(all_label_420.shape)
     print()
+
+    dist_420_4096 = torch.cdist(all_output_4096_420, all_output_4096, p=2)
+    print(dist_420_4096.shape)
+    idx = torch.topk(dist_420_4096, 100, dim=1,largest=False).indices
+    print(idx.shape)
     
+
     sys.exit()
 
 def extract_plot(args):
