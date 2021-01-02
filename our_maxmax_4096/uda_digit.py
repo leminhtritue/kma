@@ -352,7 +352,7 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
     print(collections.Counter(all_output_10_420_clone.cpu().numpy()))
 
     print("Stat")
-    print(collections.Counter(all_label_420.cpu().numpy()))
+    print(collections.Counter(all_label_420.cpu().numpy()).items())
     tt = 0
     for i in range(10):
     	t = all_label_420[all_label_420 == i]
