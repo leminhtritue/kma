@@ -181,6 +181,7 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
     all_output_10_420_clone[all_output_10_420_clone < 0] = 0
     all_output_10_420_clone[all_output_10_420_clone > 0] = 1
     all_output_10_420_clone = all_output_10_420_clone.sum(dim = 1)
+    print(collections.Counter(all_output_10_420_clone.cpu().numpy()))
 
     dist_420_4096 = torch.cdist(all_output_4096_420, all_output_4096, p=2)
     idx = torch.topk(dist_420_4096, 100, dim=1,largest=False).indices
