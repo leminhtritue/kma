@@ -357,7 +357,7 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
     print(predict_all100.shape)
     pred_top100 = torch.mode(predict_all100, dim = 1).values
     print(pred_top100.shape)
-    print((pred_top100 != all_label_420).sum)
+    print((pred_top100 != all_label_420).sum())
 
     sys.exit()
 
