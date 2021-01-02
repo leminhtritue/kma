@@ -353,8 +353,10 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
     print(dist_420_4096.shape)
     idx = torch.topk(dist_420_4096, 100, dim=1,largest=False).indices
     print(idx.shape)
-    predict_100 = predict[idx]
-    print(predict_100.shape)
+    predict_all100 = predict[idx]
+    print(predict_all100.shape)
+    pred_top100 = torch.mode(predict_all100, dim = 1).values
+    print(pred_top100.shape)
 
     sys.exit()
 
