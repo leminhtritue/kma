@@ -308,7 +308,7 @@ def cal_acc_plot(loader, netF, netB, netC, ouput_name, label_name):
     np.save(ouput_name, all_output_np)
     np.save(label_name, all_label_np)
 
-def cal_acc_knn(loader, netF, netB, ouput_name, label_name):
+def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
     start_test = True
     with torch.no_grad():
         iter_test = iter(loader)
@@ -317,17 +317,21 @@ def cal_acc_knn(loader, netF, netB, ouput_name, label_name):
             inputs = data[0]
             labels = data[1]
             inputs = inputs.cuda()
-            outputs = (netB(netF(inputs)))
+            outputs_4096 = netB(netF(inputs))
+            outputs_10 = netC(outputs_4096)
             if start_test:
-                all_output = outputs.float().cpu()
+                all_output_4096 = outputs_4096.float().cpu()
+                all_output_10 = outputs_10.float().cpu()
                 all_label = labels.float()
                 start_test = False
             else:
-                all_output = torch.cat((all_output, outputs.float().cpu()), 0)
+                all_output_4096 = torch.cat((all_output_4096, outputs_4096.float().cpu()), 0)
+                all_output_10 = torch.cat((all_output_10, outputs_10.float().cpu()), 0)
                 all_label = torch.cat((all_label, labels.float()), 0)
-    print(all_output.shape)
+    print(all_output_4096.shape)
+    print(all_output_10.shape)
     print(all_label.shape)
-    _, predict = torch.max(all_output, 1)
+    _, predict = torch.max(all_output_10, 1)
     accuracy = torch.sum(torch.squeeze(predict).float() == all_label).item() / float(all_label.size()[0])
     print(accuracy*100)
     sys.exit()
@@ -372,7 +376,7 @@ def extract_plot(args):
     # cal_acc_plot(dset_loaders['target_te'], netF, netB, "target_train_data", "target_train_label")
     # cal_acc_plot(dset_loaders['test'], netF, netB, "target_test_data", "target_test_label")
     # cal_acc_plot(dset_loaders['test'], netF, netB, netC, "target_test_data", "target_test_label")
-    cal_acc_knn(dset_loaders['test'], netF, netB, "target_test_data", "target_test_label")
+    cal_acc_knn(dset_loaders['test'], netF, netB, netC, "target_test_data", "target_test_label")
 
 
 def test_target(args):
