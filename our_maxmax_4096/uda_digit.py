@@ -343,6 +343,7 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
     all_output_10_420_clone = all_output_10_420.clone()
     all_output_10_420_clone[all_output_10_420_clone < 0] = 0
     all_output_10_420_clone[all_output_10_420_clone > 0] = 1
+    print(all_output_10_420_clone.shape)
     all_output_10_420_clone = all_output_10_420_clone.sum(dim = 1)
     print(all_output_10_420_clone.shape)
     sys.exit()
