@@ -351,6 +351,9 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
     pred_420_top100mode = torch.mode(pred_420_top100all, dim = 1).values
     print(collections.Counter(all_output_10_420_clone.cpu().numpy()))
 
+    print("Stat")
+    print(collections.Counter(all_label_420.cpu().numpy()))
+    
     all_label_420 = torch.unsqueeze(all_label_420, 1)
     pred_420 = torch.unsqueeze(pred_420, 1)
     pred_420_top100mode = torch.unsqueeze(pred_420_top100mode, 1)
@@ -361,6 +364,9 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
     print((pred_420 == all_label_420).sum())
     print(all_out.shape)
     np.savetxt("out_numpy.csv", all_out.cpu().numpy(), delimiter=",")
+
+
+
     sys.exit()
 
 def extract_plot(args):
