@@ -353,7 +353,7 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
     print((pred_420_top100mode == all_label_420).sum())
     print((pred_420 == all_label_420).sum())
     print(all_out.shape)
-    np.savetxt("out_numpy.csv", all_out.numpy(), delimiter=",")
+    np.savetxt("out_numpy.csv", all_out.cpu().numpy(), delimiter=",")
     sys.exit()
 
 def extract_plot(args):
