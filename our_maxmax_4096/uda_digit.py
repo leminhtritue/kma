@@ -355,13 +355,17 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
     print("Stat")
     t = collections.Counter(all_label_420.cpu().numpy())
     sorted(t.items(), key=itemgetter(0))
-    print(t)
-    tt = 0
+    print(t.keys())
+    print(t.keys())
+    counter = torch.zeros((10, 10))
+
     for i in range(10):
-    	t = all_label_420[all_label_420 == i]
-    	print(t.shape)
-    	tt += t.shape[0]
-    print(tt)
+    	current_pred = pred_420[all_label_420 == i]
+    	print(current_pred.shape[0])
+    	for j in range(10):
+    		counter[i,j] = (current_pred==j).sum()
+    print(counter)
+    np.savetxt("counter.csv", counter.cpu().numpy(), delimiter=",")
     sys.exit()
 
     all_label_420 = torch.unsqueeze(all_label_420, 1)
