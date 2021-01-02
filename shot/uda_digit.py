@@ -184,7 +184,6 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
     print(collections.Counter(all_output_10_420_clone.cpu().numpy()))
 
     all_output_10_420_true = all_output_10[predict == all_label]
-    print(all_output_10_420_true.shape)
     all_output_10_420_true_clone = all_output_10_420_true.clone()
     all_output_10_420_true_clone[all_output_10_420_true_clone < 0] = 0
     all_output_10_420_true_clone[all_output_10_420_true_clone > 0] = 1
