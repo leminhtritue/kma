@@ -354,9 +354,6 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
 
     print("Stat")
     t = collections.Counter(all_label_420.cpu().numpy())
-    sorted(t.items(), key=itemgetter(0))
-    print(t.keys())
-    print(t.keys())
     counter = torch.zeros((10, 10))
 
     for i in range(10):
