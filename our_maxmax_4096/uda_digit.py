@@ -336,6 +336,7 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
 
     flag_420 = (predict != all_label)
     all_output_4096_420 = all_output_4096[flag_420]
+    all_output_10_420 = all_output_10[flag_420]
     pred_420 = predict[flag_420]
     all_label_420 = all_label[flag_420]
 
@@ -349,7 +350,7 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
     all_label_420 = torch.unsqueeze(all_label_420, 1)
     pred_420 = torch.unsqueeze(pred_420, 1)
     pred_420_top100mode = torch.unsqueeze(pred_420_top100mode, 1)
-    print(all_output_4096_420.shape, all_label_420.shape, pred_420.shape, pred_420_top100mode.shape)
+    print(all_output_10_420.shape, all_label_420.shape, pred_420.shape, pred_420_top100mode.shape)
 
     sys.exit()
 
