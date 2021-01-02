@@ -357,8 +357,8 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
     for i in range(10):
     	t = all_label_420[all_label_420 == i]
     	print(t.shape)
-    	tt += t.shape
-    	print(tt)
+    	tt += t.shape[0]
+    print(tt)
     sys.exit()
 
     all_label_420 = torch.unsqueeze(all_label_420, 1)
