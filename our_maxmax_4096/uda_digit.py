@@ -333,32 +333,20 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
 
 
     all_label = all_label.cuda()
-    print(all_output_4096.shape)
-    print(all_output_10.shape)
-    print(all_label.shape)
-    print(predict.shape)
-    print()
 
     flag_420 = (predict != all_label)
     all_output_4096_420 = all_output_4096[flag_420]
-    predict_420 = predict[flag_420]
+    pred_420 = predict[flag_420]
     all_label_420 = all_label[flag_420]
 
-    print(all_output_4096_420.shape)
-    print(predict_420.shape)
-    print(all_label_420.shape)
-    print()
-
     dist_420_4096 = torch.cdist(all_output_4096_420, all_output_4096, p=2)
-    print(dist_420_4096.shape)
     idx = torch.topk(dist_420_4096, 100, dim=1,largest=False).indices
-    print(idx.shape)
-    predict_all100 = predict[idx]
-    print(predict_all100.shape)
-    pred_top100 = torch.mode(predict_all100, dim = 1).values
-    print(pred_top100.shape)
-    print((pred_top100 == all_label_420).sum())
-    print((predict_420 == all_label_420).sum())
+    pred_420_top100all = predict[idx]
+    pred_420_top100mode = torch.mode(pred_420_top100all, dim = 1).values
+
+    print((pred_420_top100mode == all_label_420).sum())
+    print((pred_420 == all_label_420).sum())
+    print(all_output_4096_420.shape, all_label_420.shape, pred_420.shape, pred_420_top100mode.shape)
 
     sys.exit()
 
