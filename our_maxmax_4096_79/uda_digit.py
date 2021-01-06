@@ -294,7 +294,8 @@ def cal_acc_plot(loader, netF, netB, netC, ouput_name, label_name):
             inputs = data[0]
             labels = data[1]
             inputs = inputs.cuda()
-            outputs = netC(netB(netF(inputs)))
+            # outputs = netC(netB(netF(inputs)))
+            outputs = netF(inputs)
             if start_test:
                 all_output = outputs.float().cpu()
                 all_label = labels.float()
