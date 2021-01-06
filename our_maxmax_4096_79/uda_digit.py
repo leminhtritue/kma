@@ -423,7 +423,7 @@ def extract_plot(args):
 
     cal_acc_plot(dset_loaders['target_te'], netF, netB, netC, "target_train_data", "target_train_label")
     cal_acc_plot(dset_loaders['test'], netF, netB, netC, "target_test_data", "target_test_label")
-    # cal_acc_knn(dset_loaders['test'], netF, netB, netC, "target_test_data", "target_test_label")
+    cal_acc_knn(dset_loaders['test'], netF, netB, netC, "target_test_data", "target_test_label")
 
 
 def test_target(args):
