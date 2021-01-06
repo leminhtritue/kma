@@ -596,7 +596,7 @@ if __name__ == "__main__":
     parser.add_argument('--s', type=int, default=0, help="source")
     parser.add_argument('--t', type=int, default=1, help="target")
     parser.add_argument('--max_epoch', type=int, default=30, help="maximum epoch")
-    parser.add_argument('--batch_size', type=int, default=64, help="batch_size")
+    parser.add_argument('--batch_size', type=int, default=512, help="batch_size")
     parser.add_argument('--worker', type=int, default=4, help="number of workers")
     parser.add_argument('--dset', type=str, default='s2m', choices=['u2m', 'm2u','s2m'])
     parser.add_argument('--lr', type=float, default=0.01, help="learning rate")
