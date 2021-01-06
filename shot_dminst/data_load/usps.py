@@ -188,8 +188,9 @@ class USPS_idx(data.Dataset):
     def load_samples(self):
         """Load sample images from dataset."""
         filename = os.path.join(self.root, self.filename)
-        f = gzip.open(filename, "rb")
-        data_set = pickle.load(f, encoding="bytes")
+        # f = gzip.open(filename, "rb")
+        # data_set = pickle.load(f, encoding="bytes")
+        data_set = pickle.load(open(filename, "rb" ) )
         f.close()
         if self.train:
             images = data_set[0][0]
