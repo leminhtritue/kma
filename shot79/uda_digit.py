@@ -290,7 +290,7 @@ def cal_acc(loader, netF, netB, netC):
             labels = labels[idx]
             labels[labels == 7] = 0
             labels[labels == 9] = 1
-1            if(labels.shape[0] == 0):
+            if(labels.shape[0] == 0):
             	continue
 
             inputs = inputs.cuda()
