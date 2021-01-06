@@ -857,9 +857,9 @@ if __name__ == "__main__":
     args.out_file.write(print_args(args)+'\n')
     args.out_file.flush()
 
-    # print("target", test_dataset(args))
-    # extract_plot(args)
-    # sys.exit()
+    print("target", test_dataset(args))
+    extract_plot(args)
+    sys.exit()
     test_target(args)
     train_target(args)
 
