@@ -327,7 +327,7 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
                 all_label = labels.float()
                 start_test = False
             else:
-            	all_input = torch.cat((all_input, inputs.float()), 0)
+                all_input = torch.cat((all_input, inputs.float()), 0)
                 all_output_4096 = torch.cat((all_output_4096, outputs_4096.float()), 0)
                 all_output_10 = torch.cat((all_output_10, outputs_10.float()), 0)
                 all_label = torch.cat((all_label, labels.float()), 0)
