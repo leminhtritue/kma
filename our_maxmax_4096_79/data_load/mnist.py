@@ -79,6 +79,13 @@ class MNIST(VisionDataset):
             data_file = self.test_file
         self.data, self.targets = torch.load(os.path.join(self.processed_folder, data_file))
 
+        self.idx = np.logical_or((self.targets==7), (self.targets == 9))
+        self.data = self.data[self.idx]
+        self.targets = self.targets[self.idx]
+
+        self.targets[self.targets == 7] = 0
+        self.targets[self.targets == 9] = 1
+
     def __getitem__(self, index):
         """
         Args:
@@ -235,6 +242,13 @@ class MNIST_idx(VisionDataset):
             data_file = self.test_file
         self.data, self.targets = torch.load(os.path.join(self.processed_folder, data_file))
 
+        self.idx = np.logical_or((self.targets==7), (self.targets == 9))
+        self.data = self.data[self.idx]
+        self.targets = self.targets[self.idx]
+
+        self.targets[self.targets == 7] = 0
+        self.targets[self.targets == 9] = 1
+        
     def __getitem__(self, index):
         """
         Args:
