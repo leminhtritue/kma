@@ -210,11 +210,11 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
     pred_420_top100mode = torch.mode(pred_420_top100all, dim = 1).values
 
     t = collections.Counter(all_label_420.cpu().numpy())
-    counter = torch.zeros((10, 10))
+    counter = torch.zeros((2, 2))
 
-    for i in range(10):
+    for i in range(2):
         current_pred = pred_420[all_label_420 == i]
-        for j in range(10):
+        for j in range(2):
             counter[i,j] = (current_pred==j).sum()
     np.savetxt("counter.csv", counter.cpu().numpy(), delimiter=",")
 
@@ -620,7 +620,7 @@ if __name__ == "__main__":
     parser.add_argument('--output', type=str, default='')
     parser.add_argument('--issave', type=bool, default=True)
     args = parser.parse_args()
-    args.class_num = 10
+    args.class_num = 2
 
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_id
     SEED = args.seed
