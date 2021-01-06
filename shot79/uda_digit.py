@@ -469,14 +469,15 @@ def train_target(args):
             iter_test = iter(dset_loaders["target"])
             inputs_test, label_test, tar_idx = iter_test.next()
 
-        print(inputs_test.shape, label_test.shape)
+        print(inputs_test.shape, label_test.shape, tar_idx.shape)
         idx = torch.logical_or((label_test == 7), (label_test == 9))
         inputs_test = inputs_test[idx]
         label_test = label_test[idx]
+        tar_idx = tar_idx[idx]
         if(inputs_test.shape[0] == 0):
         	continue
 
-        print(inputs_test.shape, label_test.shape)
+        print(inputs_test.shape, label_test.shape, tar_idx.shape)
         sys.exit()
 
         if inputs_test.size(0) == 1:
@@ -548,6 +549,13 @@ def obtain_label(loader, netF, netB, netC, args, c=None):
             data = iter_test.next()
             inputs = data[0]
             labels = data[1]
+
+            idx = torch.logical_or((labels == 7), (labels == 9))
+            inputs = inputs[idx]
+            labels = labels[idx]
+            if(labels.shape[0] == 0):
+            	continue
+
             inputs = inputs.cuda()
             feas = netB(netF(inputs))
             outputs = netC(feas)
