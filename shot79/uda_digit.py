@@ -289,7 +289,7 @@ def cal_acc(loader, netF, netB, netC):
             inputs = inputs[idx]
             labels = labels[idx]
             labels[labels == 7] = 0
-            labels[labels == 9] = 
+            labels[labels == 9] = 1
 1            if(labels.shape[0] == 0):
             	continue
 
