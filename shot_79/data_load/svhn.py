@@ -77,18 +77,19 @@ class SVHN(VisionDataset):
         self.data = np.transpose(self.data, (3, 2, 0, 1))
 
         print(self.data.shape)
-        print(self.label.shape)
-        self.idx = np.logical_or((self.label==7), (self.label == 9))
+        print(self.labels.shape)
+        self.idx = np.logical_or((self.labels==7), (self.labels == 9))
         self.data = self.data[self.idx]
-        self.label = self.label[self.idx]
+        self.labels = self.labels[self.idx]
         print(self.data.shape)
-        print(self.label.shape)
-        print(self.label)
-        print(self.label.min(), self.label.max())
-        self.label[self.label == 7] = 0
-        self.label[self.label == 9] = 1
-        print(self.label)
-        print(self.label.min(), self.label.max())
+        print(self.labels.shape)
+        
+        print(self.labels)
+        print(self.labels.min(), self.labels.max())
+        self.labels[self.labels == 7] = 0
+        self.labels[self.labels == 9] = 1
+        print(self.labels)
+        print(self.labels.min(), self.labels.max())
         print("abc")
         sys.exit()
 
