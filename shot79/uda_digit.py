@@ -470,7 +470,13 @@ def train_target(args):
             inputs_test, label_test, tar_idx = iter_test.next()
 
         print(inputs_test.shape, label_test.shape)
-        print(label_test.min(), label_test.max())
+        idx = torch.logical_or((label_test == 7), (label_test == 9))
+        inputs_test = inputs_test[idx]
+        label_test = label_test[idx]
+        if(inputs_source.shape[0] == 0):
+        	continue
+
+        print(inputs_test.shape, label_test.shape)
         sys.exit()
 
         if inputs_test.size(0) == 1:
