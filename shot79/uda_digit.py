@@ -477,7 +477,6 @@ def train_target(args):
             iter_test = iter(dset_loaders["target"])
             inputs_test, label_test, tar_idx = iter_test.next()
 
-        print(inputs_test.shape, label_test.shape, tar_idx.shape)
         idx = torch.logical_or((label_test == 7), (label_test == 9))
         inputs_test = inputs_test[idx]
         label_test = label_test[idx]
@@ -486,9 +485,6 @@ def train_target(args):
         tar_idx = tar_idx[idx]
         if(inputs_test.shape[0] == 0):
         	continue
-
-        print(inputs_test.shape, label_test.shape, tar_idx.shape)
-        sys.exit()
 
         if inputs_test.size(0) == 1:
             continue
