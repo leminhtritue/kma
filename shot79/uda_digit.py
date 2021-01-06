@@ -470,8 +470,9 @@ def train_target(args):
             inputs_test, label_test, tar_idx = iter_test.next()
 
         print(inputs_test.shape, label_test.shape)
+        print(label_test.min(), label_test.max())
         sys.exit()
-        
+
         if inputs_test.size(0) == 1:
             continue
 
