@@ -334,7 +334,10 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
 
     _, predict = torch.max(all_output_10, 1)
 
-    print(all_input.shape, all_label.shape)
+    print(all_input.shape, all_label.shape, predict.shape)
+    torch.save(all_input, "all_input.pt")
+    torch.save(all_label, "all_label.pt")
+    torch.save(predict, "predict.pt")
     sys.exit()
     all_label = all_label.cuda()
 
