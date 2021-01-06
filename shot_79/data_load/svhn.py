@@ -81,8 +81,14 @@ class SVHN(VisionDataset):
         self.idx = np.logical_or((self.label==7), (self.label == 9))
         self.data = self.data[self.idx]
         self.label = self.label[self.idx]
+        print(self.data.shape)
+        print(self.label.shape)
+        print(self.label)
+        print(self.label.min(), self.label.max())
         self.label[self.label == 7] = 0
         self.label[self.label == 9] = 1
+        print(self.label)
+        print(self.label.min(), self.label.max())
         print("abc")
         sys.exit()
 
