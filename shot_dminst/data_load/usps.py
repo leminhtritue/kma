@@ -199,4 +199,8 @@ class USPS_idx(data.Dataset):
             images = data_set[1][0]
             labels = data_set[1][1]
             self.dataset_size = labels.shape[0]
+        print("Curent debug start")
+        print(images.shape)
+        print(labels.shape)
+        print("Curent debug end")
         return images, labels
