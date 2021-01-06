@@ -133,6 +133,8 @@ def cal_acc_plot(loader, netF, netB, ouput_name, label_name):
             idx = torch.logical_or((labels == 7), (labels == 9))
             inputs = inputs[idx]
             labels = labels[idx]
+            labels[labels == 7] = 0
+            labels[labels == 9] = 1
             if(labels.shape[0] == 0):
             	continue
 
@@ -164,6 +166,8 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
             idx = torch.logical_or((labels == 7), (labels == 9))
             inputs = inputs[idx]
             labels = labels[idx]
+            labels[labels == 7] = 0
+            labels[labels == 9] = 1
             if(labels.shape[0] == 0):
             	continue
 
@@ -284,7 +288,9 @@ def cal_acc(loader, netF, netB, netC):
             idx = torch.logical_or((labels == 7), (labels == 9))
             inputs = inputs[idx]
             labels = labels[idx]
-            if(labels.shape[0] == 0):
+            labels[labels == 7] = 0
+            labels[labels == 9] = 
+1            if(labels.shape[0] == 0):
             	continue
 
             inputs = inputs.cuda()
@@ -345,6 +351,8 @@ def train_source(args):
         idx = torch.logical_or((labels_source == 7), (labels_source == 9))
         inputs_source = inputs_source[idx]
         labels_source = labels_source[idx]
+        labels_source[labels_source == 7] = 0
+        labels_source[labels_source == 9] = 1
         if(inputs_source.shape[0] == 0):
         	continue
 
@@ -473,6 +481,8 @@ def train_target(args):
         idx = torch.logical_or((label_test == 7), (label_test == 9))
         inputs_test = inputs_test[idx]
         label_test = label_test[idx]
+        label_test[label_test == 7] = 0
+        label_test[label_test == 9] = 1        
         tar_idx = tar_idx[idx]
         if(inputs_test.shape[0] == 0):
         	continue
@@ -553,6 +563,8 @@ def obtain_label(loader, netF, netB, netC, args, c=None):
             idx = torch.logical_or((labels == 7), (labels == 9))
             inputs = inputs[idx]
             labels = labels[idx]
+            labels[labels == 7] = 0
+            labels[labels == 9] = 1
             if(labels.shape[0] == 0):
             	continue
 
