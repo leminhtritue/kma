@@ -405,10 +405,10 @@ def extract_plot(args):
     netB.eval()
     netC.eval()
 
-    cal_acc_plot(dset_loaders['source_tr'], netF, netB, "source_train_data", "source_train_label")
-    cal_acc_plot(dset_loaders['source_te'], netF, netB, "source_test_data", "source_test_label")
-    cal_acc_plot(dset_loaders['target_te'], netF, netB, "target_train_data_fromsource", "target_train_label_fromsource")
-    cal_acc_plot(dset_loaders['test'], netF, netB, "target_test_data_fromsource", "target_test_label_fromsource")
+    cal_acc_plot(dset_loaders['source_tr'], netF, netB, netC, "source_train_data", "source_train_label")
+    cal_acc_plot(dset_loaders['source_te'], netF, netB, netC, "source_test_data", "source_test_label")
+    cal_acc_plot(dset_loaders['target_te'], netF, netB, netC, "target_train_data_fromsource", "target_train_label_fromsource")
+    cal_acc_plot(dset_loaders['test'], netF, netB, netC, "target_test_data_fromsource", "target_test_label_fromsource")
 
     args.modelpath = args.output_dir + '/target_F.pt'   
     netF.load_state_dict(torch.load(args.modelpath))
@@ -420,8 +420,8 @@ def extract_plot(args):
     netB.eval()
     netC.eval()
 
-    cal_acc_plot(dset_loaders['target_te'], netF, netB, "target_train_data", "target_train_label")
-    cal_acc_plot(dset_loaders['test'], netF, netB, "target_test_data", "target_test_label")
+    cal_acc_plot(dset_loaders['target_te'], netF, netB, netC, "target_train_data", "target_train_label")
+    cal_acc_plot(dset_loaders['test'], netF, netB, netC, "target_test_data", "target_test_label")
     # cal_acc_knn(dset_loaders['test'], netF, netB, netC, "target_test_data", "target_test_label")
 
 
