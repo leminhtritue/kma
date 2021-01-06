@@ -76,22 +76,12 @@ class SVHN(VisionDataset):
         np.place(self.labels, self.labels == 10, 0)
         self.data = np.transpose(self.data, (3, 2, 0, 1))
 
-        print(self.data.shape)
-        print(self.labels.shape)
         self.idx = np.logical_or((self.labels==7), (self.labels == 9))
         self.data = self.data[self.idx]
         self.labels = self.labels[self.idx]
-        print(self.data.shape)
-        print(self.labels.shape)
-        
-        print(self.labels)
-        print(self.labels.min(), self.labels.max())
+
         self.labels[self.labels == 7] = 0
         self.labels[self.labels == 9] = 1
-        print(self.labels)
-        print(self.labels.min(), self.labels.max())
-        print("abc")
-        sys.exit()
 
     def __getitem__(self, index):
         """
@@ -200,6 +190,13 @@ class SVHN_idx(VisionDataset):
         np.place(self.labels, self.labels == 10, 0)
         self.data = np.transpose(self.data, (3, 2, 0, 1))
 
+        self.idx = np.logical_or((self.labels==7), (self.labels == 9))
+        self.data = self.data[self.idx]
+        self.labels = self.labels[self.idx]
+
+        self.labels[self.labels == 7] = 0
+        self.labels[self.labels == 9] = 1
+        
     def __getitem__(self, index):
         """
         Args:
