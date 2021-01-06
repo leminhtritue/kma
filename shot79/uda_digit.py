@@ -484,7 +484,7 @@ def train_target(args):
         label_test[label_test == 9] = 1        
         tar_idx = tar_idx[idx]
         
-        print(tar_idx.min, tar_idx.max)
+        print(tar_idx.min(), tar_idx.max())
         sys.exit()
 
         if(inputs_test.shape[0] == 0):
