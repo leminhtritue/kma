@@ -98,7 +98,7 @@ class USPS(data.Dataset):
         # f = gzip.open(filename, "rb")
         # data_set = pickle.load(f, encoding="bytes")
         data_set = pickle.load(open(filename, "rb" ))
-        f.close()
+        # f.close()
         if self.train:
             images = data_set[0][0]
             labels = data_set[0][1]
@@ -192,7 +192,7 @@ class USPS_idx(data.Dataset):
         # f = gzip.open(filename, "rb")
         # data_set = pickle.load(f, encoding="bytes")
         data_set = pickle.load(open(filename, "rb" ))
-        f.close()
+        # f.close()
         if self.train:
             images = data_set[0][0]
             labels = data_set[0][1]
