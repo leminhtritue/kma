@@ -1,6 +1,7 @@
 from .vision import VisionDataset
 from PIL import Image
 import os
+import sys
 import os.path
 import numpy as np
 from .utils import download_url, check_integrity, verify_str_arg
@@ -74,6 +75,10 @@ class SVHN(VisionDataset):
         # which expect the class labels to be in the range [0, C-1]
         np.place(self.labels, self.labels == 10, 0)
         self.data = np.transpose(self.data, (3, 2, 0, 1))
+
+        print(self.data.shape)
+        print("abc")
+        sys.exit()
 
     def __getitem__(self, index):
         """

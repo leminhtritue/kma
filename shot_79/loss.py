@@ -5,7 +5,6 @@ from torch.autograd import Variable
 import math
 import torch.nn.functional as F
 import pdb
-import sys
 
 def Entropy(input_):
     bs = input_.size(0)
@@ -24,7 +23,6 @@ class CrossEntropyLabelSmooth(nn.Module):
 
     def forward(self, inputs, targets):
         log_probs = self.logsoftmax(inputs)
-        t = targets.unsqueeze(1).cpu()
         targets = torch.zeros(log_probs.size()).scatter_(1, targets.unsqueeze(1).cpu(), 1)
         if self.use_gpu: targets = targets.cuda()
         targets = (1 - self.epsilon) * targets + self.epsilon / self.num_classes

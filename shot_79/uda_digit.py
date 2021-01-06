@@ -129,15 +129,6 @@ def cal_acc_plot(loader, netF, netB, ouput_name, label_name):
             data = iter_test.next()
             inputs = data[0]
             labels = data[1]
-
-            idx = torch.logical_or((labels == 7), (labels == 9))
-            inputs = inputs[idx]
-            labels = labels[idx]
-            labels[labels == 7] = 0
-            labels[labels == 9] = 1
-            if(labels.shape[0] == 0):
-            	continue
-
             inputs = inputs.cuda()
             outputs = netF(inputs)
             if start_test:
@@ -162,15 +153,6 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
             data = iter_test.next()
             inputs = data[0]
             labels = data[1]
-
-            idx = torch.logical_or((labels == 7), (labels == 9))
-            inputs = inputs[idx]
-            labels = labels[idx]
-            labels[labels == 7] = 0
-            labels[labels == 9] = 1
-            if(labels.shape[0] == 0):
-            	continue
-
             inputs = inputs.cuda()
             outputs_4096 = netB(netF(inputs))
             outputs_10 = netC(outputs_4096)
@@ -214,11 +196,11 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
     pred_420_top100mode = torch.mode(pred_420_top100all, dim = 1).values
 
     t = collections.Counter(all_label_420.cpu().numpy())
-    counter = torch.zeros((2, 2))
+    counter = torch.zeros((10, 10))
 
-    for i in range(2):
+    for i in range(10):
         current_pred = pred_420[all_label_420 == i]
-        for j in range(2):
+        for j in range(10):
             counter[i,j] = (current_pred==j).sum()
     np.savetxt("counter.csv", counter.cpu().numpy(), delimiter=",")
 
@@ -284,15 +266,6 @@ def cal_acc(loader, netF, netB, netC):
             data = iter_test.next()
             inputs = data[0]
             labels = data[1]
-
-            idx = torch.logical_or((labels == 7), (labels == 9))
-            inputs = inputs[idx]
-            labels = labels[idx]
-            labels[labels == 7] = 0
-            labels[labels == 9] = 1
-            if(labels.shape[0] == 0):
-            	continue
-
             inputs = inputs.cuda()
             outputs = netC(netB(netF(inputs)))
             if start_test:
@@ -347,14 +320,6 @@ def train_source(args):
         except:
             iter_source = iter(dset_loaders["source_tr"])
             inputs_source, labels_source = iter_source.next()
-
-        idx = torch.logical_or((labels_source == 7), (labels_source == 9))
-        inputs_source = inputs_source[idx]
-        labels_source = labels_source[idx]
-        labels_source[labels_source == 7] = 0
-        labels_source[labels_source == 9] = 1
-        if(inputs_source.shape[0] == 0):
-        	continue
 
         if inputs_source.size(0) == 1:
             continue
@@ -472,24 +437,10 @@ def train_target(args):
     while iter_num < max_iter:
         optimizer.zero_grad()
         try:
-            inputs_test, label_test, tar_idx = iter_test.next()
+            inputs_test, _, tar_idx = iter_test.next()
         except:
             iter_test = iter(dset_loaders["target"])
-            inputs_test, label_test, tar_idx = iter_test.next()
-
-        idx = torch.logical_or((label_test == 7), (label_test == 9))
-        inputs_test = inputs_test[idx]
-        label_test = label_test[idx]
-        label_test[label_test == 7] = 0
-        label_test[label_test == 9] = 1        
-        tar_idx = tar_idx[idx]
-        
-        print(tar_idx.min(), tar_idx.max())
-        print(tar_idx)
-        sys.exit()
-
-        if(inputs_test.shape[0] == 0):
-        	continue
+            inputs_test, _, tar_idx = iter_test.next()
 
         if inputs_test.size(0) == 1:
             continue
@@ -560,15 +511,6 @@ def obtain_label(loader, netF, netB, netC, args, c=None):
             data = iter_test.next()
             inputs = data[0]
             labels = data[1]
-
-            idx = torch.logical_or((labels == 7), (labels == 9))
-            inputs = inputs[idx]
-            labels = labels[idx]
-            labels[labels == 7] = 0
-            labels[labels == 9] = 1
-            if(labels.shape[0] == 0):
-            	continue
-
             inputs = inputs.cuda()
             feas = netB(netF(inputs))
             outputs = netC(feas)
@@ -617,7 +559,7 @@ if __name__ == "__main__":
     parser.add_argument('--s', type=int, default=0, help="source")
     parser.add_argument('--t', type=int, default=1, help="target")
     parser.add_argument('--max_epoch', type=int, default=30, help="maximum epoch")
-    parser.add_argument('--batch_size', type=int, default=512, help="batch_size")
+    parser.add_argument('--batch_size', type=int, default=64, help="batch_size")
     parser.add_argument('--worker', type=int, default=4, help="number of workers")
     parser.add_argument('--dset', type=str, default='s2m', choices=['u2m', 'm2u','s2m'])
     parser.add_argument('--lr', type=float, default=0.01, help="learning rate")
@@ -633,7 +575,7 @@ if __name__ == "__main__":
     parser.add_argument('--output', type=str, default='')
     parser.add_argument('--issave', type=bool, default=True)
     args = parser.parse_args()
-    args.class_num = 2
+    args.class_num = 10
 
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_id
     SEED = args.seed
@@ -661,8 +603,8 @@ if __name__ == "__main__":
     args.out_file.write(print_args(args)+'\n')
     args.out_file.flush()
 
-    # extract_plot(args)
-    # sys.exit()
+    extract_plot(args)
+    sys.exit()
 
     test_target(args)
     train_target(args)
