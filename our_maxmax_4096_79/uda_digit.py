@@ -322,17 +322,24 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
             outputs_4096 = netB(netF(inputs))
             outputs_10 = netC(outputs_4096)
             if start_test:
+                all_input = inputs.float()
                 all_output_4096 = outputs_4096.float()
                 all_output_10 = outputs_10.float()
                 all_label = labels.float()
                 start_test = False
             else:
+                all_input = torch.cat((all_input, inputs.float()), 0)
                 all_output_4096 = torch.cat((all_output_4096, outputs_4096.float()), 0)
                 all_output_10 = torch.cat((all_output_10, outputs_10.float()), 0)
                 all_label = torch.cat((all_label, labels.float()), 0)
 
     _, predict = torch.max(all_output_10, 1)
 
+    print(all_input.shape, all_label.shape, predict.shape)
+    torch.save(all_input, "all_input.pt")
+    torch.save(all_label, "all_label.pt")
+    torch.save(predict, "predict.pt")
+    sys.exit()
 
     all_label = all_label.cuda()
 
