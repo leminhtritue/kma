@@ -26,9 +26,10 @@ class CrossEntropyLabelSmooth(nn.Module):
         log_probs = self.logsoftmax(inputs)
         
         print(inputs.shape, log_probs.shape, targets.shape)
-        sys.exit()
-
+        t = targets.unsqueeze(1).cpu()
+        print(t.shape)
         targets = torch.zeros(log_probs.size()).scatter_(1, targets.unsqueeze(1).cpu(), 1)
+        sys.exit()
         if self.use_gpu: targets = targets.cuda()
         targets = (1 - self.epsilon) * targets + self.epsilon / self.num_classes
         if self.size_average:
