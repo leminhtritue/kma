@@ -232,30 +232,32 @@ def extract_plot(args):
     netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
 
     args.modelpath = args.output_dir + '/source_F.pt'   
-    netFS.load_state_dict(torch.load(args.modelpath))
+    netF.load_state_dict(torch.load(args.modelpath))
     args.modelpath = args.output_dir + '/source_B.pt'   
-    netBS.load_state_dict(torch.load(args.modelpath))
+    netB.load_state_dict(torch.load(args.modelpath))
     args.modelpath = args.output_dir + '/source_C.pt'   
-    netCS.load_state_dict(torch.load(args.modelpath))
-    netFS.eval()
-    netBS.eval()
-    netCS.eval()
+    netC.load_state_dict(torch.load(args.modelpath))
+    netF.eval()
+    netB.eval()
+    netC.eval()
 
-    cal_acc_plot(dset_loaders['source_tr'], netFS, netBS, "source_train_data", "source_train_label")
-    cal_acc_plot(dset_loaders['source_te'], netFS, netBS, "source_test_data", "source_test_label")
+    cal_acc_plot(dset_loaders['source_tr'], netF, netB, "source_train_data", "source_train_label")
+    cal_acc_plot(dset_loaders['source_te'], netF, netB, "source_test_data", "source_test_label")
+    cal_acc_plot(dset_loaders['target_te'], netF, netB, "target_train_data_fromsource", "target_train_label_fromsource")
+    cal_acc_plot(dset_loaders['test'], netF, netB, "target_test_data_fromsource", "target_test_label_fromsource")
 
     args.modelpath = args.output_dir + '/target_F_par_0.0.pt'   
-    netFT.load_state_dict(torch.load(args.modelpath))
+    netF.load_state_dict(torch.load(args.modelpath))
     args.modelpath = args.output_dir + '/target_B_par_0.0.pt'   
-    netBT.load_state_dict(torch.load(args.modelpath))
+    netB.load_state_dict(torch.load(args.modelpath))
     args.modelpath = args.output_dir + '/target_C_par_0.0.pt'   
-    netCT.load_state_dict(torch.load(args.modelpath))
-    netFT.eval()
-    netBT.eval()
-    netCT.eval()
+    netC.load_state_dict(torch.load(args.modelpath))
+    netF.eval()
+    netB.eval()
+    netC.eval()
 
-    cal_acc_plot(dset_loaders['target_te'], netFT, netBT, "target_train_data", "target_train_label")
-    cal_acc_plot(dset_loaders['test'], netFT, netBT, "target_test_data", "target_test_label")
+    cal_acc_plot(dset_loaders['target_te'], netF, netB, "target_train_data", "target_train_label")
+    cal_acc_plot(dset_loaders['test'], netF, netB, "target_test_data", "target_test_label")
     # cal_acc_knn(dset_loaders['test'], netF, netB, netC, "target_test_data", "target_test_label")
 
 def cal_acc(loader, netF, netB, netC):
