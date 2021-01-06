@@ -1,14 +1,10 @@
-%cd /content/kma/our_maxmax_4096_1
-!git pull
-!python uda_digit.py --trainC 0.0 --max_in 0.0 --max_out 0.0 --gent 0.1 --div_si 0.1 --cls_par 0.0
-    parser = argparse.ArgumentParser(description='SHOT')
     parser.add_argument('--gpu_id', type=str, nargs='?', default='0', help="device id to run")
     parser.add_argument('--s', type=int, default=0, help="source")
     parser.add_argument('--t', type=int, default=1, help="target")
-    parser.add_argument('--max_epoch', type=int, default=30, help="maximum epoch")
+    parser.add_argument('--max_epoch', type=int, default=5, help="maximum epoch") #30
     parser.add_argument('--batch_size', type=int, default=64, help="batch_size")
     parser.add_argument('--worker', type=int, default=4, help="number of workers")
-    parser.add_argument('--dset', type=str, default='u2m', choices=['u2m', 'm2u','s2m'])
+    parser.add_argument('--dset', type=str, default='s2m', choices=['u2m', 'm2u','s2m']) #m2u
     parser.add_argument('--dataset', type=str, default='test')
     parser.add_argument('--lr', type=float, default=0.01, help="learning rate")
     parser.add_argument('--seed', type=int, default=2020, help="random seed")
@@ -18,7 +14,7 @@
     parser.add_argument('--layer', type=str, default="wn", choices=["linear", "wn"])
     parser.add_argument('--classifier', type=str, default="bn", choices=["ori", "bn"])
     parser.add_argument('--smooth', type=float, default=0.01)   
-    parser.add_argument('--output', type=str, default='ckps_digits_u2m')
+    parser.add_argument('--output', type=str, default='ckps_digits_s2m_61') #ckps_digits_m2u
     parser.add_argument('--issave', type=bool, default=True)
     parser.add_argument('--gamma', type=float, default=0.05)
     parser.add_argument('--wsi', type=float, default=1.0)
@@ -30,30 +26,9 @@
     parser.add_argument('--div_si', type=float, default=0.1)
     parser.add_argument('--gent', type=float, default=0.1)
     parser.add_argument('--cls_par', type=float, default=0.0)
-
-
-NO,NO,NO,YES,YES,NO,98.5
-NO,NO,YES,YES,NO,NO,98.39
-NO,YES,YES,YES,NO,NO,98.09
-YES,NO,YES,YES,NO,NO,97.13000000000001
-YES,YES,YES,YES,NO,NO,96.75
-NO,NO,NO,YES,NO,YES,98.38
-NO,NO,NO,YES,YES,YES,98.46000000000001
-NO,NO,YES,YES,NO,YES,98.42999999999999
-NO,YES,YES,YES,NO,YES,98.17
-
-
-    parser.add_argument('--dset', type=str, default='m2u', choices=['u2m', 'm2u','s2m'])
-    parser.add_argument('--output', type=str, default='ckps_digits_m2u')
-
-NO,NO,NO,YES,NO,NO,98.06451612903226
-NO,NO,NO,YES,YES,YES,98.06451612903226
-NO,NO,NO,YES,YES,NO,98.06451612903226
-NO,NO,YES,YES,NO,NO,97.47311827956989
-NO,NO,YES,YES,NO,YES,97.68817204301075
-NO,NO,YES,YES,YES,NO,97.58064516129032
-NO,YES,NO,YES,NO,NO,97.41935483870968
-NO,NO,NO,YES,NO,YES,98.06451612903226
-NO,NO,YES,NO,YES,YES,97.5268817204301
-NO,NO,YES,YES,YES,YES,97.79569892473118
-NO,YES,NO,YES,NO,YES,97.58064516129032
+    
+NO,NO,NO,YES,NO,YES,95.86
+NO,NO,NO,YES,YES,YES,96.00999999999999
+NO,NO,YES,YES,NO,YES,96.16
+NO,YES,NO,YES,YES,YES,96.38
+NO,YES,YES,YES,NO,YES,95.51
