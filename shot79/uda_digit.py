@@ -473,7 +473,7 @@ def train_target(args):
         idx = torch.logical_or((label_test == 7), (label_test == 9))
         inputs_test = inputs_test[idx]
         label_test = label_test[idx]
-        if(inputs_source.shape[0] == 0):
+        if(inputs_test.shape[0] == 0):
         	continue
 
         print(inputs_test.shape, label_test.shape)
