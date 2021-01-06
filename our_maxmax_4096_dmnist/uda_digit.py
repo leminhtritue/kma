@@ -321,7 +321,7 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
             outputs_4096 = netB(netF(inputs))
             outputs_10 = netC(outputs_4096)
             if start_test:
-            	all_input = inputs.float()
+                all_input = inputs.float()
                 all_output_4096 = outputs_4096.float()
                 all_output_10 = outputs_10.float()
                 all_label = labels.float()
