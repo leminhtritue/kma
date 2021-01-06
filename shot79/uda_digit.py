@@ -485,6 +485,7 @@ def train_target(args):
         tar_idx = tar_idx[idx]
         
         print(tar_idx.min(), tar_idx.max())
+        print(tar_idx)
         sys.exit()
 
         if(inputs_test.shape[0] == 0):
