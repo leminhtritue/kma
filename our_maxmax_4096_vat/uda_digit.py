@@ -181,6 +181,31 @@ def get_feature_label(loader, netF, netB, netC):
                 all_label = torch.cat((all_label, labels.float()), 0)
     return all_output, all_label
 
+def normalize_perturbation(d):
+    d_ = d.view(d.size()[0], -1)
+    eps = d.new_tensor(1e-12)
+    output = d / torch.sqrt(torch.max((d_**2).sum(dim = -1), eps)[0] )
+    return output
+
+class KLDivWithLogits(nn.Module):
+
+    def __init__(self):
+
+        super(KLDivWithLogits, self).__init__()
+
+        self.kl = nn.KLDivLoss(size_average=False, reduce=True)
+        self.logsoftmax = nn.LogSoftmax(dim = 1)
+        self.softmax = nn.Softmax(dim = 1)
+
+
+    def forward(self, x, y):
+
+        log_p = self.logsoftmax(x)
+        q     = self.softmax(y)
+
+        return self.kl(log_p, q) / x.size()[0]
+
+
 def train_source(args):
     dset_loaders = digit_load(args)
     ## set base network
@@ -233,7 +258,24 @@ def train_source(args):
 
         inputs_source, labels_source = inputs_source.cuda(), labels_source.cuda()
         outputs_source = netC(netB(netF(inputs_source))) #64x10
-        classifier_loss = loss.KernelSource(num_classes=args.class_num, alpha=args.smooth)(outputs_source, labels_source, netC) 
+
+        eps = (torch.randn(size=inputs_source.size())).type(inputs_source.type())
+        eps = 1e-6 * normalize_perturbation(eps)
+        eps.requires_grad = True
+        outputs_source_adv_eps = netC(netB(netF(inputs_source + eps)))
+        loss_func_nll = KLDivWithLogits()
+        loss_eps  = loss_func_nll(outputs_source_adv_eps, outputs_source.detach())
+
+        loss_eps.backward()
+        eps_adv = eps.grad
+        eps_adv = normalize_perturbation(eps_adv)
+        inputs_source_adv = inputs_source + args.radius * eps_adv
+
+        output_source_adv = netC(netB(netF(inputs_source_adv.detach())))
+        loss_vat     = loss_func_nll(inputs_source_adv, outputs_source.detach())
+
+
+        classifier_loss = loss.KernelSource(num_classes=args.class_num, alpha=args.smooth)(outputs_source, labels_source, netC) + loss_vat
         # classifier_loss = loss.CrossEntropyLabelSmooth(num_classes=args.class_num, epsilon=args.smooth)(outputs_source, labels_source)  
         total_loss += classifier_loss
         count_loss += 1           
@@ -827,6 +869,7 @@ if __name__ == "__main__":
     parser.add_argument('--div_si', type=float, default=0.1)
     parser.add_argument('--gent', type=float, default=0.1)
     parser.add_argument('--cls_par', type=float, default=0.0)
+    parser.add_argument('--radius', type=float, default=0.01)
 
     args = parser.parse_args()
     args.class_num = 10
