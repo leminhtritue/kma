@@ -202,6 +202,7 @@ class KLDivWithLogits(nn.Module):
 
         log_p = self.logsoftmax(x)
         q     = self.softmax(y)
+        print("abc")
 
         return self.kl(log_p, q) / x.size()[0]
 
