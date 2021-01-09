@@ -714,6 +714,23 @@ def train_target(args):
             pred = mem_label[tar_idx]
             classifier_loss += args.cls_par * nn.CrossEntropyLoss()(outputs_test, pred)
 
+        eps = (torch.randn(size=inputs_test.size())).type(inputs_test.type())
+        eps = 1e-6 * normalize_perturbation(eps)
+        eps.requires_grad = True
+        outputs_source_adv_eps = netC(netB(netF(inputs_test + eps)))
+        loss_func_nll = KLDivWithLogits()
+        loss_eps  = loss_func_nll(outputs_source_adv_eps, outputs_test.detach())
+
+        loss_eps.backward()
+        eps_adv = eps.grad
+        eps_adv = normalize_perturbation(eps_adv)
+        inputs_source_adv = inputs_test + args.radius * eps_adv
+
+        output_source_adv = netC(netB(netF(inputs_source_adv.detach())))
+        loss_vat     = loss_func_nll(output_source_adv, outputs_test.detach())
+
+        classifier_loss += loss_vat
+
         # entropy_loss = loss.Entropy(softmax_score).mean()      
         # div_loss = -loss.Entropy_1D(softmax_score.mean(dim = 0))
         # classifier_loss = entropy_loss + div_loss
