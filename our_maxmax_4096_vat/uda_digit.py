@@ -202,7 +202,6 @@ class KLDivWithLogits(nn.Module):
 
         log_p = self.logsoftmax(x)
         q     = self.softmax(y)
-        print("abc")
 
         return self.kl(log_p, q) / x.size()[0]
 
@@ -273,7 +272,7 @@ def train_source(args):
         inputs_source_adv = inputs_source + args.radius * eps_adv
 
         output_source_adv = netC(netB(netF(inputs_source_adv.detach())))
-        loss_vat     = loss_func_nll(inputs_source_adv, outputs_source.detach())
+        loss_vat     = loss_func_nll(output_source_adv, outputs_source.detach())
 
 
         classifier_loss = loss.KernelSource(num_classes=args.class_num, alpha=args.smooth)(outputs_source, labels_source, netC) + loss_vat
