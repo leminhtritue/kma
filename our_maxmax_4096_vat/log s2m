@@ -1,0 +1,34 @@
+    parser.add_argument('--gpu_id', type=str, nargs='?', default='0', help="device id to run")
+    parser.add_argument('--s', type=int, default=0, help="source")
+    parser.add_argument('--t', type=int, default=1, help="target")
+    parser.add_argument('--max_epoch', type=int, default=5, help="maximum epoch") #30
+    parser.add_argument('--batch_size', type=int, default=64, help="batch_size")
+    parser.add_argument('--worker', type=int, default=4, help="number of workers")
+    parser.add_argument('--dset', type=str, default='s2m', choices=['u2m', 'm2u','s2m']) #m2u
+    parser.add_argument('--dataset', type=str, default='test')
+    parser.add_argument('--lr', type=float, default=0.01, help="learning rate")
+    parser.add_argument('--seed', type=int, default=2020, help="random seed")
+    parser.add_argument('--ent_par', type=float, default=1.0)
+    parser.add_argument('--ent', type=bool, default=True)
+    parser.add_argument('--bottleneck', type=int, default=256)
+    parser.add_argument('--layer', type=str, default="wn", choices=["linear", "wn"])
+    parser.add_argument('--classifier', type=str, default="bn", choices=["ori", "bn"])
+    parser.add_argument('--smooth', type=float, default=0.01)   
+    parser.add_argument('--output', type=str, default='ckps_digits_s2m_61') #ckps_digits_m2u
+    parser.add_argument('--issave', type=bool, default=True)
+    parser.add_argument('--gamma', type=float, default=0.05)
+    parser.add_argument('--wsi', type=float, default=1.0)
+    parser.add_argument('--wds', type=float, default=1.0)
+    parser.add_argument('--wlp', type=float, default=1.0)
+    parser.add_argument('--trainC', type=float, default=0.0)
+    parser.add_argument('--max_in', type=float, default=0.0)
+    parser.add_argument('--max_out', type=float, default=0.1)
+    parser.add_argument('--div_si', type=float, default=0.1)
+    parser.add_argument('--gent', type=float, default=0.1)
+    parser.add_argument('--cls_par', type=float, default=0.0)
+    
+NO,NO,NO,YES,NO,YES,95.86
+NO,NO,NO,YES,YES,YES,96.00999999999999
+NO,NO,YES,YES,NO,YES,96.16
+NO,YES,NO,YES,YES,YES,96.38
+NO,YES,YES,YES,NO,YES,95.51

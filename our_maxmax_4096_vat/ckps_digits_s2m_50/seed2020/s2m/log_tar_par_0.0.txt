@@ -1,0 +1,60 @@
+==========================================
+gpu_id:0
+s:0
+t:1
+max_epoch:200
+batch_size:64
+worker:4
+dset:s2m
+dataset:test
+lr:0.01
+seed:2020
+ent_par:1.0
+ent:True
+bottleneck:256
+layer:wn
+classifier:bn
+smooth:0.01
+output:ckps_digits_s2m
+issave:True
+gamma:0.05
+wsi:1.0
+wds:1.0
+wlp:1.0
+trainC:0.0
+max_in:0.0
+max_out:0.0
+div_si:0.0
+gent:0.1
+cls_par:0.0
+class_num:10
+output_dir:ckps_digits_s2m/seed2020/s2m
+out_file:<_io.TextIOWrapper name='ckps_digits_s2m/seed2020/s2m/log_tar_par_0.0.txt' mode='w' encoding='UTF-8'>
+modelpath:ckps_digits_s2m/seed2020/s2m/source_C.pt
+savename:par_0.0
+
+Task: s2m, Source model accuracy on target test = 50.74%
+Iter:938/187600; Loss (entropy): -1.23, Cost (si/distance/logp) = 0.00 / 0.00 / 0.00, Accuracy target (train/test) = 10.22% / 10.10%, moved samples: 59660.0/60000.
+Iter:1876/187600; Loss (entropy): -1.27, Cost (si/distance/logp) = 0.00 / 0.00 / 0.00, Accuracy target (train/test) = 10.22% / 10.10%, moved samples: 60000.0/60000.
+Iter:2814/187600; Loss (entropy): -1.27, Cost (si/distance/logp) = 0.00 / 0.00 / 0.00, Accuracy target (train/test) = 10.22% / 10.10%, moved samples: 60000.0/60000.
+Iter:3752/187600; Loss (entropy): -1.27, Cost (si/distance/logp) = 0.00 / 0.00 / 0.00, Accuracy target (train/test) = 10.22% / 10.10%, moved samples: 60000.0/60000.
+Iter:4690/187600; Loss (entropy): -1.27, Cost (si/distance/logp) = 0.00 / 0.00 / 0.00, Accuracy target (train/test) = 10.22% / 10.10%, moved samples: 60000.0/60000.
+Iter:5628/187600; Loss (entropy): -1.27, Cost (si/distance/logp) = 0.00 / 0.00 / 0.00, Accuracy target (train/test) = 10.22% / 10.10%, moved samples: 60000.0/60000.
+Iter:6566/187600; Loss (entropy): -1.27, Cost (si/distance/logp) = 0.00 / 0.00 / 0.00, Accuracy target (train/test) = 10.22% / 10.10%, moved samples: 60000.0/60000.
+Iter:7504/187600; Loss (entropy): -1.27, Cost (si/distance/logp) = 0.00 / 0.00 / 0.00, Accuracy target (train/test) = 10.22% / 10.10%, moved samples: 60000.0/60000.
+Iter:8442/187600; Loss (entropy): -1.27, Cost (si/distance/logp) = 0.00 / 0.00 / 0.00, Accuracy target (train/test) = 10.22% / 10.10%, moved samples: 60000.0/60000.
+Iter:9380/187600; Loss (entropy): -1.27, Cost (si/distance/logp) = 0.00 / 0.00 / 0.00, Accuracy target (train/test) = 10.22% / 10.10%, moved samples: 60000.0/60000.
+Iter:10318/187600; Loss (entropy): -1.27, Cost (si/distance/logp) = 0.00 / 0.00 / 0.00, Accuracy target (train/test) = 10.22% / 10.10%, moved samples: 60000.0/60000.
+Iter:11256/187600; Loss (entropy): -1.27, Cost (si/distance/logp) = 0.00 / 0.00 / 0.00, Accuracy target (train/test) = 10.22% / 10.10%, moved samples: 60000.0/60000.
+Iter:12194/187600; Loss (entropy): -1.27, Cost (si/distance/logp) = 0.00 / 0.00 / 0.00, Accuracy target (train/test) = 10.22% / 10.10%, moved samples: 60000.0/60000.
+Iter:13132/187600; Loss (entropy): -1.27, Cost (si/distance/logp) = 0.00 / 0.00 / 0.00, Accuracy target (train/test) = 10.22% / 10.10%, moved samples: 60000.0/60000.
+Iter:14070/187600; Loss (entropy): -1.27, Cost (si/distance/logp) = 0.00 / 0.00 / 0.00, Accuracy target (train/test) = 10.22% / 10.10%, moved samples: 60000.0/60000.
+Iter:15008/187600; Loss (entropy): -1.27, Cost (si/distance/logp) = 0.00 / 0.00 / 0.00, Accuracy target (train/test) = 10.22% / 10.10%, moved samples: 60000.0/60000.
+Iter:15946/187600; Loss (entropy): -1.27, Cost (si/distance/logp) = 0.00 / 0.00 / 0.00, Accuracy target (train/test) = 10.22% / 10.10%, moved samples: 60000.0/60000.
+Iter:16884/187600; Loss (entropy): -1.27, Cost (si/distance/logp) = 0.00 / 0.00 / 0.00, Accuracy target (train/test) = 10.22% / 10.10%, moved samples: 60000.0/60000.
+Iter:17822/187600; Loss (entropy): -1.27, Cost (si/distance/logp) = 0.00 / 0.00 / 0.00, Accuracy target (train/test) = 10.22% / 10.10%, moved samples: 60000.0/60000.
+Iter:18760/187600; Loss (entropy): -1.27, Cost (si/distance/logp) = 0.00 / 0.00 / 0.00, Accuracy target (train/test) = 10.22% / 10.10%, moved samples: 60000.0/60000.
+Iter:19698/187600; Loss (entropy): -1.27, Cost (si/distance/logp) = 0.00 / 0.00 / 0.00, Accuracy target (train/test) = 10.22% / 10.10%, moved samples: 60000.0/60000.
+Iter:20636/187600; Loss (entropy): -1.27, Cost (si/distance/logp) = 0.00 / 0.00 / 0.00, Accuracy target (train/test) = 10.22% / 10.10%, moved samples: 60000.0/60000.
+Iter:21574/187600; Loss (entropy): -1.27, Cost (si/distance/logp) = 0.00 / 0.00 / 0.00, Accuracy target (train/test) = 10.22% / 10.10%, moved samples: 60000.0/60000.
+Iter:22512/187600; Loss (entropy): -1.27, Cost (si/distance/logp) = 0.00 / 0.00 / 0.00, Accuracy target (train/test) = 10.22% / 10.10%, moved samples: 60000.0/60000.
