@@ -157,11 +157,11 @@ class feat_bootleneck(nn.Module):
         self.feature_map.new_feature_map()
 
     def forward(self, x):
-        x = self.feature_map(x)
+        # x = self.feature_map(x)
 
-        # x = self.bottleneck(x)
-        # if self.type == "bn":
-        #     x = self.bn(x)
+        x = self.bottleneck(x)
+        if self.type == "bn":
+            x = self.bn(x)
         return x
 
 class feat_classifier(nn.Module):
@@ -172,8 +172,8 @@ class feat_classifier(nn.Module):
             self.fc = weightNorm(nn.Linear(bottleneck_dim, class_num), name="weight")
             self.fc.apply(init_weights)
         else:
-            # self.fc = nn.Linear(bottleneck_dim, class_num)
-            self.fc = nn.Linear(512, class_num)
+            self.fc = nn.Linear(bottleneck_dim, class_num)
+            # self.fc = nn.Linear(512, class_num)
             self.fc.apply(init_weights)
 
     def forward(self, x):

@@ -211,8 +211,8 @@ def train_source(args):
         netF = network.VGGBase(vgg_name=args.net).cuda()  
 
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
-    # netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
-    netC = network.feat_classifier(type="linear", class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
+    netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
+    # netC = network.feat_classifier(type="linear", class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
 
     param_group = []
     learning_rate = args.lr
@@ -252,8 +252,8 @@ def train_source(args):
 
         inputs_source, labels_source = inputs_source.cuda(), labels_source.cuda()
         outputs_source = netC(netB(netF(inputs_source)))
-        classifier_loss = CrossEntropyLabelSmooth(num_classes=args.class_num, epsilon=args.smooth)(outputs_source, labels_source)            
-        # classifier_loss = loss.KernelSource(num_classes=args.class_num, alpha=args.smooth)(outputs_source, labels_source, netC) 
+        # classifier_loss = CrossEntropyLabelSmooth(num_classes=args.class_num, epsilon=args.smooth)(outputs_source, labels_source)            
+        classifier_loss = loss.KernelSource(num_classes=args.class_num, alpha=args.smooth)(outputs_source, labels_source, netC) 
         total_loss += classifier_loss
         count_loss += 1         
 
@@ -302,7 +302,7 @@ def train_source(args):
     	cur_mean = cur_data.mean(dim=0)
     	mean_out[i] = cur_mean
 
-    torch.save(mean_out, osp.join(args.output_dir, "source_mean.pt"))
+    torch.save(mean_out, osp.join(args.output_dir_src, "source_mean.pt"))
     torch.save(best_netF, osp.join(args.output_dir_src, "source_F.pt"))
     torch.save(best_netB, osp.join(args.output_dir_src, "source_B.pt"))
     torch.save(best_netC, osp.join(args.output_dir_src, "source_C.pt"))
