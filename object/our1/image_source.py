@@ -269,7 +269,7 @@ def train_source(args):
                 acc_s_te, acc_list = cal_acc(dset_loaders['source_te'], netF, netB, netC, True)
                 log_str = 'Task: {}, Iter:{}/{}; Accuracy = {:.2f}%'.format(args.name_src, iter_num, max_iter, acc_s_te) + '\n' + acc_list
             else:
-            	acc_s_tr, _ = cal_acc(dset_loaders['source_tr'], netF, netB, netC, False)
+                acc_s_tr, _ = cal_acc(dset_loaders['source_tr'], netF, netB, netC, False)
                 acc_s_te, _ = cal_acc(dset_loaders['source_te'], netF, netB, netC, False)
                 acc_s_tgt, _ = cal_acc(dset_loaders['test'], netF, netB, netC, False)
                 # log_str = 'Task: {}, Iter:{}/{}; Accuracy = {:.2f}%'.format(args.name_src, iter_num, max_iter, acc_s_te)
