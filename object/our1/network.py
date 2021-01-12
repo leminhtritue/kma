@@ -149,7 +149,7 @@ class feat_bootleneck(nn.Module):
         self.bn = nn.BatchNorm1d(bottleneck_dim, affine=True)
         self.relu = nn.ReLU(inplace=True)
         self.dropout = nn.Dropout(p=0.5)
-        self.bottleneck = nn.Linear(feature_dim, bottleneck_dim)
+        self.bottleneck = nn.Linear(512, bottleneck_dim)
         self.bottleneck.apply(init_weights)
         self.type = type
 
