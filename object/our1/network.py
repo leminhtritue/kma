@@ -144,7 +144,7 @@ class RandomFourierFeatures(FeatureMap):
         return phi
 
 class feat_bootleneck(nn.Module):
-    def __init__(self, feature_dim, gamma = 0.5, feature_flag =False, bottleneck_dim=256, type="ori"):
+    def __init__(self, feature_dim, gamma = 0.5, feature_flag =False, bottleneck_dim=256, type="ori", nrf = 512):
         super(feat_bootleneck, self).__init__()
         self.bn = nn.BatchNorm1d(bottleneck_dim, affine=True)
         self.relu = nn.ReLU(inplace=True)
@@ -153,7 +153,7 @@ class feat_bootleneck(nn.Module):
         self.bottleneck.apply(init_weights)
         self.type = type
 
-        self.feature_map = RandomFourierFeatures(bottleneck_dim, 512, gamma)
+        self.feature_map = RandomFourierFeatures(bottleneck_dim, nrf, gamma)
         self.feature_map.new_feature_map()
         self.feature_flag = feature_flag
 
@@ -166,16 +166,16 @@ class feat_bootleneck(nn.Module):
         return x
 
 class feat_classifier(nn.Module):
-    def __init__(self, class_num, bottleneck_dim=256, type="linear"):
+    def __init__(self, class_num, bottleneck_dim=256, type="linear", nrf=512):
         super(feat_classifier, self).__init__()
         self.type = type
         if type == 'wn':
             # self.fc = weightNorm(nn.Linear(bottleneck_dim, class_num), name="weight")
-            self.fc = weightNorm(nn.Linear(512, class_num), name="weight")
+            self.fc = weightNorm(nn.Linear(nrf, class_num), name="weight")
             self.fc.apply(init_weights)
         else:
             # self.fc = nn.Linear(bottleneck_dim, class_num)
-            self.fc = nn.Linear(512, class_num)
+            self.fc = nn.Linear(nrf, class_num)
             self.fc.apply(init_weights)
 
     def forward(self, x):

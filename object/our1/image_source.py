@@ -210,8 +210,8 @@ def train_source(args):
     elif args.net[0:3] == 'vgg':
         netF = network.VGGBase(vgg_name=args.net).cuda()  
 
-    netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
-    netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
+    netB = network.feat_bootleneck(nrf=args.nrf, type=args.classifier, feature_dim=netF.in_features, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
+    netC = network.feat_classifier(nrf=args.nrf, type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
     # netC = network.feat_classifier(type="linear", class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
 
     param_group = []
@@ -373,6 +373,7 @@ if __name__ == "__main__":
     parser.add_argument('--trte', type=str, default='val', choices=['full', 'val'])
 
     parser.add_argument('--gamma', type=float, default=0.05)
+    parser.add_argument('--nrf', type=int, default=512)
 
     args = parser.parse_args()
 
