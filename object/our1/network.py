@@ -166,6 +166,8 @@ class feat_bootleneck(nn.Module):
         #     x = self.bn(x)
 
         x = self.feature_map(x)
+        if self.type == "bn":
+            x = self.bn(x)
         return x
 
 class feat_classifier(nn.Module):
