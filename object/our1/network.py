@@ -153,17 +153,16 @@ class feat_bootleneck(nn.Module):
         self.bottleneck.apply(init_weights)
         self.type = type
 
-        self.feature_map = RandomFourierFeatures(feature_dim, 512, gamma)
+        self.feature_map = RandomFourierFeatures(bottleneck_dim, 512, gamma)
         self.feature_map.new_feature_map()
         self.feature_flag = feature_flag
 
     def forward(self, x):
-        # if feature_flag:
-        #     x = self.feature_map(x)
-
         x = self.bottleneck(x)
         if self.type == "bn":
             x = self.bn(x)
+
+        x = self.feature_map(x)
         return x
 
 class feat_classifier(nn.Module):
@@ -171,11 +170,12 @@ class feat_classifier(nn.Module):
         super(feat_classifier, self).__init__()
         self.type = type
         if type == 'wn':
-            self.fc = weightNorm(nn.Linear(bottleneck_dim, class_num), name="weight")
+            # self.fc = weightNorm(nn.Linear(bottleneck_dim, class_num), name="weight")
+            self.fc = weightNorm(nn.Linear(512, class_num), name="weight")
             self.fc.apply(init_weights)
         else:
-            self.fc = nn.Linear(bottleneck_dim, class_num)
-            # self.fc = nn.Linear(512, class_num)
+            # self.fc = nn.Linear(bottleneck_dim, class_num)
+            self.fc = nn.Linear(512, class_num)
             self.fc.apply(init_weights)
 
     def forward(self, x):
