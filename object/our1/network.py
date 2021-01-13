@@ -147,7 +147,7 @@ class feat_bootleneck(nn.Module):
     def __init__(self, feature_dim, gamma = 0.5, feature_flag =False, bottleneck_dim=256, type="ori", nrf = 512):
         super(feat_bootleneck, self).__init__()
         # self.bn = nn.BatchNorm1d(bottleneck_dim, affine=True)
-        self.bn = nn.BatchNorm1d(feature_dim, affine=True)
+        self.bn = nn.BatchNorm1d(nrf, affine=True)
         self.relu = nn.ReLU(inplace=True)
         self.dropout = nn.Dropout(p=0.5)
         self.bottleneck = nn.Linear(feature_dim, bottleneck_dim)
