@@ -144,20 +144,22 @@ class RandomFourierFeatures(FeatureMap):
         return phi
 
 class feat_bootleneck(nn.Module):
-    def __init__(self, feature_dim, gamma = 0.5, bottleneck_dim=256, type="ori"):
+    def __init__(self, feature_dim, gamma = 0.5, feature_flag =False, bottleneck_dim=256, type="ori"):
         super(feat_bootleneck, self).__init__()
         self.bn = nn.BatchNorm1d(bottleneck_dim, affine=True)
         self.relu = nn.ReLU(inplace=True)
         self.dropout = nn.Dropout(p=0.5)
-        self.bottleneck = nn.Linear(512, bottleneck_dim)
+        self.bottleneck = nn.Linear(feature_dim, bottleneck_dim)
         self.bottleneck.apply(init_weights)
         self.type = type
 
         self.feature_map = RandomFourierFeatures(feature_dim, 512, gamma)
         self.feature_map.new_feature_map()
+        self.feature_flag = feature_flag
 
     def forward(self, x):
-        x = self.feature_map(x)
+        # if feature_flag:
+        #     x = self.feature_map(x)
 
         x = self.bottleneck(x)
         if self.type == "bn":
