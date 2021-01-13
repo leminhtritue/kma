@@ -154,14 +154,14 @@ class feat_bootleneck(nn.Module):
         self.bottleneck.apply(init_weights)
         self.type = type
 
-        # self.feature_map = RandomFourierFeatures(bottleneck_dim, nrf, gamma)
-        self.feature_map = RandomFourierFeatures(feature_dim, nrf, gamma)
+        self.feature_map = RandomFourierFeatures(bottleneck_dim, nrf, gamma)
+        # self.feature_map = RandomFourierFeatures(feature_dim, nrf, gamma)
 
         self.feature_map.new_feature_map()
         self.feature_flag = feature_flag
 
     def forward(self, x):
-        # x = self.bottleneck(x)
+        x = self.bottleneck(x)
         # if self.type == "bn":
         #     x = self.bn(x)
 
