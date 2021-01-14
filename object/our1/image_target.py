@@ -465,6 +465,7 @@ if __name__ == "__main__":
     parser.add_argument('--cls_par', type=float, default=0.3)
     parser.add_argument('--gamma', type=float, default=0.05)
     parser.add_argument('--nrf', type=int, default=512)
+    parser.add_argument('--radius', type=float, default=0.01)
 
     args = parser.parse_args()
 
