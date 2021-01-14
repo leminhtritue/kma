@@ -262,9 +262,9 @@ def train_source(args):
         optimizer.step()
 
         if iter_num % interval_iter == 0 or iter_num == max_iter:
-            netF.eval()
-            netB.eval()
-            netC.eval()
+            # netF.eval()
+            # netB.eval()
+            # netC.eval()
             if args.dset=='VISDA-C':
                 acc_s_te, acc_list = cal_acc(dset_loaders['source_te'], netF, netB, netC, True)
                 log_str = 'Task: {}, Iter:{}/{}; Accuracy = {:.2f}%'.format(args.name_src, iter_num, max_iter, acc_s_te) + '\n' + acc_list
