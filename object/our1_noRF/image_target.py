@@ -406,7 +406,7 @@ if __name__ == "__main__":
     # parser.add_argument('--gent', type=bool, default=True)
     parser.add_argument('--ent', type=bool, default=True)
     parser.add_argument('--threshold', type=int, default=0)
-    parser.add_argument('--cls_par', type=float, default=0.3)
+
     parser.add_argument('--ent_par', type=float, default=1.0)
     parser.add_argument('--lr_decay1', type=float, default=0.1)
     parser.add_argument('--lr_decay2', type=float, default=1.0)
@@ -422,6 +422,7 @@ if __name__ == "__main__":
     parser.add_argument('--issave', type=bool, default=True)
 
     parser.add_argument('--gent', type=float, default=0.1)
+    parser.add_argument('--cls_par', type=float, default=0.3)
 
     args = parser.parse_args()
 
