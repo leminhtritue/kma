@@ -493,8 +493,6 @@ if __name__ == "__main__":
     for i in range(len(names)):
         if i == args.s:
             continue
-        if i == 1:
-            continue
         args.t = i
 
         folder = './data/'
