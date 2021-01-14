@@ -202,6 +202,30 @@ def cal_acc_oda(loader, netF, netB, netC):
     return np.mean(acc[:-1]), np.mean(acc), unknown_acc
     # return np.mean(acc), np.mean(acc[:-1])
 
+def normalize_perturbation(d):
+    d_ = d.view(d.size()[0], -1)
+    eps = d.new_tensor(1e-12)
+    output = d / torch.sqrt(torch.max((d_**2).sum(dim = -1), eps)[0] )
+    return output
+
+class KLDivWithLogits(nn.Module):
+
+    def __init__(self):
+
+        super(KLDivWithLogits, self).__init__()
+
+        self.kl = nn.KLDivLoss(size_average=False, reduce=True)
+        self.logsoftmax = nn.LogSoftmax(dim = 1)
+        self.softmax = nn.Softmax(dim = 1)
+
+
+    def forward(self, x, y):
+
+        log_p = self.logsoftmax(x)
+        q     = self.softmax(y)
+
+        return self.kl(log_p, q) / x.size()[0]
+        
 def train_source(args):
     dset_loaders = data_load(args)
     ## set base network
