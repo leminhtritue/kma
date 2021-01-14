@@ -129,7 +129,9 @@ def train_target(args):
     elif args.net[0:3] == 'vgg':
         netF = network.VGGBase(vgg_name=args.net).cuda()  
 
-    netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
+    # netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
+    # netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
+    netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
     netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
 
     modelpath = args.output_dir_src + '/source_F.pt'   
@@ -158,8 +160,23 @@ def train_target(args):
     optimizer = op_copy(optimizer)
 
     max_iter = args.max_epoch * len(dset_loaders["target"])
-    interval_iter = max_iter // args.interval
+    # interval_iter = max_iter // args.interval
+    interval_iter = len(dset_loaders["target"])
     iter_num = 0
+
+    classifier_loss_total = 0.0
+    classifier_loss_count = 0
+    entropy_loss_total = 0.0
+    entropy_loss_count = 0
+    costlog_loss_total = 0.0
+    costlog_loss_count = 0
+    costs_loss_total = 0.0
+    costs_loss_count = 0
+    costdist_loss_total = 0.0
+    costdist_loss_count = 0
+    right_sample_count = 0
+    sum_sample = 0
+    start_output = True
 
     while iter_num < max_iter:
         try:
@@ -187,24 +204,73 @@ def train_target(args):
         features_test = netB(netF(inputs_test))
         outputs_test = netC(features_test)
 
+        mark_max = torch.zeros(outputs_test.size()).cuda()
+        mark_zeros = torch.zeros(outputs_test.size()).cuda()
+
+        outputs_test_max = outputs_test
+
+        for i in range(args.class_num):
+            mark_max[:,i] = torch.max(torch.cat((outputs_test_max[:, :i],outputs_test_max[:, i+1:]), dim = 1), dim = 1).values        
+
+        cost_s = outputs_test_max - mark_max
+       
+        softmax_si = nn.Softmax(dim=1)(cost_s)
+        entropy_raw = softmax_si * (-torch.log(softmax_si + 1e-5))
+        entropy_raw = torch.sum(entropy_raw, dim=1)         
+        entropy_loss = torch.mean(entropy_raw)
+
+        softmax_out = softmax_si
+
+        msoftmax = softmax_out.mean(dim=0)
+        entropy_loss -= torch.sum(-msoftmax * torch.log(msoftmax + 1e-5))
+
+        im_loss = entropy_loss * args.ent_par
+        classifier_loss = im_loss
+
+
+
         if args.cls_par > 0:
             pred = mem_label[tar_idx]
-            classifier_loss = nn.CrossEntropyLoss()(outputs_test, pred)
-            classifier_loss *= args.cls_par
-            if iter_num < interval_iter and args.dset == "VISDA-C":
-                classifier_loss *= 0
-        else:
-            classifier_loss = torch.tensor(0.0).cuda()
+            classifier_loss += args.cls_par * nn.CrossEntropyLoss()(outputs_test, pred)
+            # classifier_loss = nn.CrossEntropyLoss()(outputs_test, pred)
+            # classifier_loss *= args.cls_par
+            # if iter_num < interval_iter and args.dset == "VISDA-C":
+            #     classifier_loss *= 0
+        # else:
+        #     classifier_loss = torch.tensor(0.0).cuda()
 
-        if args.ent:
-            softmax_out = nn.Softmax(dim=1)(outputs_test)
-            entropy_loss = torch.mean(loss.Entropy(softmax_out))
-            if args.gent:
-                msoftmax = softmax_out.mean(dim=0)
-                gentropy_loss = torch.sum(-msoftmax * torch.log(msoftmax + args.epsilon))
-                entropy_loss -= gentropy_loss
-            im_loss = entropy_loss * args.ent_par
-            classifier_loss += im_loss
+        # if args.ent:
+        #     softmax_out = nn.Softmax(dim=1)(outputs_test)
+        #     entropy_loss = torch.mean(loss.Entropy(softmax_out))
+        #     if args.gent:
+        #         msoftmax = softmax_out.mean(dim=0)
+        #         gentropy_loss = torch.sum(-msoftmax * torch.log(msoftmax + args.epsilon))
+        #         entropy_loss -= gentropy_loss
+        #     im_loss = entropy_loss * args.ent_par
+        #     classifier_loss += im_loss
+
+        classifier_loss_total += classifier_loss
+        classifier_loss_count += 1   
+        entropy_loss_total += entropy_loss
+        entropy_loss_count += 1 
+        costlog_loss_total += 0
+        costlog_loss_count += 1  
+        costs_loss_total += 0
+        costs_loss_count += 1  
+        costdist_loss_total += 0
+        costdist_loss_count += 1 
+
+        max_hyperplane = outputs_test.max(dim=1).values       
+        max_hyperplane[max_hyperplane > 0] = 1
+        max_hyperplane[max_hyperplane < 0] = 0
+        right_sample_count += max_hyperplane.sum()
+        sum_sample += outputs_test.shape[0]
+
+        if (start_output):
+            all_output = outputs_test.float().cpu()
+            start_output = False
+        else:
+            all_output = torch.cat((all_output, outputs_test.float().cpu()), 0)
 
         optimizer.zero_grad()
         classifier_loss.backward()
@@ -217,12 +283,33 @@ def train_target(args):
                 acc_s_te, acc_list = cal_acc(dset_loaders['test'], netF, netB, netC, True)
                 log_str = 'Task: {}, Iter:{}/{}; Accuracy = {:.2f}%'.format(args.name, iter_num, max_iter, acc_s_te) + '\n' + acc_list
             else:
+                _, predict = torch.max(all_output, 1)
                 acc_s_te, _ = cal_acc(dset_loaders['test'], netF, netB, netC, False)
+                acc_s_tr, _ = cal_acc(dset_loaders['target'], netF, netB, netC, False)
                 log_str = 'Task: {}, Iter:{}/{}; Accuracy = {:.2f}%'.format(args.name, iter_num, max_iter, acc_s_te)
+                
+                log_str = 'Iter:{}/{}; Loss : {:.2f}, , Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(iter_num, max_iter, \
+                classifier_loss_total/classifier_loss_count, acc_s_tr, acc_s_te, right_sample_count, sum_sample)
 
             args.out_file.write(log_str + '\n')
             args.out_file.flush()
             print(log_str+'\n')
+
+
+            classifier_loss_total = 0.0
+            classifier_loss_count = 0
+            entropy_loss_total = 0.0
+            entropy_loss_count = 0
+            costs_loss_total = 0.0
+            costs_loss_count = 0
+            costdist_loss_total = 0.0
+            costdist_loss_count = 0
+            costlog_loss_total = 0.0
+            costlog_loss_count = 0
+            right_sample_count = 0
+            sum_sample = 0
+            start_output = True
+
             netF.train()
             netB.train()
 
@@ -316,7 +403,7 @@ if __name__ == "__main__":
     parser.add_argument('--net', type=str, default='resnet50', help="alexnet, vgg16, resnet50, res101")
     parser.add_argument('--seed', type=int, default=2020, help="random seed")
  
-    parser.add_argument('--gent', type=bool, default=True)
+    # parser.add_argument('--gent', type=bool, default=True)
     parser.add_argument('--ent', type=bool, default=True)
     parser.add_argument('--threshold', type=int, default=0)
     parser.add_argument('--cls_par', type=float, default=0.3)
@@ -333,6 +420,9 @@ if __name__ == "__main__":
     parser.add_argument('--output_src', type=str, default='san')
     parser.add_argument('--da', type=str, default='uda', choices=['uda', 'pda'])
     parser.add_argument('--issave', type=bool, default=True)
+
+    parser.add_argument('--gent', type=float, default=0.1)
+
     args = parser.parse_args()
 
     if args.dset == 'office-home':
