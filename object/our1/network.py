@@ -162,8 +162,8 @@ class feat_bootleneck(nn.Module):
 
     def forward(self, x):
         x = self.bottleneck(x)
-        # if self.type == "bn":
-        #     x = self.bn1(x)
+        if self.type == "bn":
+            x = self.bn1(x)
 
         x = self.feature_map(x)
         if self.type == "bn":
