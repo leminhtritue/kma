@@ -230,9 +230,9 @@ def train_source(args):
     interval_iter = max_iter // 10
     iter_num = 0
 
-    netF.train()
-    netB.train()
-    netC.train()
+    # netF.train()
+    # netB.train()
+    # netC.train()
 
     total_loss = 0.0
     count_loss = 0
@@ -287,9 +287,9 @@ def train_source(args):
                 best_netB = netB.state_dict()
                 best_netC = netC.state_dict()
 
-            netF.train()
-            netB.train()
-            netC.train()
+            # netF.train()
+            # netB.train()
+            # netC.train()
 
     source_train_data, source_train_label = get_feature_label(dset_loaders['source_tr'], netF, netB, netC)
     source_test_data, source_test_label = get_feature_label(dset_loaders['source_te'], netF, netB, netC)
