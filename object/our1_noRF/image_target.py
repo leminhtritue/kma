@@ -423,6 +423,7 @@ if __name__ == "__main__":
 
     parser.add_argument('--gent', type=float, default=0.1)
     parser.add_argument('--cls_par', type=float, default=0.3)
+    parser.add_argument('--gamma', type=float, default=0.05)
 
     args = parser.parse_args()
 
