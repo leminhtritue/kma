@@ -197,7 +197,7 @@ def train_target(args):
         inputs_test = inputs_test.cuda()
 
         iter_num += 1
-        lr_scheduler(optimizer, iter_num=iter_num, max_iter=max_iter)
+        # lr_scheduler(optimizer, iter_num=iter_num, max_iter=max_iter)
 
         features_test = netB(netF(inputs_test))
         outputs_test = netC(features_test)
