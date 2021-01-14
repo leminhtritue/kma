@@ -121,6 +121,31 @@ def cal_acc(loader, netF, netB, netC, flag=False):
     else:
         return accuracy*100, mean_ent
 
+def normalize_perturbation(d):
+    d_ = d.view(d.size()[0], -1)
+    eps = d.new_tensor(1e-12)
+    output = d / torch.sqrt(torch.max((d_**2).sum(dim = -1), eps)[0] )
+    return output
+
+class KLDivWithLogits(nn.Module):
+
+    def __init__(self):
+
+        super(KLDivWithLogits, self).__init__()
+
+        self.kl = nn.KLDivLoss(size_average=False, reduce=True)
+        self.logsoftmax = nn.LogSoftmax(dim = 1)
+        self.softmax = nn.Softmax(dim = 1)
+
+
+    def forward(self, x, y):
+
+        log_p = self.logsoftmax(x)
+        q     = self.softmax(y)
+
+        return self.kl(log_p, q) / x.size()[0]
+
+
 def train_target(args):
     dset_loaders = data_load(args)
     ## set base network
@@ -197,7 +222,7 @@ def train_target(args):
         inputs_test = inputs_test.cuda()
 
         iter_num += 1
-        # lr_scheduler(optimizer, iter_num=iter_num, max_iter=max_iter)
+        lr_scheduler(optimizer, iter_num=iter_num, max_iter=max_iter)
 
         features_test = netB(netF(inputs_test))
         outputs_test = netC(features_test)
@@ -246,6 +271,24 @@ def train_target(args):
         #         entropy_loss -= gentropy_loss
         #     im_loss = entropy_loss * args.ent_par
         #     classifier_loss += im_loss
+
+        eps = (torch.randn(size=inputs_test.size())).type(inputs_test.type())
+        eps = 1e-6 * normalize_perturbation(eps)
+        eps.requires_grad = True
+        outputs_source_adv_eps = netC(netB(netF(inputs_test + eps)))
+        loss_func_nll = KLDivWithLogits()
+        loss_eps  = loss_func_nll(outputs_source_adv_eps, outputs_test.detach())
+
+        loss_eps.backward()
+        eps_adv = eps.grad
+        eps_adv = normalize_perturbation(eps_adv)
+        inputs_source_adv = inputs_test + args.radius * eps_adv
+
+        output_source_adv = netC(netB(netF(inputs_source_adv.detach())))
+        loss_vat     = loss_func_nll(output_source_adv, outputs_test.detach())
+
+        classifier_loss += loss_vat
+
 
         classifier_loss_total += classifier_loss
         classifier_loss_count += 1   
