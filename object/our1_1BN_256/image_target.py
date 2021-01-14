@@ -493,8 +493,11 @@ if __name__ == "__main__":
     for i in range(len(names)):
         if i == args.s:
             continue
-        args.t = i
 
+        if i != args.t:
+        	continue
+
+        args.t = i
         folder = './data/'
         args.s_dset_path = folder + args.dset + '/' + names[args.s] + '_list.txt'
         args.t_dset_path = folder + args.dset + '/' + names[args.t] + '_list.txt'
