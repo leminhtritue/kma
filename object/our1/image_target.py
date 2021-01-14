@@ -145,7 +145,6 @@ class KLDivWithLogits(nn.Module):
 
         return self.kl(log_p, q) / x.size()[0]
 
-
 def train_target(args):
     dset_loaders = data_load(args)
     ## set base network
