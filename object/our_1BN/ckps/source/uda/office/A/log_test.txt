@@ -1,3 +1,0 @@
-
-Training: val, Task: AD, Accuracy = 82.33%
-Training: val, Task: AW, Accuracy = 77.11%
