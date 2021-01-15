@@ -328,6 +328,9 @@ def train_source(args):
                 best_netF = netF.state_dict()
                 best_netB = netB.state_dict()
                 best_netC = netC.state_dict()
+                torch.save(best_netF, osp.join(args.output_dir_src, "source_F.pt"))
+                torch.save(best_netB, osp.join(args.output_dir_src, "source_B.pt"))
+                torch.save(best_netC, osp.join(args.output_dir_src, "source_C.pt"))
 
             netF.train()
             netB.train()
