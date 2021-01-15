@@ -285,7 +285,7 @@ def train_source(args):
 
     return netF, netB, netC
 
-def cal_acc_plot(loader, netF, netB, netC, ouput_name, label_name):
+def cal_acc_plot(loader, netF, netB, netC, ouput_name, label_name, input_name):
     start_test = True
     with torch.no_grad():
         iter_test = iter(loader)
@@ -298,16 +298,21 @@ def cal_acc_plot(loader, netF, netB, netC, ouput_name, label_name):
             if start_test:
                 all_output = outputs.float().cpu()
                 all_label = labels.float()
+                all_input = inputs.float.cpu()
                 start_test = False
             else:
                 all_output = torch.cat((all_output, outputs.float().cpu()), 0)
+                all_input = torch.cat((all_input, inputs.float().cpu()), 0)
                 all_label = torch.cat((all_label, labels.float()), 0)
     print(all_output.shape)
     print(all_label.shape)
+    print(all_input.shape)
     all_output_np = all_output.numpy()
     all_label_np = all_label.numpy()
+    all_input_np = all_input.numpy()
     np.save(ouput_name, all_output_np)
     np.save(label_name, all_label_np)
+    np.save(input_name, all_input_np)
 
 def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
     start_test = True
@@ -411,8 +416,8 @@ def extract_plot(args):
     netB.eval()
     netC.eval()
 
-    cal_acc_plot(dset_loaders['source_tr'], netF, netB, netC, "source_train_data", "source_train_label")
-    cal_acc_plot(dset_loaders['source_te'], netF, netB, netC, "source_test_data", "source_test_label")
+    cal_acc_plot(dset_loaders['source_tr'], netF, netB, netC, "source_train_data", "source_train_label", "source_train_input")
+    cal_acc_plot(dset_loaders['source_te'], netF, netB, netC, "source_test_data", "source_test_label", "source_test_input")
 
     # args.modelpath = args.output_dir + '/target_F.pt'   
     # netF.load_state_dict(torch.load(args.modelpath))
