@@ -280,18 +280,18 @@ def train_source(args):
         classifier_loss = loss.KernelSource(num_classes=args.class_num, alpha=args.smooth)(outputs_source, labels_source, netC)
 
         if (args.w_vat > 0):
-        	eps = (torch.randn(size=inputs_test.size())).type(inputs_test.type())
+        	eps = (torch.randn(size=inputs_source.size())).type(inputs_source.type())
         	eps = 1e-6 * normalize_perturbation(eps)
         	eps.requires_grad = True
-        	outputs_source_adv_eps = netC(netB(netF(inputs_test + eps)))
+        	outputs_source_adv_eps = netC(netB(netF(inputs_source + eps)))
         	loss_func_nll = KLDivWithLogits()
-        	loss_eps  = loss_func_nll(outputs_source_adv_eps, outputs_test.detach())
+        	loss_eps  = loss_func_nll(outputs_source_adv_eps, outputs_source.detach())
         	loss_eps.backward()
         	eps_adv = eps.grad
         	eps_adv = normalize_perturbation(eps_adv)
-        	inputs_source_adv = inputs_test + args.radius * eps_adv
+        	inputs_source_adv = inputs_source + args.radius * eps_adv
         	output_source_adv = netC(netB(netF(inputs_source_adv.detach())))
-        	loss_vat     = loss_func_nll(output_source_adv, outputs_test.detach())
+        	loss_vat     = loss_func_nll(output_source_adv, outputs_source.detach())
 
         	classifier_loss += loss_vat
 
