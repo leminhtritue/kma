@@ -298,7 +298,7 @@ def cal_acc_plot(loader, netF, netB, netC, ouput_name, label_name, input_name):
             if start_test:
                 all_output = outputs.float().cpu()
                 all_label = labels.float()
-                all_input = inputs.float.cpu()
+                all_input = inputs.float().cpu()
                 start_test = False
             else:
                 all_output = torch.cat((all_output, outputs.float().cpu()), 0)
