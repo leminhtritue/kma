@@ -271,22 +271,20 @@ def train_target(args):
         #     im_loss = entropy_loss * args.ent_par
         #     classifier_loss += im_loss
 
-        eps = (torch.randn(size=inputs_test.size())).type(inputs_test.type())
-        eps = 1e-6 * normalize_perturbation(eps)
-        eps.requires_grad = True
-        outputs_source_adv_eps = netC(netB(netF(inputs_test + eps)))
-        loss_func_nll = KLDivWithLogits()
-        loss_eps  = loss_func_nll(outputs_source_adv_eps, outputs_test.detach())
-
-        loss_eps.backward()
-        eps_adv = eps.grad
-        eps_adv = normalize_perturbation(eps_adv)
-        inputs_source_adv = inputs_test + args.radius * eps_adv
-
-        output_source_adv = netC(netB(netF(inputs_source_adv.detach())))
-        loss_vat     = loss_func_nll(output_source_adv, outputs_test.detach())
-
-        classifier_loss += loss_vat
+        if (args.w_vat > 0):
+            eps = (torch.randn(size=inputs_test.size())).type(inputs_test.type())
+            eps = 1e-6 * normalize_perturbation(eps)
+            eps.requires_grad = True
+            outputs_source_adv_eps = netC(netB(netF(inputs_test + eps)))
+            loss_func_nll = KLDivWithLogits()
+            loss_eps  = loss_func_nll(outputs_source_adv_eps, outputs_test.detach())
+            loss_eps.backward()
+            eps_adv = eps.grad
+            eps_adv = normalize_perturbation(eps_adv)
+            inputs_source_adv = inputs_test + args.radius * eps_adv
+            output_source_adv = netC(netB(netF(inputs_source_adv.detach())))
+            loss_vat     = loss_func_nll(output_source_adv, outputs_test.detach())
+            classifier_loss += loss_vat
 
 
         classifier_loss_total += classifier_loss
@@ -465,6 +463,8 @@ if __name__ == "__main__":
     parser.add_argument('--cls_par', type=float, default=0.3)
     parser.add_argument('--gamma', type=float, default=0.05)
     parser.add_argument('--nrf', type=int, default=512)
+    
+    parser.add_argument('--w_vat', type=float, default=0.00)
     parser.add_argument('--radius', type=float, default=0.01)
 
     args = parser.parse_args()
@@ -493,8 +493,11 @@ if __name__ == "__main__":
     for i in range(len(names)):
         if i == args.s:
             continue
-        args.t = i
 
+        if i != args.t:
+        	continue
+
+        args.t = i
         folder = './data/'
         args.s_dset_path = folder + args.dset + '/' + names[args.s] + '_list.txt'
         args.t_dset_path = folder + args.dset + '/' + names[args.t] + '_list.txt'
