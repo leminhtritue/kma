@@ -411,8 +411,8 @@ def extract_plot(args):
     netB.eval()
     netC.eval()
 
-    cal_acc_plot(dset_loaders['source_tr'], netF, netB, "source_train_data", "source_train_label")
-    cal_acc_plot(dset_loaders['source_te'], netF, netB, "source_test_data", "source_test_label")
+    cal_acc_plot(dset_loaders['source_tr'], netF, netB, netC "source_train_data", "source_train_label")
+    cal_acc_plot(dset_loaders['source_te'], netF, netB, netC, "source_test_data", "source_test_label")
 
     # args.modelpath = args.output_dir + '/target_F.pt'   
     # netF.load_state_dict(torch.load(args.modelpath))
