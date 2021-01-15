@@ -234,7 +234,7 @@ def train_source(args):
     elif args.net[0:3] == 'vgg':
         netF = network.VGGBase(vgg_name=args.net).cuda()  
 
-    netB = network.feat_bootleneck(nrf=args.nrf, type=args.classifier, feature_dim=netF.in_features, gamma = args.gamma, bottleneck_dim=args.bottleneck, bn1=args.bn1).cuda()
+    netB = network.feat_bootleneck(nrf=args.nrf, type=args.classifier, feature_dim=netF.in_features, gamma = args.gamma, bottleneck_dim=args.bottleneck, bn1_flag=args.bn1_flag).cuda()
     netC = network.feat_classifier(nrf=args.nrf, type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
     
     param_group = []
@@ -361,7 +361,7 @@ def test_target(args):
     elif args.net[0:3] == 'vgg':
         netF = network.VGGBase(vgg_name=args.net).cuda()  
 
-    netB = network.feat_bootleneck(nrf=args.nrf, type=args.classifier, feature_dim=netF.in_features, gamma = args.gamma, bottleneck_dim=args.bottleneck, bn1=args.bn1).cuda()
+    netB = network.feat_bootleneck(nrf=args.nrf, type=args.classifier, feature_dim=netF.in_features, gamma = args.gamma, bottleneck_dim=args.bottleneck, bn1_flag=args.bn1_flag).cuda()
     netC = network.feat_classifier(nrf=args.nrf, type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
 
     args.modelpath = args.output_dir_src + '/source_F.pt'   
@@ -418,7 +418,7 @@ if __name__ == "__main__":
 
     parser.add_argument('--gamma', type=float, default=0.05)
     parser.add_argument('--nrf', type=int, default=512)
-    parser.add_argument('--bn1', type=float, default=1.0)    
+    parser.add_argument('--bn1_flag', type=float, default=1.0)    
 
     parser.add_argument('--w_vat', type=float, default=0.00)
     parser.add_argument('--radius', type=float, default=0.01)
