@@ -358,6 +358,42 @@ def train_target(args):
         
     return netF, netB, netC
 
+def test_target(args):
+    dset_loaders = data_load(args)
+    ## set base network
+    if args.net[0:3] == 'res':
+        netF = network.ResBase(res_name=args.net).cuda()
+    elif args.net[0:3] == 'vgg':
+        netF = network.VGGBase(vgg_name=args.net).cuda()  
+
+    netB = network.feat_bootleneck(nrf=args.nrf, type=args.classifier, feature_dim=netF.in_features, gamma = args.gamma, bottleneck_dim=args.bottleneck, bn1_flag=args.bn1_flag).cuda()
+    netC = network.feat_classifier(nrf=args.nrf, type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
+
+    args.modelpath = args.output_dir_src + '/source_F.pt'   
+    netF.load_state_dict(torch.load(args.modelpath))
+    args.modelpath = args.output_dir_src + '/source_B.pt'   
+    netB.load_state_dict(torch.load(args.modelpath))
+    args.modelpath = args.output_dir_src + '/source_C.pt'   
+    netC.load_state_dict(torch.load(args.modelpath))
+    netF.eval()
+    netB.eval()
+    netC.eval()
+
+    if args.da == 'oda':
+        acc_os1, acc_os2, acc_unknown = cal_acc_oda(dset_loaders['test'], netF, netB, netC)
+        log_str = '\nTraining: {}, Task: {}, Accuracy = {:.2f}% / {:.2f}% / {:.2f}%'.format(args.trte, args.name, acc_os2, acc_os1, acc_unknown)
+    else:
+        if args.dset=='VISDA-C':
+            acc, acc_list = cal_acc(dset_loaders['test'], netF, netB, netC, True)
+            log_str = '\nTraining: {}, Task: {}, Accuracy = {:.2f}%'.format(args.trte, args.name, acc) + '\n' + acc_list
+        else:
+            acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC, False)
+            log_str = '\nTraining: {}, Task: {}, Accuracy = {:.2f}%'.format(args.trte, args.name, acc)
+
+    args.out_file.write(log_str)
+    args.out_file.flush()
+    print(log_str)
+
 def print_args(args):
     s = "==========================================\n"
     for arg, content in args.__dict__.items():
@@ -525,4 +561,5 @@ if __name__ == "__main__":
         args.out_file = open(osp.join(args.output_dir, 'log_' + args.savename + '.txt'), 'w')
         args.out_file.write(print_args(args)+'\n')
         args.out_file.flush()
+        test_target(args)
         train_target(args)
