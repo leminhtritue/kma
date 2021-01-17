@@ -388,7 +388,7 @@ def test_target(args):
             log_str = '\nTraining: {}, Task: {}, Accuracy = {:.2f}%'.format(args.trte, args.name, acc) + '\n' + acc_list
         else:
             acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC, False)
-            log_str = '\nTraining: {}, Task: {}, Accuracy = {:.2f}%'.format(args.trte, args.name, acc)
+            log_str = '\nTraining:, Task: {}, Accuracy = {:.2f}%'.format(args.name, acc)
 
     args.out_file.write(log_str)
     args.out_file.flush()
@@ -494,6 +494,8 @@ if __name__ == "__main__":
     parser.add_argument('--output_src', type=str, default='ckps/source/')
     parser.add_argument('--da', type=str, default='uda', choices=['uda', 'pda'])
     parser.add_argument('--issave', type=bool, default=True)
+
+    parser.add_argument('--trte', type=str, default='val', choices=['full', 'val'])
 
     parser.add_argument('--gent', type=float, default=0.1)
     parser.add_argument('--cls_par', type=float, default=0.3)
