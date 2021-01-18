@@ -226,50 +226,24 @@ def train_target(args):
         features_test = netB(netF(inputs_test))
         outputs_test = netC(features_test)
 
-        mark_max = torch.zeros(outputs_test.size()).cuda()
-        mark_zeros = torch.zeros(outputs_test.size()).cuda()
-
-        outputs_test_max = outputs_test
-
-        for i in range(args.class_num):
-            mark_max[:,i] = torch.max(torch.cat((outputs_test_max[:, :i],outputs_test_max[:, i+1:]), dim = 1), dim = 1).values        
-
-        cost_s = outputs_test_max - mark_max
-       
-        softmax_si = nn.Softmax(dim=1)(cost_s)
-        entropy_raw = softmax_si * (-torch.log(softmax_si + 1e-5))
-        entropy_raw = torch.sum(entropy_raw, dim=1)         
-        entropy_loss = torch.mean(entropy_raw)
-
-        softmax_out = softmax_si
-
-        msoftmax = softmax_out.mean(dim=0)
-        entropy_loss -= torch.sum(-msoftmax * torch.log(msoftmax + 1e-5))
-
-        im_loss = entropy_loss * args.ent_par
-        classifier_loss = im_loss
-
-
-
         if args.cls_par > 0:
             pred = mem_label[tar_idx]
-            classifier_loss += args.cls_par * nn.CrossEntropyLoss()(outputs_test, pred)
-            # classifier_loss = nn.CrossEntropyLoss()(outputs_test, pred)
-            # classifier_loss *= args.cls_par
+            classifier_loss = nn.CrossEntropyLoss()(outputs_test, pred)
+            classifier_loss *= args.cls_par
             # if iter_num < interval_iter and args.dset == "VISDA-C":
             #     classifier_loss *= 0
-        # else:
-        #     classifier_loss = torch.tensor(0.0).cuda()
+        else:
+            classifier_loss = torch.tensor(0.0).cuda()
 
-        # if args.ent:
-        #     softmax_out = nn.Softmax(dim=1)(outputs_test)
-        #     entropy_loss = torch.mean(loss.Entropy(softmax_out))
-        #     if args.gent:
-        #         msoftmax = softmax_out.mean(dim=0)
-        #         gentropy_loss = torch.sum(-msoftmax * torch.log(msoftmax + args.epsilon))
-        #         entropy_loss -= gentropy_loss
-        #     im_loss = entropy_loss * args.ent_par
-        #     classifier_loss += im_loss
+        if args.ent:
+            softmax_out = nn.Softmax(dim=1)(outputs_test)
+            entropy_loss = torch.mean(loss.Entropy(softmax_out))
+            if args.gent:
+                msoftmax = softmax_out.mean(dim=0)
+                gentropy_loss = torch.sum(-msoftmax * torch.log(msoftmax + args.epsilon))
+                entropy_loss -= gentropy_loss
+            im_loss = entropy_loss * args.ent_par
+            classifier_loss += im_loss
 
 
         if (args.w_vat > 0):
@@ -286,7 +260,6 @@ def train_target(args):
         	output_source_adv = netC(netB(netF(inputs_source_adv.detach())))
         	loss_vat     = loss_func_nll(output_source_adv, outputs_test.detach())
         	classifier_loss += loss_vat
-
 
         classifier_loss_total += classifier_loss
         classifier_loss_count += 1   
