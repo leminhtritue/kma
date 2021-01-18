@@ -121,6 +121,30 @@ def cal_acc(loader, netF, netB, netC, flag=False):
     else:
         return accuracy*100, mean_ent
 
+def normalize_perturbation(d):
+    d_ = d.view(d.size()[0], -1)
+    eps = d.new_tensor(1e-12)
+    output = d / torch.sqrt(torch.max((d_**2).sum(dim = -1), eps)[0] )
+    return output
+
+class KLDivWithLogits(nn.Module):
+
+    def __init__(self):
+
+        super(KLDivWithLogits, self).__init__()
+
+        self.kl = nn.KLDivLoss(size_average=False, reduce=True)
+        self.logsoftmax = nn.LogSoftmax(dim = 1)
+        self.softmax = nn.Softmax(dim = 1)
+
+
+    def forward(self, x, y):
+
+        log_p = self.logsoftmax(x)
+        q     = self.softmax(y)
+
+        return self.kl(log_p, q) / x.size()[0]
+
 def train_target(args):
     dset_loaders = data_load(args)
     ## set base network
@@ -129,8 +153,8 @@ def train_target(args):
     elif args.net[0:3] == 'vgg':
         netF = network.VGGBase(vgg_name=args.net).cuda()  
 
-    netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
-    netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
+    netB = network.feat_bootleneck(nrf=args.nrf, type=args.classifier, feature_dim=netF.in_features, gamma = args.gamma, bottleneck_dim=args.bottleneck, bn1_flag=args.bn1_flag).cuda()
+    netC = network.feat_classifier(nrf=args.nrf, type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
 
     modelpath = args.output_dir_src + '/source_F.pt'   
     netF.load_state_dict(torch.load(modelpath))
@@ -158,8 +182,23 @@ def train_target(args):
     optimizer = op_copy(optimizer)
 
     max_iter = args.max_epoch * len(dset_loaders["target"])
-    interval_iter = max_iter // args.interval
+    # interval_iter = max_iter // args.interval
+    interval_iter = len(dset_loaders["target"])
     iter_num = 0
+
+    classifier_loss_total = 0.0
+    classifier_loss_count = 0
+    entropy_loss_total = 0.0
+    entropy_loss_count = 0
+    costlog_loss_total = 0.0
+    costlog_loss_count = 0
+    costs_loss_total = 0.0
+    costs_loss_count = 0
+    costdist_loss_total = 0.0
+    costdist_loss_count = 0
+    right_sample_count = 0
+    sum_sample = 0
+    start_output = True
 
     while iter_num < max_iter:
         try:
@@ -191,8 +230,8 @@ def train_target(args):
             pred = mem_label[tar_idx]
             classifier_loss = nn.CrossEntropyLoss()(outputs_test, pred)
             classifier_loss *= args.cls_par
-            if iter_num < interval_iter and args.dset == "VISDA-C":
-                classifier_loss *= 0
+            # if iter_num < interval_iter and args.dset == "VISDA-C":
+            #     classifier_loss *= 0
         else:
             classifier_loss = torch.tensor(0.0).cuda()
 
@@ -206,6 +245,45 @@ def train_target(args):
             im_loss = entropy_loss * args.ent_par
             classifier_loss += im_loss
 
+
+        if (args.w_vat > 0):
+        	eps = (torch.randn(size=inputs_test.size())).type(inputs_test.type())
+        	eps = 1e-6 * normalize_perturbation(eps)
+        	eps.requires_grad = True
+        	outputs_source_adv_eps = netC(netB(netF(inputs_test + eps)))
+        	loss_func_nll = KLDivWithLogits()
+        	loss_eps  = loss_func_nll(outputs_source_adv_eps, outputs_test.detach())
+        	loss_eps.backward()
+        	eps_adv = eps.grad
+        	eps_adv = normalize_perturbation(eps_adv)
+        	inputs_source_adv = inputs_test + args.radius * eps_adv
+        	output_source_adv = netC(netB(netF(inputs_source_adv.detach())))
+        	loss_vat     = loss_func_nll(output_source_adv, outputs_test.detach())
+        	classifier_loss += loss_vat
+
+        classifier_loss_total += classifier_loss
+        classifier_loss_count += 1   
+        entropy_loss_total += entropy_loss
+        entropy_loss_count += 1 
+        costlog_loss_total += 0
+        costlog_loss_count += 1  
+        costs_loss_total += 0
+        costs_loss_count += 1  
+        costdist_loss_total += 0
+        costdist_loss_count += 1 
+
+        max_hyperplane = outputs_test.max(dim=1).values       
+        max_hyperplane[max_hyperplane > 0] = 1
+        max_hyperplane[max_hyperplane < 0] = 0
+        right_sample_count += max_hyperplane.sum()
+        sum_sample += outputs_test.shape[0]
+
+        if (start_output):
+            all_output = outputs_test.float().cpu()
+            start_output = False
+        else:
+            all_output = torch.cat((all_output, outputs_test.float().cpu()), 0)
+
         optimizer.zero_grad()
         classifier_loss.backward()
         optimizer.step()
@@ -217,12 +295,32 @@ def train_target(args):
                 acc_s_te, acc_list = cal_acc(dset_loaders['test'], netF, netB, netC, True)
                 log_str = 'Task: {}, Iter:{}/{}; Accuracy = {:.2f}%'.format(args.name, iter_num, max_iter, acc_s_te) + '\n' + acc_list
             else:
+                _, predict = torch.max(all_output, 1)
                 acc_s_te, _ = cal_acc(dset_loaders['test'], netF, netB, netC, False)
-                log_str = 'Task: {}, Iter:{}/{}; Accuracy = {:.2f}%'.format(args.name, iter_num, max_iter, acc_s_te)
+                acc_s_tr, _ = cal_acc(dset_loaders['target'], netF, netB, netC, False)
+
+                log_str = 'Task: {}, Iter:{}/{}; Loss : {:.2f}, , Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(args.name, iter_num, max_iter, \
+                classifier_loss_total/classifier_loss_count, acc_s_tr, acc_s_te, right_sample_count, sum_sample)
 
             args.out_file.write(log_str + '\n')
             args.out_file.flush()
             print(log_str+'\n')
+
+
+            classifier_loss_total = 0.0
+            classifier_loss_count = 0
+            entropy_loss_total = 0.0
+            entropy_loss_count = 0
+            costs_loss_total = 0.0
+            costs_loss_count = 0
+            costdist_loss_total = 0.0
+            costdist_loss_count = 0
+            costlog_loss_total = 0.0
+            costlog_loss_count = 0
+            right_sample_count = 0
+            sum_sample = 0
+            start_output = True
+
             netF.train()
             netB.train()
 
@@ -232,6 +330,42 @@ def train_target(args):
         torch.save(netC.state_dict(), osp.join(args.output_dir, "target_C_" + args.savename + ".pt"))
         
     return netF, netB, netC
+
+def test_target(args):
+    dset_loaders = data_load(args)
+    ## set base network
+    if args.net[0:3] == 'res':
+        netF = network.ResBase(res_name=args.net).cuda()
+    elif args.net[0:3] == 'vgg':
+        netF = network.VGGBase(vgg_name=args.net).cuda()  
+
+    netB = network.feat_bootleneck(nrf=args.nrf, type=args.classifier, feature_dim=netF.in_features, gamma = args.gamma, bottleneck_dim=args.bottleneck, bn1_flag=args.bn1_flag).cuda()
+    netC = network.feat_classifier(nrf=args.nrf, type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
+
+    args.modelpath = args.output_dir_src + '/source_F.pt'   
+    netF.load_state_dict(torch.load(args.modelpath))
+    args.modelpath = args.output_dir_src + '/source_B.pt'   
+    netB.load_state_dict(torch.load(args.modelpath))
+    args.modelpath = args.output_dir_src + '/source_C.pt'   
+    netC.load_state_dict(torch.load(args.modelpath))
+    netF.eval()
+    netB.eval()
+    netC.eval()
+
+    if args.da == 'oda':
+        acc_os1, acc_os2, acc_unknown = cal_acc_oda(dset_loaders['test'], netF, netB, netC)
+        log_str = '\nTraining: {}, Task: {}, Accuracy = {:.2f}% / {:.2f}% / {:.2f}%'.format(args.trte, args.name, acc_os2, acc_os1, acc_unknown)
+    else:
+        if args.dset=='VISDA-C':
+            acc, acc_list = cal_acc(dset_loaders['test'], netF, netB, netC, True)
+            log_str = '\nTraining: {}, Task: {}, Accuracy = {:.2f}%'.format(args.trte, args.name, acc) + '\n' + acc_list
+        else:
+            acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC, False)
+            log_str = '\nTraining:, Task: {}, Accuracy = {:.2f}%'.format(args.name, acc)
+
+    args.out_file.write(log_str)
+    args.out_file.flush()
+    print(log_str)
 
 def print_args(args):
     s = "==========================================\n"
@@ -311,15 +445,15 @@ if __name__ == "__main__":
     parser.add_argument('--interval', type=int, default=15)
     parser.add_argument('--batch_size', type=int, default=64, help="batch_size")
     parser.add_argument('--worker', type=int, default=4, help="number of workers")
-    parser.add_argument('--dset', type=str, default='office-home', choices=['VISDA-C', 'office', 'office-home', 'office-caltech'])
+    parser.add_argument('--dset', type=str, default='office', choices=['VISDA-C', 'office', 'office-home', 'office-caltech'])
     parser.add_argument('--lr', type=float, default=1e-2, help="learning rate")
     parser.add_argument('--net', type=str, default='resnet50', help="alexnet, vgg16, resnet50, res101")
     parser.add_argument('--seed', type=int, default=2020, help="random seed")
  
-    parser.add_argument('--gent', type=bool, default=True)
+    # parser.add_argument('--gent', type=bool, default=True)
     parser.add_argument('--ent', type=bool, default=True)
     parser.add_argument('--threshold', type=int, default=0)
-    parser.add_argument('--cls_par', type=float, default=0.3)
+
     parser.add_argument('--ent_par', type=float, default=1.0)
     parser.add_argument('--lr_decay1', type=float, default=0.1)
     parser.add_argument('--lr_decay2', type=float, default=1.0)
@@ -329,10 +463,22 @@ if __name__ == "__main__":
     parser.add_argument('--layer', type=str, default="wn", choices=["linear", "wn"])
     parser.add_argument('--classifier', type=str, default="bn", choices=["ori", "bn"])
     parser.add_argument('--distance', type=str, default='cosine', choices=["euclidean", "cosine"])  
-    parser.add_argument('--output', type=str, default='san')
-    parser.add_argument('--output_src', type=str, default='san')
+    parser.add_argument('--output', type=str, default='ckps/target/')
+    parser.add_argument('--output_src', type=str, default='ckps/source/')
     parser.add_argument('--da', type=str, default='uda', choices=['uda', 'pda'])
     parser.add_argument('--issave', type=bool, default=True)
+
+    parser.add_argument('--trte', type=str, default='val', choices=['full', 'val'])
+
+    parser.add_argument('--gent', type=float, default=0.1)
+    parser.add_argument('--cls_par', type=float, default=0.3)
+    parser.add_argument('--gamma', type=float, default=0.05)
+    parser.add_argument('--nrf', type=int, default=512)
+    parser.add_argument('--bn1_flag', type=float, default=1.0)    
+
+    parser.add_argument('--w_vat', type=float, default=0.00)
+    parser.add_argument('--radius', type=float, default=0.01)
+
     args = parser.parse_args()
 
     if args.dset == 'office-home':
@@ -359,6 +505,8 @@ if __name__ == "__main__":
     for i in range(len(names)):
         if i == args.s:
             continue
+        if i != args.t:
+        	continue
         args.t = i
 
         folder = './data/'
@@ -388,4 +536,5 @@ if __name__ == "__main__":
         args.out_file = open(osp.join(args.output_dir, 'log_' + args.savename + '.txt'), 'w')
         args.out_file.write(print_args(args)+'\n')
         args.out_file.flush()
+        test_target(args)
         train_target(args)
