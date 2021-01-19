@@ -60,6 +60,35 @@ def digit_load(args):
                     transforms.ToTensor(),
                     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
                 ]))
+
+    elif args.dset == 's2u':
+        train_source = svhn.SVHN('./data/svhn/', split='train', download=True,
+                transform=transforms.Compose([
+                    transforms.Resize(32),
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+                ]))
+        test_source = svhn.SVHN('./data/svhn/', split='test', download=True,
+                transform=transforms.Compose([
+                    transforms.Resize(32),
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+                ]))  
+        train_target = usps.USPS_idx('./data/usps/', train=True, download=True,
+                transform=transforms.Compose([
+                    transforms.Resize(32),
+                    transforms.Lambda(lambda x: x.convert("RGB")),
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+                ]))
+        test_target = usps.USPS('./data/usps/', train=False, download=True,
+                transform=transforms.Compose([
+                    transforms.Resize(32),
+                    transforms.Lambda(lambda x: x.convert("RGB")),
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+                ]))
+
     elif args.dset == 'u2m':
         train_source = usps.USPS('./data/usps/', train=True, download=True,
                 transform=transforms.Compose([
