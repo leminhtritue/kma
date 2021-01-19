@@ -160,7 +160,7 @@ class feat_bootleneck(nn.Module):
 
 class feat_bootleneck_rf(nn.Module):
     def __init__(self, gamma = 0.5, bottleneck_dim=256, type="ori", nrf = 512):
-        super(feat_bootleneck, self).__init__()
+        super(feat_bootleneck_rf, self).__init__()
         self.bn2 = nn.BatchNorm1d(nrf, affine=True)
         self.type = type
 
@@ -190,7 +190,7 @@ class feat_classifier(nn.Module):
 
 class feat_classifier_rf(nn.Module):
     def __init__(self, class_num, type="linear", nrf=512):
-        super(feat_classifier, self).__init__()
+        super(feat_classifier_rf, self).__init__()
         self.type = type
         if type == 'wn':
             self.fc = weightNorm(nn.Linear(nrf, class_num), name="weight")
