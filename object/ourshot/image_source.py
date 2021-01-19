@@ -264,7 +264,7 @@ def train_source(args):
     netB.train()
     netC.train()
     netBRF.train()
-    netBRF.train()
+    netCRF.train()
 
     total_loss = 0.0
     count_loss = 0
@@ -342,30 +342,34 @@ def train_source(args):
                 best_netF = netF.state_dict()
                 best_netB = netB.state_dict()
                 best_netC = netC.state_dict()
+                best_netBRF = netBRF.state_dict()
+                best_netCRF = netCRF.state_dict()
                 torch.save(best_netF, osp.join(args.output_dir_src, "source_F.pt"))
                 torch.save(best_netB, osp.join(args.output_dir_src, "source_B.pt"))
                 torch.save(best_netC, osp.join(args.output_dir_src, "source_C.pt"))
-
+                torch.save(best_netBRF, osp.join(args.output_dir_src, "source_BRF.pt"))
+                torch.save(best_netCRF, osp.join(args.output_dir_src, "source_CRF.pt"))
             netF.train()
             netB.train()
             netC.train()
 
-    source_train_data, source_train_label = get_feature_label(dset_loaders['source_tr'], netF, netB, netC)
-    source_test_data, source_test_label = get_feature_label(dset_loaders['source_te'], netF, netB, netC)
-    all_source_data = torch.cat((source_train_data, source_test_data), 0)
-    all_source_label = torch.cat((source_train_label, source_test_label), 0)
+    # source_train_data, source_train_label = get_feature_label(dset_loaders['source_tr'], netF, netB, netC)
+    # source_test_data, source_test_label = get_feature_label(dset_loaders['source_te'], netF, netB, netC)
+    # all_source_data = torch.cat((source_train_data, source_test_data), 0)
+    # all_source_label = torch.cat((source_train_label, source_test_label), 0)
 
-    mean_out = torch.zeros((args.class_num,all_source_data.shape[1]))
-    for i in range(args.class_num):
-    	cur_data = all_source_data[all_source_label == i]
-    	cur_mean = cur_data.mean(dim=0)
-    	mean_out[i] = cur_mean
+    # mean_out = torch.zeros((args.class_num,all_source_data.shape[1]))
+    # for i in range(args.class_num):
+    # 	cur_data = all_source_data[all_source_label == i]
+    # 	cur_mean = cur_data.mean(dim=0)
+    # 	mean_out[i] = cur_mean
 
-    torch.save(mean_out, osp.join(args.output_dir_src, "source_mean.pt"))
+    # torch.save(mean_out, osp.join(args.output_dir_src, "source_mean.pt"))
     torch.save(best_netF, osp.join(args.output_dir_src, "source_F.pt"))
     torch.save(best_netB, osp.join(args.output_dir_src, "source_B.pt"))
     torch.save(best_netC, osp.join(args.output_dir_src, "source_C.pt"))
-
+    torch.save(best_netBRF, osp.join(args.output_dir_src, "source_BRF.pt"))
+    torch.save(best_netCRF, osp.join(args.output_dir_src, "source_CRF.pt"))
     return netF, netB, netC
 
 def test_target(args):

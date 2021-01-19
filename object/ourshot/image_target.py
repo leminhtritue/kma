@@ -153,17 +153,31 @@ def train_target(args):
     elif args.net[0:3] == 'vgg':
         netF = network.VGGBase(vgg_name=args.net).cuda()  
 
-    netB = network.feat_bootleneck(nrf=args.nrf, type=args.classifier, feature_dim=netF.in_features, gamma = args.gamma, bottleneck_dim=args.bottleneck, bn1_flag=args.bn1_flag).cuda()
-    netC = network.feat_classifier(nrf=args.nrf, type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
+    netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
+    netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
 
+    netBRF = network.feat_bootleneck_rf(nrf=args.nrf, type=args.classifier, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
+    netCRF = network.feat_classifier_rf(nrf=args.nrf, type=args.layer_rf, class_num = args.class_num).cuda()
+    
     modelpath = args.output_dir_src + '/source_F.pt'   
     netF.load_state_dict(torch.load(modelpath))
     modelpath = args.output_dir_src + '/source_B.pt'   
     netB.load_state_dict(torch.load(modelpath))
+
     modelpath = args.output_dir_src + '/source_C.pt'    
     netC.load_state_dict(torch.load(modelpath))
+    modelpath = args.output_dir_src + '/source_BRF.pt'    
+    netBRF.load_state_dict(torch.load(modelpath))
+    modelpath = args.output_dir_src + '/source_CRF.pt'    
+    netCRF.load_state_dict(torch.load(modelpath))
     netC.eval()
+    netBRF.eval()
+    netCRF.eval()
     for k, v in netC.named_parameters():
+        v.requires_grad = False
+    for k, v in netBRF.named_parameters():
+        v.requires_grad = False
+    for k, v in netCRF.named_parameters():
         v.requires_grad = False
 
     param_group = []
@@ -226,20 +240,47 @@ def train_target(args):
         features_test = netB(netF(inputs_test))
         outputs_test = netC(features_test)
 
-        mark_max = torch.zeros(outputs_test.size()).cuda()
-        mark_zeros = torch.zeros(outputs_test.size()).cuda()
+        features_test = netB(netF(inputs_test))
+        outputs_test = netC(features_test)
+        outputs_test_rf = netCRF(netBRF(features_test.detach()))
 
-        outputs_test_max = outputs_test
 
-        for i in range(args.class_num):
-            mark_max[:,i] = torch.max(torch.cat((outputs_test_max[:, :i],outputs_test_max[:, i+1:]), dim = 1), dim = 1).values        
+        if args.cls_par > 0:
+            pred = mem_label[tar_idx]
+            classifier_loss = nn.CrossEntropyLoss()(outputs_test, pred)
+            classifier_loss *= args.cls_par
+            if iter_num < interval_iter and args.dset == "VISDA-C":
+                classifier_loss *= 0
+        else:
+            classifier_loss = torch.tensor(0.0).cuda()
 
-        cost_s = outputs_test_max - mark_max
+        if args.ent:
+            softmax_out = nn.Softmax(dim=1)(outputs_test)
+            entropy_loss = torch.mean(loss.Entropy(softmax_out))
+            if args.gent:
+                msoftmax = softmax_out.mean(dim=0)
+                gentropy_loss = torch.sum(-msoftmax * torch.log(msoftmax + args.epsilon))
+                entropy_loss -= gentropy_loss
+            im_loss = entropy_loss * args.ent_par
+            classifier_loss += im_loss
+
+        if args.alpha_rf > 0:
+            mark_max = torch.zeros(outputs_test_rf.size()).cuda()
+            
+            mark_zeros = torch.zeros(outputs_test_rf.size()).cuda()
+            if (args.max_zero > 0.0):
+                outputs_test_max = torch.maximum(outputs_test_rf, mark_zeros)
+            else:
+                outputs_test_max = outputs_test_rf
+
+            for i in range(args.class_num):
+                mark_max[:,i] = torch.max(torch.cat((outputs_test_max[:, :i],outputs_test_max[:, i+1:]), dim = 1), dim = 1).values        
+            cost_s = outputs_test_max - mark_max
        
-        softmax_si = nn.Softmax(dim=1)(cost_s)
-        entropy_raw = softmax_si * (-torch.log(softmax_si + 1e-5))
-        entropy_raw = torch.sum(entropy_raw, dim=1)         
-        entropy_loss = torch.mean(entropy_raw)
+            softmax_si = nn.Softmax(dim=1)(cost_s)
+            entropy_si = softmax_si * (-torch.log(softmax_si + 1e-5))
+            entropy_si = torch.sum(entropy_si, dim=1)
+            entropy_loss = torch.mean(entropy_si)
 
         softmax_out = softmax_si
 
@@ -501,7 +542,8 @@ if __name__ == "__main__":
     parser.add_argument('--cls_par', type=float, default=0.3)
     parser.add_argument('--gamma', type=float, default=0.05)
     parser.add_argument('--nrf', type=int, default=512)
-    parser.add_argument('--bn1_flag', type=float, default=1.0)    
+    parser.add_argument('--bn1_flag', type=float, default=1.0)
+    parser.add_argument('--max_zero', type=float, default=1.0)
 
     parser.add_argument('--w_vat', type=float, default=0.00)
     parser.add_argument('--radius', type=float, default=0.01)
