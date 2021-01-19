@@ -254,8 +254,8 @@ def train_target(args):
         else:
             classifier_loss = torch.tensor(0.0).cuda()
 
+        softmax_out = nn.Softmax(dim=1)(outputs_test)
         if args.ent:
-            softmax_out = nn.Softmax(dim=1)(outputs_test)
             entropy_loss = torch.mean(loss.Entropy(softmax_out))
             if args.gent:
                 msoftmax = softmax_out.mean(dim=0)
@@ -278,40 +278,10 @@ def train_target(args):
             cost_s = outputs_test_max - mark_max
        
             softmax_si = nn.Softmax(dim=1)(cost_s)
-            entropy_si = softmax_si * (-torch.log(softmax_si + 1e-5))
+            entropy_si = -(softmax_out * torch.log(softmax_si + 1e-5))
             entropy_si = torch.sum(entropy_si, dim=1)
-            entropy_loss = torch.mean(entropy_si)
-
-        softmax_out = softmax_si
-
-        msoftmax = softmax_out.mean(dim=0)
-        entropy_loss -= torch.sum(-msoftmax * torch.log(msoftmax + 1e-5))
-
-        im_loss = entropy_loss * args.ent_par
-        classifier_loss = im_loss
-
-
-
-        if args.cls_par > 0:
-            pred = mem_label[tar_idx]
-            classifier_loss += args.cls_par * nn.CrossEntropyLoss()(outputs_test, pred)
-            # classifier_loss = nn.CrossEntropyLoss()(outputs_test, pred)
-            # classifier_loss *= args.cls_par
-            # if iter_num < interval_iter and args.dset == "VISDA-C":
-            #     classifier_loss *= 0
-        # else:
-        #     classifier_loss = torch.tensor(0.0).cuda()
-
-        # if args.ent:
-        #     softmax_out = nn.Softmax(dim=1)(outputs_test)
-        #     entropy_loss = torch.mean(loss.Entropy(softmax_out))
-        #     if args.gent:
-        #         msoftmax = softmax_out.mean(dim=0)
-        #         gentropy_loss = torch.sum(-msoftmax * torch.log(msoftmax + args.epsilon))
-        #         entropy_loss -= gentropy_loss
-        #     im_loss = entropy_loss * args.ent_par
-        #     classifier_loss += im_loss
-
+            entropy_si_loss = torch.mean(entropy_si)
+            classifier_loss += args.alpha_rf * entropy_si_loss
 
         if (args.w_vat > 0):
         	eps = (torch.randn(size=inputs_test.size())).type(inputs_test.type())
@@ -326,8 +296,7 @@ def train_target(args):
         	inputs_source_adv = inputs_test + args.radius * eps_adv
         	output_source_adv = netC(netB(netF(inputs_source_adv.detach())))
         	loss_vat     = loss_func_nll(output_source_adv, outputs_test.detach())
-        	classifier_loss += loss_vat
-
+        	classifier_loss += args.w_vat * loss_vat
 
         classifier_loss_total += classifier_loss
         classifier_loss_count += 1   
@@ -374,7 +343,6 @@ def train_target(args):
             args.out_file.flush()
             print(log_str+'\n')
 
-
             classifier_loss_total = 0.0
             classifier_loss_count = 0
             entropy_loss_total = 0.0
@@ -396,6 +364,8 @@ def train_target(args):
         torch.save(netF.state_dict(), osp.join(args.output_dir, "target_F_" + args.savename + ".pt"))
         torch.save(netB.state_dict(), osp.join(args.output_dir, "target_B_" + args.savename + ".pt"))
         torch.save(netC.state_dict(), osp.join(args.output_dir, "target_C_" + args.savename + ".pt"))
+        torch.save(netBRF.state_dict(), osp.join(args.output_dir, "target_BRF_" + args.savename + ".pt"))
+        torch.save(netCRF.state_dict(), osp.join(args.output_dir, "target_CRF_" + args.savename + ".pt"))
         
     return netF, netB, netC
 
@@ -407,9 +377,9 @@ def test_target(args):
     elif args.net[0:3] == 'vgg':
         netF = network.VGGBase(vgg_name=args.net).cuda()  
 
-    netB = network.feat_bootleneck(nrf=args.nrf, type=args.classifier, feature_dim=netF.in_features, gamma = args.gamma, bottleneck_dim=args.bottleneck, bn1_flag=args.bn1_flag).cuda()
-    netC = network.feat_classifier(nrf=args.nrf, type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
-
+    netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
+    netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
+    
     args.modelpath = args.output_dir_src + '/source_F.pt'   
     netF.load_state_dict(torch.load(args.modelpath))
     args.modelpath = args.output_dir_src + '/source_B.pt'   
@@ -509,7 +479,7 @@ if __name__ == "__main__":
     parser.add_argument('--gpu_id', type=str, nargs='?', default='0', help="device id to run")
     parser.add_argument('--s', type=int, default=0, help="source")
     parser.add_argument('--t', type=int, default=1, help="target")
-    parser.add_argument('--max_epoch', type=int, default=15, help="max iterations")
+    parser.add_argument('--max_epoch', type=int, default=50, help="max iterations")
     parser.add_argument('--interval', type=int, default=15)
     parser.add_argument('--batch_size', type=int, default=64, help="batch_size")
     parser.add_argument('--worker', type=int, default=4, help="number of workers")
@@ -537,17 +507,18 @@ if __name__ == "__main__":
     parser.add_argument('--issave', type=bool, default=True)
 
     parser.add_argument('--trte', type=str, default='val', choices=['full', 'val'])
-
     parser.add_argument('--gent', type=float, default=0.1)
+    parser.add_argument('--gamma', type=float, default=0.1)
+
     parser.add_argument('--cls_par', type=float, default=0.3)
-    parser.add_argument('--gamma', type=float, default=0.05)
     parser.add_argument('--nrf', type=int, default=512)
-    parser.add_argument('--bn1_flag', type=float, default=1.0)
     parser.add_argument('--max_zero', type=float, default=1.0)
+    parser.add_argument('--w_vat', type=float, default=0.0)
+    parser.add_argument('--alpha_rf', type=float, default=0.1)
 
-    parser.add_argument('--w_vat', type=float, default=0.00)
-    parser.add_argument('--radius', type=float, default=0.01)
-
+    parser.add_argument('--radius', type=float, default=0.01)    
+    parser.add_argument('--layer_rf', type=str, default="linear", choices=["linear", "wn"])
+    
     args = parser.parse_args()
 
     if args.dset == 'office-home':
