@@ -221,11 +221,11 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
 def extract_plot(args):
     dset_loaders = digit_load(args)
     ## set base network
-    if args.dset == 'u2m':
+    if args.dset == 'u2m' or args.dset == 'u2s':
         netF = network.LeNetBase().cuda()
-    elif args.dset == 'm2u':
+    elif args.dset == 'm2u' or args.dset == 'm2s':
         netF = network.LeNetBase().cuda()  
-    elif args.dset == 's2m':
+    elif args.dset == 's2m' or args.dset == 's2u':
         netF = network.DTNBase().cuda()
 
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
@@ -283,11 +283,11 @@ def cal_acc(loader, netF, netB, netC):
 def train_source(args):
     dset_loaders = digit_load(args)
     ## set base network
-    if args.dset == 'u2m':
+    if args.dset == 'u2m' or args.dset == 'u2s':
         netF = network.LeNetBase().cuda()
-    elif args.dset == 'm2u':
+    elif args.dset == 'm2u' or args.dset == 'm2s':
         netF = network.LeNetBase().cuda()  
-    elif args.dset == 's2m':
+    elif args.dset == 's2m' or args.dset == 's2u':
         netF = network.DTNBase().cuda()
 
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
@@ -360,11 +360,11 @@ def train_source(args):
 def test_target(args):
     dset_loaders = digit_load(args)
     ## set base network
-    if args.dset == 'u2m':
+    if args.dset == 'u2m' or args.dset == 'u2s':
         netF = network.LeNetBase().cuda()
-    elif args.dset == 'm2u':
+    elif args.dset == 'm2u' or args.dset == 'm2s':
         netF = network.LeNetBase().cuda()  
-    elif args.dset == 's2m':
+    elif args.dset == 's2m' or args.dset == 's2u':
         netF = network.DTNBase().cuda()
 
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
@@ -395,11 +395,11 @@ def print_args(args):
 def train_target(args):
     dset_loaders = digit_load(args)
     ## set base network
-    if args.dset == 'u2m':
+    if args.dset == 'u2m' or args.dset == 'u2s':
         netF = network.LeNetBase().cuda()
-    elif args.dset == 'm2u':
+    elif args.dset == 'm2u' or args.dset == 'm2s':
         netF = network.LeNetBase().cuda()  
-    elif args.dset == 's2m':
+    elif args.dset == 's2m' or args.dset == 's2u':
         netF = network.DTNBase().cuda()
 
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
@@ -561,7 +561,7 @@ if __name__ == "__main__":
     parser.add_argument('--max_epoch', type=int, default=30, help="maximum epoch")
     parser.add_argument('--batch_size', type=int, default=64, help="batch_size")
     parser.add_argument('--worker', type=int, default=4, help="number of workers")
-    parser.add_argument('--dset', type=str, default='s2m', choices=['u2m', 'm2u','s2m'])
+    parser.add_argument('--dset', type=str, default='s2m', choices=['u2m', 'u2s', 'm2u', 'm2s', 's2m', 's2u'])
     parser.add_argument('--lr', type=float, default=0.01, help="learning rate")
     parser.add_argument('--seed', type=int, default=2020, help="random seed")
     parser.add_argument('--cls_par', type=float, default=0.3)
