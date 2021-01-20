@@ -367,7 +367,7 @@ def train_target(args):
         torch.save(netBRF.state_dict(), osp.join(args.output_dir, "target_BRF_" + args.savename + ".pt"))
         torch.save(netCRF.state_dict(), osp.join(args.output_dir, "target_CRF_" + args.savename + ".pt"))
         
-    return netF, netB, netC
+    return netF, netB, netC, acc_s_te
 
 def test_target(args):
     dset_loaders = data_load(args)
@@ -404,7 +404,6 @@ def test_target(args):
     args.out_file.write(log_str)
     args.out_file.flush()
     print(log_str)
-    return acc
 
 def print_args(args):
     s = "==========================================\n"
@@ -582,7 +581,6 @@ if __name__ == "__main__":
         dict_result = dict()
         for i in [0.1, 0.5, 1]:
             args.alpha_rf = i
-            train_target(args)
-            acc = test_target(args)
+            _,_,_, acc = train_target(args)
             dict_result[(i,i)]=acc
         print(dict_result)
