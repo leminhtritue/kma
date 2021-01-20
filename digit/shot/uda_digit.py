@@ -115,6 +115,36 @@ def digit_load(args):
                     transforms.Normalize((0.5,), (0.5,))
                 ]))
 
+    elif args.dset == 'u2s':
+        train_source = usps.USPS('./data/usps/', train=True, download=True,
+                transform=transforms.Compose([
+                    transforms.RandomCrop(28, padding=4),
+                    transforms.RandomRotation(10),
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.5,), (0.5,))
+                ]))
+        test_source = usps.USPS('./data/usps/', train=False, download=True,
+                transform=transforms.Compose([
+                    transforms.RandomCrop(28, padding=4),
+                    transforms.RandomRotation(10),
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.5,), (0.5,))
+                ]))    
+        train_target = svhn.SVHN_idx('./data/svhn/', split='train', download=True,
+                transform=transforms.Compose([
+                    transforms.Resize(28),
+                    transforms.Lambda(lambda x: x.convert("L")),
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.5,), (0.5,))
+                ]))
+        test_target = svhn.SVHN('./data/svhn/', split='test', download=True,
+                transform=transforms.Compose([
+                    transforms.Resize(28),
+                    transforms.Lambda(lambda x: x.convert("L")),
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.5,), (0.5,))
+                ]))  
+
     elif args.dset == 'm2s':
         train_source = mnist.MNIST('./data/mnist/', train=True, download=True,
                 transform=transforms.Compose([
