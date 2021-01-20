@@ -479,7 +479,7 @@ if __name__ == "__main__":
     parser.add_argument('--gpu_id', type=str, nargs='?', default='0', help="device id to run")
     parser.add_argument('--s', type=int, default=0, help="source")
     parser.add_argument('--t', type=int, default=1, help="target")
-    parser.add_argument('--max_epoch', type=int, default=50, help="max iterations")
+    parser.add_argument('--max_epoch', type=int, default=20, help="max iterations")
     parser.add_argument('--interval', type=int, default=15)
     parser.add_argument('--batch_size', type=int, default=64, help="batch_size")
     parser.add_argument('--worker', type=int, default=4, help="number of workers")
@@ -579,8 +579,26 @@ if __name__ == "__main__":
         test_target(args)
 
         dict_result = dict()
-        for i in [0.1, 0.5, 1]:
-            args.alpha_rf = i
-            _,_,_, acc = train_target(args)
-            dict_result[(i,i)]=acc
-        print(dict_result)
+        for cur_w_vat in [0.1]:
+            args.w_vat = cur_w_vat
+            for cur_cls_par in [1.0]:
+                args.cls_par = cur_cls_par
+                for cur_alpha_rf in [0.0]:
+                    args.alpha_rf = cur_alpha_rf
+                    if cur_alpha_rf != 0.0:
+                        list_max_zero = [0.0, 1.0]
+                    else:
+                        list_max_zero = [0.0]
+                    for cur_max_zero in list_max_zero:
+                        args.max_zero = cur_max_zero
+                        _,_,_, acc = train_target(args)
+                        dict_result[(args.w_vat, args.cls_par, args.alpha_rf, args.max_zero)] = acc
+                        for key in dict_result:
+                            print("{}-{}-{}-{}-{}".format(key[0], key[1], key[2], key[3], dict_result[key]))
+
+            
+
+
+
+python image_target.py --nrf 16384 --s 0 --t 1 --output_src ckps/source0_16384_gm0_1_aw0_1_vat0_arf1_ep500/
+
