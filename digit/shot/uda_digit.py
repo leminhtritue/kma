@@ -208,29 +208,6 @@ def digit_load(args):
                     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
                 ]))  
 
-    # elif args.dset == 'm2u':
-    #     train_source = mnist.MNIST('./data/mnist/', train=True, download=True,
-    #             transform=transforms.Compose([
-    #                 transforms.ToTensor(),
-    #                 transforms.Normalize((0.5,), (0.5,))
-    #             ]))
-    #     test_source = mnist.MNIST('./data/mnist/', train=False, download=True,
-    #             transform=transforms.Compose([
-    #                 transforms.ToTensor(),
-    #                 transforms.Normalize((0.5,), (0.5,))
-    #             ]))
-
-    #     train_target = usps.USPS_idx('./data/usps/', train=True, download=True,
-    #             transform=transforms.Compose([
-    #                 transforms.ToTensor(),
-    #                 transforms.Normalize((0.5,), (0.5,))
-    #             ]))
-    #     test_target = usps.USPS('./data/usps/', train=False, download=True,
-    #             transform=transforms.Compose([
-    #                 transforms.ToTensor(),
-    #                 transforms.Normalize((0.5,), (0.5,))
-    #             ]))
-
     elif args.dset == 'm2u':
         train_source = mnist.MNIST('./data/mnist/', train=True, download=True,
                 transform=transforms.Compose([
