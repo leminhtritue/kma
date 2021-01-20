@@ -577,5 +577,17 @@ if __name__ == "__main__":
         args.out_file.write(print_args(args)+'\n')
         args.out_file.flush()
         test_target(args)
-        _,_,_, acc = train_target(args)
-        print("{}-{}-{}-{}-{}".format(args.w_vat, args.cls_par, args.alpha_rf, args.max_zero, acc))
+
+        dict_result = dict()
+        for cur_w_vat in [0.0, 0.1, 1.0]:
+            args.w_vat = cur_w_vat
+            for cur_cls_par in [0.0, 0.1, 1.0]:
+                args.cls_par = cur_cls_par
+                for cur_alpha_rf in [0.1, 1.0]:
+                    args.alpha_rf = cur_alpha_rf
+                    for cur_max_zero in [0.0, 1.0]:
+                        args.max_zero = cur_max_zero
+                        _,_,_, acc = train_target(args)
+                        dict_result[(args.w_vat, args.cls_par, args.alpha_rf, args.max_zero)] = acc
+                        for key in dict_result:
+                            print("{}-{}-{}-{}-{}".format(key[0], key[1], key[2], key[3], dict_result[key]))
