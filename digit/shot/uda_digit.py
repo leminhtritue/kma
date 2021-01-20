@@ -114,6 +114,34 @@ def digit_load(args):
                     transforms.ToTensor(),
                     transforms.Normalize((0.5,), (0.5,))
                 ]))
+
+    elif args.dset == 'm2s':
+        train_source = mnist.MNIST('./data/mnist/', train=True, download=True,
+                transform=transforms.Compose([
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.5,), (0.5,))
+                ]))
+        test_source = mnist.MNIST('./data/mnist/', train=False, download=True,
+                transform=transforms.Compose([
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.5,), (0.5,))
+                ]))
+
+        train_target = svhn.SVHN_idx('./data/svhn/', split='train', download=True,
+                transform=transforms.Compose([
+                    transforms.Resize(28),
+                    transforms.Lambda(lambda x: x.convert("L")),
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.5,), (0.5,))
+                ]))
+        test_target = svhn.SVHN('./data/svhn/', split='test', download=True,
+                transform=transforms.Compose([
+                    transforms.Resize(28),
+                    transforms.Lambda(lambda x: x.convert("L")),
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.5,), (0.5,))
+                ]))  
+
     elif args.dset == 'm2u':
         train_source = mnist.MNIST('./data/mnist/', train=True, download=True,
                 transform=transforms.Compose([
