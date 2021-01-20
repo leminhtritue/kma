@@ -579,26 +579,15 @@ if __name__ == "__main__":
         test_target(args)
 
         dict_result = dict()
-        for cur_w_vat in [0.1]:
+        for cur_w_vat in [0.0, 0.1, 1.0]:
             args.w_vat = cur_w_vat
-            for cur_cls_par in [1.0]:
+            for cur_cls_par in [0.0, 0.1, 1.0]:
                 args.cls_par = cur_cls_par
-                for cur_alpha_rf in [0.0]:
+                for cur_alpha_rf in [0.1, 1.0]:
                     args.alpha_rf = cur_alpha_rf
-                    if cur_alpha_rf != 0.0:
-                        list_max_zero = [0.0, 1.0]
-                    else:
-                        list_max_zero = [0.0]
-                    for cur_max_zero in list_max_zero:
+                    for cur_max_zero in [0.0, 1.0]:
                         args.max_zero = cur_max_zero
                         _,_,_, acc = train_target(args)
                         dict_result[(args.w_vat, args.cls_par, args.alpha_rf, args.max_zero)] = acc
                         for key in dict_result:
                             print("{}-{}-{}-{}-{}".format(key[0], key[1], key[2], key[3], dict_result[key]))
-
-            
-
-
-
-# python image_target.py --nrf 16384 --s 0 --t 1 --output_src ckps/source0_16384_gm0_1_aw0_1_vat0_arf1_ep500/
-
