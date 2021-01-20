@@ -518,6 +518,7 @@ if __name__ == "__main__":
 
     parser.add_argument('--radius', type=float, default=0.01)    
     parser.add_argument('--layer_rf', type=str, default="linear", choices=["linear", "wn"])
+    parser.add_argument('--grid', type=float, default=0.0)    
     
     args = parser.parse_args()
 
@@ -577,5 +578,28 @@ if __name__ == "__main__":
         args.out_file.write(print_args(args)+'\n')
         args.out_file.flush()
         test_target(args)
-        _,_,_, acc = train_target(args)
-        print("{}-{}-{}-{}-{}".format(args.w_vat, args.cls_par, args.alpha_rf, args.max_zero, acc))
+
+        if (args.grid > 0.0):
+            list_cls_par = [0.0, 0.1, 1.0]
+            list_w_vat = [0.0, 0.1, 1.0]
+            list_alpha_rf = [0.1, 1.0]
+            list_max_zero = [0.0, 1.0]
+        else:
+            list_cls_par = [args.cls_par]
+            list_w_vat = [args.w_vat]
+            list_alpha_rf = [args.alpha_rf]
+            list_max_zero = [args.max_zero]
+
+        dict_result = dict()
+        for cur_cls_par in list_cls_par:
+            args.cls_par = cur_cls_par        
+            for cur_w_vat in list_w_vat:
+                args.w_vat = cur_w_vat
+                for cur_alpha_rf in list_alpha_rf:
+                    args.alpha_rf = cur_alpha_rf
+                    for cur_max_zero in list_max_zero:
+                        args.max_zero = cur_max_zero
+                        _,_,_, acc = train_target(args)
+                        dict_result[(args.cls_par, args.w_vat, args.alpha_rf, args.max_zero)] = acc
+                        for key in dict_result:
+                            print("{}-{}-{}-{}-{}".format(key[0], key[1], key[2], key[3], dict_result[key]))
