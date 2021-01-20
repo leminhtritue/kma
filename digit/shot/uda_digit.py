@@ -148,29 +148,54 @@ def digit_load(args):
     elif args.dset == 'm2s':
         train_source = mnist.MNIST('./data/mnist/', train=True, download=True,
                 transform=transforms.Compose([
+                    transforms.Resize(32),
+                    transforms.Lambda(lambda x: x.convert("RGB")),
                     transforms.ToTensor(),
-                    transforms.Normalize((0.5,), (0.5,))
+                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
                 ]))
         test_source = mnist.MNIST('./data/mnist/', train=False, download=True,
                 transform=transforms.Compose([
+                    transforms.Resize(32),
+                    transforms.Lambda(lambda x: x.convert("RGB")),
                     transforms.ToTensor(),
-                    transforms.Normalize((0.5,), (0.5,))
+                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
                 ]))
 
         train_target = svhn.SVHN_idx('./data/svhn/', split='train', download=True,
                 transform=transforms.Compose([
-                    transforms.Resize(28),
-                    transforms.Lambda(lambda x: x.convert("L")),
+                    transforms.Resize(32),
                     transforms.ToTensor(),
-                    transforms.Normalize((0.5,), (0.5,))
+                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
                 ]))
         test_target = svhn.SVHN('./data/svhn/', split='test', download=True,
                 transform=transforms.Compose([
-                    transforms.Resize(28),
-                    transforms.Lambda(lambda x: x.convert("L")),
+                    transforms.Resize(32),
                     transforms.ToTensor(),
-                    transforms.Normalize((0.5,), (0.5,))
+                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
                 ]))  
+
+    # elif args.dset == 'm2u':
+    #     train_source = mnist.MNIST('./data/mnist/', train=True, download=True,
+    #             transform=transforms.Compose([
+    #                 transforms.ToTensor(),
+    #                 transforms.Normalize((0.5,), (0.5,))
+    #             ]))
+    #     test_source = mnist.MNIST('./data/mnist/', train=False, download=True,
+    #             transform=transforms.Compose([
+    #                 transforms.ToTensor(),
+    #                 transforms.Normalize((0.5,), (0.5,))
+    #             ]))
+
+    #     train_target = usps.USPS_idx('./data/usps/', train=True, download=True,
+    #             transform=transforms.Compose([
+    #                 transforms.ToTensor(),
+    #                 transforms.Normalize((0.5,), (0.5,))
+    #             ]))
+    #     test_target = usps.USPS('./data/usps/', train=False, download=True,
+    #             transform=transforms.Compose([
+    #                 transforms.ToTensor(),
+    #                 transforms.Normalize((0.5,), (0.5,))
+    #             ]))
 
     elif args.dset == 'm2u':
         train_source = mnist.MNIST('./data/mnist/', train=True, download=True,
@@ -308,11 +333,11 @@ def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
 def extract_plot(args):
     dset_loaders = digit_load(args)
     ## set base network
-    if args.dset == 'u2m' or args.dset == 'u2s':
+    if args.dset == 'u2m' :
         netF = network.LeNetBase().cuda()
-    elif args.dset == 'm2u' or args.dset == 'm2s':
+    elif args.dset == 'm2u':
         netF = network.LeNetBase().cuda()  
-    elif args.dset == 's2m' or args.dset == 's2u':
+    elif args.dset == 's2m' or args.dset == 's2u' or args.dset == 'm2s' or args.dset == 'u2s':
         netF = network.DTNBase().cuda()
 
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
@@ -370,11 +395,11 @@ def cal_acc(loader, netF, netB, netC):
 def train_source(args):
     dset_loaders = digit_load(args)
     ## set base network
-    if args.dset == 'u2m' or args.dset == 'u2s':
+    if args.dset == 'u2m' :
         netF = network.LeNetBase().cuda()
-    elif args.dset == 'm2u' or args.dset == 'm2s':
+    elif args.dset == 'm2u':
         netF = network.LeNetBase().cuda()  
-    elif args.dset == 's2m' or args.dset == 's2u':
+    elif args.dset == 's2m' or args.dset == 's2u' or args.dset == 'm2s' or args.dset == 'u2s':
         netF = network.DTNBase().cuda()
 
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
@@ -447,11 +472,11 @@ def train_source(args):
 def test_target(args):
     dset_loaders = digit_load(args)
     ## set base network
-    if args.dset == 'u2m' or args.dset == 'u2s':
+    if args.dset == 'u2m' :
         netF = network.LeNetBase().cuda()
-    elif args.dset == 'm2u' or args.dset == 'm2s':
+    elif args.dset == 'm2u':
         netF = network.LeNetBase().cuda()  
-    elif args.dset == 's2m' or args.dset == 's2u':
+    elif args.dset == 's2m' or args.dset == 's2u' or args.dset == 'm2s' or args.dset == 'u2s':
         netF = network.DTNBase().cuda()
 
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
@@ -482,11 +507,11 @@ def print_args(args):
 def train_target(args):
     dset_loaders = digit_load(args)
     ## set base network
-    if args.dset == 'u2m' or args.dset == 'u2s':
+    if args.dset == 'u2m' :
         netF = network.LeNetBase().cuda()
-    elif args.dset == 'm2u' or args.dset == 'm2s':
+    elif args.dset == 'm2u':
         netF = network.LeNetBase().cuda()  
-    elif args.dset == 's2m' or args.dset == 's2u':
+    elif args.dset == 's2m' or args.dset == 's2u' or args.dset == 'm2s' or args.dset == 'u2s':
         netF = network.DTNBase().cuda()
 
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
