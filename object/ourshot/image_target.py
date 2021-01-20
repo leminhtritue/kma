@@ -600,5 +600,5 @@ if __name__ == "__main__":
 
 
 
-python image_target.py --nrf 16384 --s 0 --t 1 --output_src ckps/source0_16384_gm0_1_aw0_1_vat0_arf1_ep500/
+# python image_target.py --nrf 16384 --s 0 --t 1 --output_src ckps/source0_16384_gm0_1_aw0_1_vat0_arf1_ep500/
 
