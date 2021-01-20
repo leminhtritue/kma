@@ -404,6 +404,7 @@ def test_target(args):
     args.out_file.write(log_str)
     args.out_file.flush()
     print(log_str)
+    return acc
 
 def print_args(args):
     s = "==========================================\n"
@@ -577,4 +578,11 @@ if __name__ == "__main__":
         args.out_file.write(print_args(args)+'\n')
         args.out_file.flush()
         test_target(args)
-        train_target(args)
+
+        dict_result = dict()
+        for i in [0.1, 0.5, 1]:
+            args.alpha_rf = i
+            train_target(args)
+            acc = test_target(args)
+            dict_result[(i,i)]=acc
+        print(dict_result)
