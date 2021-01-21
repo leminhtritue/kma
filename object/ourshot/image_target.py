@@ -202,17 +202,17 @@ def train_target(args):
 
     classifier_loss_total = 0.0
     classifier_loss_count = 0
-    entropy_loss_total = 0.0
-    entropy_loss_count = 0
-    costlog_loss_total = 0.0
-    costlog_loss_count = 0
-    costs_loss_total = 0.0
-    costs_loss_count = 0
-    costdist_loss_total = 0.0
-    costdist_loss_count = 0
-    right_sample_count = 0
-    sum_sample = 0
-    start_output = True
+    # entropy_loss_total = 0.0
+    # entropy_loss_count = 0
+    # costlog_loss_total = 0.0
+    # costlog_loss_count = 0
+    # costs_loss_total = 0.0
+    # costs_loss_count = 0
+    # costdist_loss_total = 0.0
+    # costdist_loss_count = 0
+    # right_sample_count = 0
+    # sum_sample = 0
+    # start_output = True
 
     while iter_num < max_iter:
         try:
@@ -300,26 +300,26 @@ def train_target(args):
 
         classifier_loss_total += classifier_loss
         classifier_loss_count += 1   
-        entropy_loss_total += entropy_loss
-        entropy_loss_count += 1 
-        costlog_loss_total += 0
-        costlog_loss_count += 1  
-        costs_loss_total += 0
-        costs_loss_count += 1  
-        costdist_loss_total += 0
-        costdist_loss_count += 1 
+        # entropy_loss_total += entropy_loss
+        # entropy_loss_count += 1 
+        # costlog_loss_total += 0
+        # costlog_loss_count += 1  
+        # costs_loss_total += 0
+        # costs_loss_count += 1  
+        # costdist_loss_total += 0
+        # costdist_loss_count += 1 
 
-        max_hyperplane = outputs_test.max(dim=1).values       
-        max_hyperplane[max_hyperplane > 0] = 1
-        max_hyperplane[max_hyperplane < 0] = 0
-        right_sample_count += max_hyperplane.sum()
-        sum_sample += outputs_test.shape[0]
+        # max_hyperplane = outputs_test.max(dim=1).values       
+        # max_hyperplane[max_hyperplane > 0] = 1
+        # max_hyperplane[max_hyperplane < 0] = 0
+        # right_sample_count += max_hyperplane.sum()
+        # sum_sample += outputs_test.shape[0]
 
-        if (start_output):
-            all_output = outputs_test.float().cpu()
-            start_output = False
-        else:
-            all_output = torch.cat((all_output, outputs_test.float().cpu()), 0)
+        # if (start_output):
+        #     all_output = outputs_test.float().cpu()
+        #     start_output = False
+        # else:
+        #     all_output = torch.cat((all_output, outputs_test.float().cpu()), 0)
 
         optimizer.zero_grad()
         classifier_loss.backward()
@@ -332,12 +332,14 @@ def train_target(args):
                 acc_s_te, acc_list = cal_acc(dset_loaders['test'], netF, netB, netC, True)
                 log_str = 'Task: {}, Iter:{}/{}; Accuracy = {:.2f}%'.format(args.name, iter_num, max_iter, acc_s_te) + '\n' + acc_list
             else:
-                _, predict = torch.max(all_output, 1)
+                # _, predict = torch.max(all_output, 1)
                 acc_s_te, _ = cal_acc(dset_loaders['test'], netF, netB, netC, False)
                 acc_s_tr, _ = cal_acc(dset_loaders['target'], netF, netB, netC, False)
 
-                log_str = 'Task: {}, Iter:{}/{}; Loss : {:.2f}, , Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(args.name, iter_num, max_iter, \
-                classifier_loss_total/classifier_loss_count, acc_s_tr, acc_s_te, right_sample_count, sum_sample)
+                # log_str = 'Task: {}, Iter:{}/{}; Loss : {:.2f}, , Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(args.name, iter_num, max_iter, \
+                # classifier_loss_total/classifier_loss_count, acc_s_tr, acc_s_te, right_sample_count, sum_sample)
+                log_str = 'Task: {}, Iter:{}/{}; Loss : {:.2f}, , Accuracy target (train/test) = {:.2f}% / {:.2f}%.'.format(args.name, iter_num, max_iter, \
+                classifier_loss_total/classifier_loss_count, acc_s_tr, acc_s_te)
 
             args.out_file.write(log_str + '\n')
             args.out_file.flush()
@@ -348,17 +350,17 @@ def train_target(args):
 
             classifier_loss_total = 0.0
             classifier_loss_count = 0
-            entropy_loss_total = 0.0
-            entropy_loss_count = 0
-            costs_loss_total = 0.0
-            costs_loss_count = 0
-            costdist_loss_total = 0.0
-            costdist_loss_count = 0
-            costlog_loss_total = 0.0
-            costlog_loss_count = 0
-            right_sample_count = 0
-            sum_sample = 0
-            start_output = True
+            # entropy_loss_total = 0.0
+            # entropy_loss_count = 0
+            # costs_loss_total = 0.0
+            # costs_loss_count = 0
+            # costdist_loss_total = 0.0
+            # costdist_loss_count = 0
+            # costlog_loss_total = 0.0
+            # costlog_loss_count = 0
+            # right_sample_count = 0
+            # sum_sample = 0
+            # start_output = True
 
             netF.train()
             netB.train()
