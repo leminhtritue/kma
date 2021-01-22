@@ -219,6 +219,27 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
     print("{}/{} samples that H has greater softmax when when right predict\n".format(torch.sum(predict_softmax_rf_neq_rfwrong_hright < predict_softmax_h_neq_rfwrong_hright).item(),n_neq_rf_wrong_h_right))
 
 
+
+    predict_arg_h_clone = predict_arg_h.detach().clone()
+    predict_arg_rf_clone = predict_arg_rf.detach().clone()
+
+    predict_arg_h_clone[predict_softmax_rf > predict_softmax_h] = predict_arg_rf[predict_softmax_rf > predict_softmax_h]
+    predict_arg_rf_clone[predict_softmax_h > predict_softmax_rf] = predict_arg_h[predict_softmax_h > predict_softmax_rf]
+
+    accuracy_h_refined = torch.sum(torch.squeeze(predict_arg_h_clone).float() == all_label).item() / float(all_label.size()[0])
+    accuracy_rf_refined = torch.sum(torch.squeeze(predict_arg_rf_clone).float() == all_label).item() / float(all_label.size()[0])
+    print("Acc total H: {:.2f}%, Acc total RF: {:.2f}%".format(accuracy_h_refined*100, accuracy_rf_refined*100))
+
+    predict_arg_h_clone = predict_arg_h.detach().clone()
+    predict_arg_rf_clone = predict_arg_rf.detach().clone()
+
+    predict_arg_h_clone[predict_softmax_rf > predict_softmax_h] = predict_arg_rf[predict_softmax_rf >= predict_softmax_h]
+    predict_arg_rf_clone[predict_softmax_h > predict_softmax_rf] = predict_arg_h[predict_softmax_h >= predict_softmax_rf]
+
+    accuracy_h_refined = torch.sum(torch.squeeze(predict_arg_h_clone).float() == all_label).item() / float(all_label.size()[0])
+    accuracy_rf_refined = torch.sum(torch.squeeze(predict_arg_rf_clone).float() == all_label).item() / float(all_label.size()[0])
+    print(">= Acc total H: {:.2f}%, Acc total RF: {:.2f}%".format(accuracy_h_refined*100, accuracy_rf_refined*100))
+
 def normalize_perturbation(d):
     d_ = d.view(d.size()[0], -1)
     eps = d.new_tensor(1e-12)
