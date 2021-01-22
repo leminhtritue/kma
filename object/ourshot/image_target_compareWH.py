@@ -228,7 +228,7 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
 
     accuracy_h_refined = torch.sum(torch.squeeze(predict_arg_h_clone).float() == all_label).item() / float(all_label.size()[0])
     accuracy_rf_refined = torch.sum(torch.squeeze(predict_arg_rf_clone).float() == all_label).item() / float(all_label.size()[0])
-    print("Acc total H (refined by RF): {:.2f}%, Acc total RF (refined by H): {:.2f}%".format(accuracy_h_refined*100, accuracy_rf_refined*100))
+    print("Acc total H (refined by RF): {:.2f}%, Acc total RF (refined by H): {:.2f}%\n".format(accuracy_h_refined*100, accuracy_rf_refined*100))
 
 def normalize_perturbation(d):
     d_ = d.view(d.size()[0], -1)
