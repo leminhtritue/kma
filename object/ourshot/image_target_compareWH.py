@@ -170,23 +170,37 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
     all_label_neq = all_label[mask_HneqRF]
 
     print("Acc total H: {:.2f}%, Acc total RF: {:.2f}%".format(accuracy_h*100, accuracy_rf*100))
-    print("Total samples/Agree/Disagree: {}/{}/{}".format(predict_arg_h.size()[0], predict_arg_h_eq.size()[0], predict_arg_h_neq.size()[0]))
+    print("Total samples/Agree/Disagree: {}/{}/{} samples".format(predict_arg_h.size()[0], predict_arg_h_eq.size()[0], predict_arg_h_neq.size()[0]))
     n_eq_right = (torch.sum(torch.squeeze(predict_arg_h_eq).float() == all_label_eq).item())
-    n_eq_total = float(all_label_eq.size()[0])
-    accuracy_eq = n_eq_right / n_eq_total
-    print("Acc Agree: {:.2f}% - {} / {}".format(accuracy_eq*100, n_eq_right, n_eq_total))
+    n_eq_total = all_label_eq.size()[0]
+    accuracy_eq = n_eq_right / float(n_eq_total)
+    print("Acc Agree: {:.2f}% - {}/{} samples".format(accuracy_eq*100, n_eq_right, n_eq_total))
 
     n_neq_h_right = (torch.sum(torch.squeeze(predict_arg_h_neq).float() == all_label_neq).item())
     n_neq_rf_right = (torch.sum(torch.squeeze(predict_arg_rf_neq).float() == all_label_neq).item())
-    n_neq_total = float(all_label_neq.size()[0])
-    accuracy_neq_h =  n_neq_h_right / n_neq_total
-    accuracy_neq_rf =  n_neq_rf_right/ n_neq_total
-    print("Acc Disagree: H:{:.2f}% - {}/{}, RF:{:.2f}% - {}/{}".format(accuracy_neq_h*100, n_neq_h_right, n_neq_total, accuracy_neq_rf*100, n_neq_rf_right, n_neq_total))
+    n_neq_total = all_label_neq.size()[0]
+    accuracy_neq_h =  n_neq_h_right / float(n_neq_total)
+    accuracy_neq_rf =  n_neq_rf_right/ float(n_neq_total)
+    print("Acc Disagree: H:{:.2f}% - {}/{}, RF:{:.2f}% - {}/{} samples\n".format(accuracy_neq_h*100, n_neq_h_right, n_neq_total, accuracy_neq_rf*100, n_neq_rf_right, n_neq_total))
 
+
+    
     mark_arg_h_neq_wrong = (torch.squeeze(predict_arg_h_neq).float() != all_label_neq)
     all_label_neq_h_wrong = all_label_neq[mark_arg_h_neq_wrong]
     predict_arg_rf_neq_h_wrong = predict_arg_rf_neq[mark_arg_h_neq_wrong]
-    print("Acc RF in samples H wrongly predict: {:.2f}%".format(torch.sum(torch.squeeze(predict_arg_rf_neq_h_wrong).float() == all_label_neq_h_wrong).item() / float(all_label_neq_h_wrong.size()[0])))
+    predict_softmax_h_neq_hwrong = predict_softmax_h_neq[mark_arg_h_neq_wrong]
+    predict_softmax_rf_neq_hwrong = predict_softmax_rf_neq[mark_arg_h_neq_wrong]
+
+    n_neq_h_wrong_total = all_label_neq_h_wrong.size()[0]
+    mark_arg_rf_neq_h_wrong = (torch.squeeze(predict_arg_rf_neq_h_wrong).float() == all_label_neq_h_wrong)
+    predict_softmax_h_neq_hwrong_rfright = predict_softmax_h_neq_hwrong[mark_arg_rf_neq_h_wrong]
+    predict_softmax_rf_neq_hwrong_rfright = predict_softmax_rf_neq_hwrong[mark_arg_rf_neq_h_wrong]
+
+    n_neq_h_wrong_rf_right = predict_softmax_h_neq_hwrong_rfright.size()[0]
+
+    print("Acc RF in {} samples H wrongly predict: {:.2f} - {}/{} samples%".format(n_neq_h_wrong_total, n_neq_h_wrong_rf_right / float(n_neq_h_wrong_total)))
+    print("{}/{} samples that RF has greater softmax when when right predict\n".format(torch.sum(predict_softmax_h_neq_hwrong_rfright < predict_softmax_rf_neq_hwrong_rfright).item(),n_neq_h_wrong_rf_right))
+    
 
     mark_arg_rf_neq_wrong = (torch.squeeze(predict_arg_rf_neq).float() != all_label_neq)
     all_label_neq_rf_wrong = all_label_neq[mark_arg_rf_neq_wrong]
