@@ -170,7 +170,7 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
     all_label_neq = all_label[mask_HneqRF]
 
     print("Acc total H: {:.2f}%, Acc total RF: {:.2f}%".format(accuracy_h*100, accuracy_rf*100))
-    print("Total samples/Agree/Disagree: {}/{}/{}"predict_arg_h.size()[0], predict_arg_h_eq.size()[0], predict_arg_h_neq.size()[0])
+    print("Total samples/Agree/Disagree: {}/{}/{}".format(predict_arg_h.size()[0], predict_arg_h_eq.size()[0], predict_arg_h_neq.size()[0]))
     accuracy_eq = torch.sum(torch.squeeze(predict_arg_h_eq).float() == all_label_eq).item() / float(all_label_eq.size()[0])
     print("Acc Agree: {:.2f}%".format(accuracy_eq*100))
 
@@ -186,7 +186,7 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
     mark_arg_rf_neq_wrong = (torch.squeeze(predict_arg_rf_neq).float() != all_label_neq)
     all_label_neq_rf_wrong = all_label_neq[mark_arg_rf_neq_wrong]
     predict_arg_h_neq_rf_wrong = predict_arg_h_neq[mark_arg_rf_neq_wrong]
-    print("Acc H in samples W wrongly predict: {:.2f}%".format(torch.sum(torch.squeeze(predict_arg_h_neq_rf_wrong).float() == all_label_neq_rf_wrong).item() / float(all_label_neq_rf_wrong.size()[0])))
+    print("Acc H in samples RF wrongly predict: {:.2f}%".format(torch.sum(torch.squeeze(predict_arg_h_neq_rf_wrong).float() == all_label_neq_rf_wrong).item() / float(all_label_neq_rf_wrong.size()[0])))
 
 
 def normalize_perturbation(d):
