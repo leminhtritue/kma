@@ -457,7 +457,7 @@ def train_target(args):
     #     torch.save(netBRF.state_dict(), osp.join(args.output_dir, "target_BRF_" + args.savename + ".pt"))
     #     torch.save(netCRF.state_dict(), osp.join(args.output_dir, "target_CRF_" + args.savename + ".pt"))
         
-    return netF, netB, netC, acc_s_te
+    return netF, netB, netC, 0
 
 def test_target(args):
     dset_loaders = data_load(args)
