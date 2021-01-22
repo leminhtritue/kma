@@ -170,9 +170,14 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
     all_label_neq = all_label[mask_HneqRF]
 
     print("Acc H: {:.2f}%, Acc W: {:.2f}%".format(accuracy_h*100, accuracy_rf*100))
-    print(predict_arg_h, predict_arg_h_eq.shape, predict_arg_h_neq.shape)
+    print(predict_arg_h.shape, predict_arg_h_eq.shape, predict_arg_h_neq.shape)
     accuracy_eq = torch.sum(torch.squeeze(predict_arg_h_eq).float() == all_label_eq).item() / float(all_label_eq.size()[0])
     print("Acc eq: {:.2f}%".format(accuracy_eq*100))
+
+    accuracy_neq_h = torch.sum(torch.squeeze(predict_arg_h_neq).float() == all_label_neq).item() / float(all_label_neq.size()[0])
+    accuracy_neq_rf = torch.sum(torch.squeeze(predict_arg_rf_neq).float() == all_label_neq).item() / float(all_label_neq.size()[0])
+    print("Acc neq: H:{:.2f}%, RF:{:.2f}%".format(accuracy_neq_h*100, accuracy_neq_rf*100))
+
 
 def normalize_perturbation(d):
     d_ = d.view(d.size()[0], -1)
