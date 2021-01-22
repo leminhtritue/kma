@@ -171,12 +171,17 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
 
     print("Acc total H: {:.2f}%, Acc total RF: {:.2f}%".format(accuracy_h*100, accuracy_rf*100))
     print("Total samples/Agree/Disagree: {}/{}/{}".format(predict_arg_h.size()[0], predict_arg_h_eq.size()[0], predict_arg_h_neq.size()[0]))
-    accuracy_eq = torch.sum(torch.squeeze(predict_arg_h_eq).float() == all_label_eq).item() / float(all_label_eq.size()[0])
-    print("Acc Agree: {:.2f}%".format(accuracy_eq*100))
+    n_eq_right = (torch.sum(torch.squeeze(predict_arg_h_eq).float() == all_label_eq).item())
+    n_eq_total = float(all_label_eq.size()[0])
+    accuracy_eq = n_eq_right / n_eq_total
+    print("Acc Agree: {:.2f}% - {} / {}".format(accuracy_eq*100), n_eq_right, n_eq_total)
 
-    accuracy_neq_h = torch.sum(torch.squeeze(predict_arg_h_neq).float() == all_label_neq).item() / float(all_label_neq.size()[0])
-    accuracy_neq_rf = torch.sum(torch.squeeze(predict_arg_rf_neq).float() == all_label_neq).item() / float(all_label_neq.size()[0])
-    print("Acc Disagree: H:{:.2f}%, RF:{:.2f}%".format(accuracy_neq_h*100, accuracy_neq_rf*100))
+    n_neq_h_right = (torch.sum(torch.squeeze(predict_arg_h_neq).float() == all_label_neq).item())
+    n_neq_rf_right = (torch.sum(torch.squeeze(predict_arg_rf_neq).float() == all_label_neq).item())
+    n_neq_total = float(all_label_neq.size()[0])
+    accuracy_neq_h =  n_neq_h_right / n_neq_total
+    accuracy_neq_rf =  n_neq_rf_right/ n_neq_total
+    print("Acc Disagree: H:{:.2f}% - {}/{}, RF:{:.2f}% - {}/{}".format(accuracy_neq_h*100, n_neq_h_right, n_neq_total, accuracy_neq_rf*100, n_neq_rf_right, n_neq_total))
 
     mark_arg_h_neq_wrong = (torch.squeeze(predict_arg_h_neq).float() != all_label_neq)
     all_label_neq_h_wrong = all_label_neq[mark_arg_h_neq_wrong]
@@ -409,6 +414,8 @@ def train_target(args):
         classifier_loss.backward()
         optimizer.step()
 
+        nEpoch = 1
+
         if iter_num % interval_iter == 0 or iter_num == max_iter:
             netF.eval()
             netB.eval()
@@ -424,6 +431,8 @@ def train_target(args):
                 # log_str = 'Task: {}, Iter:{}/{}; Loss : {:.2f}, , Accuracy target (train/test) = {:.2f}% / {:.2f}%.'.format(args.name, iter_num, max_iter, \
                 # classifier_loss_total/classifier_loss_count, acc_s_tr, acc_s_te)
 
+                print("Epoch {}:".format(nEpoch))
+                nEpoch += 1
                 cal_accWH(dset_loaders['test'], netF, netB, netC, netBRF, netCRF)
                 acc_s_te = 101
                 log_str = ""
