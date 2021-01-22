@@ -202,28 +202,21 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
     print("{}/{} samples that RF has greater softmax when when right predict\n".format(torch.sum(predict_softmax_h_neq_hwrong_rfright < predict_softmax_rf_neq_hwrong_rfright).item(),n_neq_h_wrong_rf_right))
     
 
-    # mark_arg_rf_neq_wrong = (torch.squeeze(predict_arg_rf_neq).float() != all_label_neq)
-    # all_label_neq_r_wrong = all_label_neq[mark_arg_rf_neq_wrong]
-    # predict_arg_h_neq_rfwrong = predict_arg_h_neq[mark_arg_rf_neq_wrong]
-    # predict_softmax_h_neq_rfwrong = predict_softmax_h_neq[mark_arg_rf_neq_wrong]
-    # predict_softmax_rf_neq_rfwrong = predict_softmax_rf_neq[mark_arg_rf_neq_wrong]
+    mark_arg_rf_neq_wrong = (torch.squeeze(predict_arg_rf_neq).float() != all_label_neq)
+    all_label_neq_rf_wrong = all_label_neq[mark_arg_rf_neq_wrong]
+    predict_arg_h_neq_rfwrong = predict_arg_h_neq[mark_arg_rf_neq_wrong]
+    predict_softmax_h_neq_rfwrong = predict_softmax_h_neq[mark_arg_rf_neq_wrong]
+    predict_softmax_rf_neq_rfwrong = predict_softmax_rf_neq[mark_arg_rf_neq_wrong]
 
-    # n_neq_h_wrong_total = all_label_neq_h_wrong.size()[0]
-    # mark_arg_rf_neq_h_wrong = (torch.squeeze(predict_arg_rf_neq_h_wrong).float() == all_label_neq_h_wrong)
-    # predict_softmax_h_neq_hwrong_rfright = predict_softmax_h_neq_hwrong[mark_arg_rf_neq_h_wrong]
-    # predict_softmax_rf_neq_hwrong_rfright = predict_softmax_rf_neq_hwrong[mark_arg_rf_neq_h_wrong]
+    n_neq_rf_wrong_total = all_label_neq_rf_wrong.size()[0]
+    mark_arg_h_neq_rf_wrong = (torch.squeeze(predict_arg_h_neq_rfwrong).float() == all_label_neq_rf_wrong)
+    predict_softmax_h_neq_rfwrong_hright = predict_softmax_h_neq_rfwrong[mark_arg_h_neq_rf_wrong]
+    predict_softmax_rf_neq_rfwrong_hright = predict_softmax_rf_neq_rfwrong[mark_arg_h_neq_rf_wrong]
 
-    # n_neq_h_wrong_rf_right = predict_softmax_h_neq_hwrong_rfright.size()[0]
+    n_neq_rf_wrong_h_right = predict_softmax_h_neq_rfwrong_hright.size()[0]
 
-    # print("Acc RF in {} samples H wrongly predict: {:.2f} - {}/{} samples%".format(n_neq_h_wrong_total, n_neq_h_wrong_rf_right / float(n_neq_h_wrong_total)))
-    # print("{}/{} samples that RF has greater softmax when when right predict\n".format(torch.sum(predict_softmax_h_neq_hwrong_rfright < predict_softmax_rf_neq_hwrong_rfright).item(),n_neq_h_wrong_rf_right))
-    
-
-
-
-    # all_label_neq_rf_wrong = all_label_neq[mark_arg_rf_neq_wrong]
-    # predict_arg_h_neq_rf_wrong = predict_arg_h_neq[mark_arg_rf_neq_wrong]
-    # print("Acc H in samples RF wrongly predict: {:.2f}%".format(torch.sum(torch.squeeze(predict_arg_h_neq_rf_wrong).float() == all_label_neq_rf_wrong).item() / float(all_label_neq_rf_wrong.size()[0])))
+    print("Acc H in {} samples RF wrongly predict: {:.2f}%".format(n_neq_rf_wrong_total, n_neq_rf_wrong_h_right / float(n_neq_rf_wrong_total)))
+    print("{}/{} samples that H has greater softmax when when right predict\n".format(torch.sum(predict_softmax_rf_neq_rfwrong_hright < predict_softmax_h_neq_rfwrong_hright).item(),n_neq_rf_wrong_h_right))
 
 
 def normalize_perturbation(d):
