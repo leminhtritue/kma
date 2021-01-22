@@ -312,6 +312,7 @@ def train_target(args):
     # sum_sample = 0
     # start_output = True
 
+    nEpoch = 1
     while iter_num < max_iter:
         try:
             inputs_test, _, tar_idx = iter_test.next()
@@ -438,8 +439,6 @@ def train_target(args):
         optimizer.zero_grad()
         classifier_loss.backward()
         optimizer.step()
-
-        nEpoch = 1
 
         if iter_num % interval_iter == 0 or iter_num == max_iter:
             netF.eval()
