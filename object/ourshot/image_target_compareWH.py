@@ -425,6 +425,8 @@ def train_target(args):
                 # classifier_loss_total/classifier_loss_count, acc_s_tr, acc_s_te)
 
                 cal_accWH(dset_loaders['test'], netF, netB, netC, netBRF, netCRF)
+                acc_s_te = 101
+                log_str = ""
 
             args.out_file.write(log_str + '\n')
             args.out_file.flush()
@@ -457,7 +459,7 @@ def train_target(args):
     #     torch.save(netBRF.state_dict(), osp.join(args.output_dir, "target_BRF_" + args.savename + ".pt"))
     #     torch.save(netCRF.state_dict(), osp.join(args.output_dir, "target_CRF_" + args.savename + ".pt"))
         
-    return netF, netB, netC, 0
+    return netF, netB, netC, acc_s_te
 
 def test_target(args):
     dset_loaders = data_load(args)
