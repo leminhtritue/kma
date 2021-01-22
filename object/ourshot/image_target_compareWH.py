@@ -154,7 +154,26 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
     accuracy_h = torch.sum(torch.squeeze(predict_arg_h).float() == all_label).item() / float(all_label.size()[0])
     accuracy_rf = torch.sum(torch.squeeze(predict_arg_rf).float() == all_label).item() / float(all_label.size()[0])
 
-    print(accuracy_h, accuracy_rf)
+    print("Acc H: {:.2f}%, Acc W: {:.2f}%".format(accuracy_h*100, accuracy_rf*100))
+
+    #Other
+    print(predict_arg_h.shape, predict_softmax_h.shape, all_label.shape)
+
+    mask_HeqRF = (torch.squeeze(predict_arg_h).float() == torch.squeeze(predict_arg_rf).float())
+    mask_HneqRF = (torch.squeeze(predict_arg_h).float() != torch.squeeze(predict_arg_rf).float())
+
+    predict_softmax_h_eq = predict_softmax_h[mask_HeqRF]
+    predict_arg_h_eq = predict_arg_h[mask_HeqRF]
+    predict_softmax_rf_eq = predict_softmax_rf[mask_HeqRF]
+    predict_arg_rf_eq = predict_arg_rf[mask_HeqRF]
+
+    predict_softmax_h_neq = predict_softmax_h[mask_HneqRF]
+    predict_arg_h_neq = predict_arg_h[mask_HneqRF]
+    predict_softmax_rf_neq = predict_softmax_rf[mask_HneqRF]
+    predict_arg_rf_neq = predict_arg_rf[mask_HneqRF]
+
+    print(predict_arg_h_eq.shape, predict_softmax_h_eq.shape)
+    print(predict_arg_h_neq.shape, predict_softmax_h_neq.shape)
 
 def normalize_perturbation(d):
     d_ = d.view(d.size()[0], -1)
