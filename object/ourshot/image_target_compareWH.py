@@ -234,7 +234,7 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
     predict_arg_rf_clone = predict_arg_rf.detach().clone()
 
     predict_arg_h_clone[predict_softmax_rf > predict_softmax_h] = predict_arg_rf[predict_softmax_rf >= predict_softmax_h]
-    predict_arg_rf_clone[predict_softmax_h > predict_softmax_rf] = predict_arg_h[predict_softmax_h >= predict_softmax_rf]
+    predict_arg_rf_clone[predict_softmax_h > predict_softmax_rf] = predict_arg_h[predict_softmax_h > predict_softmax_rf]
 
     accuracy_h_refined = torch.sum(torch.squeeze(predict_arg_h_clone).float() == all_label).item() / float(all_label.size()[0])
     accuracy_rf_refined = torch.sum(torch.squeeze(predict_arg_rf_clone).float() == all_label).item() / float(all_label.size()[0])
