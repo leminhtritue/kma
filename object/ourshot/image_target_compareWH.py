@@ -474,7 +474,7 @@ def train_target(args):
 
             args.out_file.write(log_str + '\n')
             args.out_file.flush()
-            print(log_str+'\n')
+            # print(log_str+'\n')
 
             if acc_s_te < 50:
                 return netF, netB, netC, (acc_s_te + 100)
