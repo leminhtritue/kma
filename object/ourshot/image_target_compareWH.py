@@ -169,14 +169,24 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
     predict_arg_rf_neq = predict_arg_rf[mask_HneqRF]
     all_label_neq = all_label[mask_HneqRF]
 
-    print("Acc H: {:.2f}%, Acc W: {:.2f}%".format(accuracy_h*100, accuracy_rf*100))
-    print(predict_arg_h.shape, predict_arg_h_eq.shape, predict_arg_h_neq.shape)
+    print("Acc total H: {:.2f}%, Acc total RF: {:.2f}%".format(accuracy_h*100, accuracy_rf*100))
+    print("Total samples/Agree/Disagree: {}/{}/{}"predict_arg_h.size()[0], predict_arg_h_eq.size()[0], predict_arg_h_neq.size()[0])
     accuracy_eq = torch.sum(torch.squeeze(predict_arg_h_eq).float() == all_label_eq).item() / float(all_label_eq.size()[0])
-    print("Acc eq: {:.2f}%".format(accuracy_eq*100))
+    print("Acc Agree: {:.2f}%".format(accuracy_eq*100))
 
     accuracy_neq_h = torch.sum(torch.squeeze(predict_arg_h_neq).float() == all_label_neq).item() / float(all_label_neq.size()[0])
     accuracy_neq_rf = torch.sum(torch.squeeze(predict_arg_rf_neq).float() == all_label_neq).item() / float(all_label_neq.size()[0])
-    print("Acc neq: H:{:.2f}%, RF:{:.2f}%".format(accuracy_neq_h*100, accuracy_neq_rf*100))
+    print("Acc Disagree: H:{:.2f}%, RF:{:.2f}%".format(accuracy_neq_h*100, accuracy_neq_rf*100))
+
+    mark_arg_h_neq_wrong = (torch.squeeze(predict_arg_h_neq).float() != all_label_neq)
+    all_label_neq_h_wrong = all_label_neq[mark_arg_h_neq_wrong]
+    predict_arg_rf_neq_h_wrong = predict_arg_rf_neq[mark_arg_h_neq_wrong]
+    print("Acc RF in samples H wrongly predict: {:.2f}%".format(torch.sum(torch.squeeze(predict_arg_rf_neq_h_wrong).float() == all_label_neq_h_wrong).item() / float(all_label_neq_h_wrong.size()[0])))
+
+    mark_arg_rf_neq_wrong = (torch.squeeze(predict_arg_rf_neq).float() != all_label_neq)
+    all_label_neq_rf_wrong = all_label_neq[mark_arg_rf_neq_wrong]
+    predict_arg_h_neq_rf_wrong = predict_arg_h_neq[mark_arg_rf_neq_wrong]
+    print("Acc H in samples W wrongly predict: {:.2f}%".format(torch.sum(torch.squeeze(predict_arg_h_neq_rf_wrong).float() == all_label_neq_rf_wrong).item() / float(all_label_neq_rf_wrong.size()[0])))
 
 
 def normalize_perturbation(d):
@@ -407,12 +417,12 @@ def train_target(args):
                 log_str = 'Task: {}, Iter:{}/{}; Accuracy = {:.2f}%'.format(args.name, iter_num, max_iter, acc_s_te) + '\n' + acc_list
             else:
                 # _, predict = torch.max(all_output, 1)
-                acc_s_te, _ = cal_acc(dset_loaders['test'], netF, netB, netC, False)
-                acc_s_tr, _ = cal_acc(dset_loaders['target'], netF, netB, netC, False)
-                # log_str = 'Task: {}, Iter:{}/{}; Loss : {:.2f}, , Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(args.name, iter_num, max_iter, \
-                # classifier_loss_total/classifier_loss_count, acc_s_tr, acc_s_te, right_sample_count, sum_sample)
-                log_str = 'Task: {}, Iter:{}/{}; Loss : {:.2f}, , Accuracy target (train/test) = {:.2f}% / {:.2f}%.'.format(args.name, iter_num, max_iter, \
-                classifier_loss_total/classifier_loss_count, acc_s_tr, acc_s_te)
+                # acc_s_te, _ = cal_acc(dset_loaders['test'], netF, netB, netC, False)
+                # acc_s_tr, _ = cal_acc(dset_loaders['target'], netF, netB, netC, False)
+                # # log_str = 'Task: {}, Iter:{}/{}; Loss : {:.2f}, , Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(args.name, iter_num, max_iter, \
+                # # classifier_loss_total/classifier_loss_count, acc_s_tr, acc_s_te, right_sample_count, sum_sample)
+                # log_str = 'Task: {}, Iter:{}/{}; Loss : {:.2f}, , Accuracy target (train/test) = {:.2f}% / {:.2f}%.'.format(args.name, iter_num, max_iter, \
+                # classifier_loss_total/classifier_loss_count, acc_s_tr, acc_s_te)
 
                 cal_accWH(dset_loaders['test'], netF, netB, netC, netBRF, netCRF)
 
