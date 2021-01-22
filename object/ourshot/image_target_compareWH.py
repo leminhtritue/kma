@@ -174,7 +174,7 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
     n_eq_right = (torch.sum(torch.squeeze(predict_arg_h_eq).float() == all_label_eq).item())
     n_eq_total = float(all_label_eq.size()[0])
     accuracy_eq = n_eq_right / n_eq_total
-    print("Acc Agree: {:.2f}% - {} / {}".format(accuracy_eq*100), n_eq_right, n_eq_total)
+    print("Acc Agree: {:.2f}% - {} / {}".format(accuracy_eq*100, n_eq_right, n_eq_total))
 
     n_neq_h_right = (torch.sum(torch.squeeze(predict_arg_h_neq).float() == all_label_neq).item())
     n_neq_rf_right = (torch.sum(torch.squeeze(predict_arg_rf_neq).float() == all_label_neq).item())
