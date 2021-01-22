@@ -249,9 +249,8 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
 
     n_neq_rf_right_h_wrong = predict_softmax_h_neq_rfright_hwrong.size()[0]
 
-    print("Acc H in {} samples RF rightly predict:".format(n_neq_rf_right_total))
+    print("In {} samples RF rightly predict:".format(n_neq_rf_right_total))
     print("{}/{} samples that H has greater softmax when when H wrongly predicts\n".format(torch.sum(predict_softmax_rf_neq_rfright_hwrong < predict_softmax_h_neq_rfright_hwrong).item(),n_neq_rf_right_h_wrong))
-
 
 
     predict_arg_h_clone = predict_arg_h.detach().clone()
