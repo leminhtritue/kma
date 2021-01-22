@@ -198,9 +198,26 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
 
     n_neq_h_wrong_rf_right = predict_softmax_h_neq_hwrong_rfright.size()[0]
 
-    print("Acc RF in {} samples H wrongly predict: {:.2f}%".format(n_neq_h_wrong_total, n_neq_h_wrong_rf_right / float(n_neq_h_wrong_total)))
-    print("{}/{} samples that RF has greater softmax when when right predict\n".format(torch.sum(predict_softmax_h_neq_hwrong_rfright < predict_softmax_rf_neq_hwrong_rfright).item(),n_neq_h_wrong_rf_right))
-    
+    print("In {} samples H wrongly predict:".format(n_neq_h_wrong_total))
+    print("{}/{} samples that RF has greater softmax when when RF rightly predicts\n".format(torch.sum(predict_softmax_h_neq_hwrong_rfright < predict_softmax_rf_neq_hwrong_rfright).item(),n_neq_h_wrong_rf_right))
+
+    mark_arg_h_neq_right = (torch.squeeze(predict_arg_h_neq).float() == all_label_neq)
+    all_label_neq_h_right = all_label_neq[mark_arg_h_neq_right]
+    predict_arg_rf_neq_h_right = predict_arg_rf_neq[mark_arg_h_neq_right]
+    predict_softmax_h_neq_hright = predict_softmax_h_neq[mark_arg_h_neq_right]
+    predict_softmax_rf_neq_hright = predict_softmax_rf_neq[mark_arg_h_neq_right]
+
+    n_neq_h_right_total = all_label_neq_h_right.size()[0]
+    mark_arg_rf_neq_h_right = (torch.squeeze(predict_arg_rf_neq_h_right).float() != all_label_neq_h_right)
+    predict_softmax_h_neq_hright_rfwrong = predict_softmax_h_neq_hright[mark_arg_rf_neq_h_right]
+    predict_softmax_rf_neq_hright_rfwrong = predict_softmax_rf_neq_hright[mark_arg_rf_neq_h_right]
+
+    n_neq_h_wrong_rf_wrong = predict_softmax_h_neq_hright_rfwrong.size()[0]
+
+    print("In {} samples H rightly predict:".format(n_neq_h_right_total))
+    print("{}/{} samples that RF has greater softmax when when RF wrongly predicts\n".format(torch.sum(predict_softmax_h_neq_hright_rfwrong < predict_softmax_rf_neq_hright_rfwrong).item(),n_neq_h_wrong_rf_wrong))
+
+
 
     mark_arg_rf_neq_wrong = (torch.squeeze(predict_arg_rf_neq).float() != all_label_neq)
     all_label_neq_rf_wrong = all_label_neq[mark_arg_rf_neq_wrong]
@@ -215,8 +232,25 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
 
     n_neq_rf_wrong_h_right = predict_softmax_h_neq_rfwrong_hright.size()[0]
 
-    print("Acc H in {} samples RF wrongly predict: {:.2f}%".format(n_neq_rf_wrong_total, n_neq_rf_wrong_h_right / float(n_neq_rf_wrong_total)))
-    print("{}/{} samples that H has greater softmax when when right predict\n".format(torch.sum(predict_softmax_rf_neq_rfwrong_hright < predict_softmax_h_neq_rfwrong_hright).item(),n_neq_rf_wrong_h_right))
+    print("In {} samples RF wrongly predict:".format(n_neq_rf_wrong_total))
+    print("{}/{} samples that H has greater softmax when when H right predicts\n".format(torch.sum(predict_softmax_rf_neq_rfwrong_hright < predict_softmax_h_neq_rfwrong_hright).item(),n_neq_rf_wrong_h_right))
+
+
+    mark_arg_rf_neq_right = (torch.squeeze(predict_arg_rf_neq).float() == all_label_neq)
+    all_label_neq_rf_right = all_label_neq[mark_arg_rf_neq_right]
+    predict_arg_h_neq_rfright = predict_arg_h_neq[mark_arg_rf_neq_right]
+    predict_softmax_h_neq_rfright = predict_softmax_h_neq[mark_arg_rf_neq_right]
+    predict_softmax_rf_neq_rfright = predict_softmax_rf_neq[mark_arg_rf_neq_right]
+
+    n_neq_rf_right_total = all_label_neq_rf_right.size()[0]
+    mark_arg_h_neq_rf_right = (torch.squeeze(predict_arg_h_neq_rfright).float() != all_label_neq_rf_right)
+    predict_softmax_h_neq_rfright_hwrong = predict_softmax_h_neq_rfright[mark_arg_h_neq_rf_right]
+    predict_softmax_rf_neq_rfright_hwrong = predict_softmax_rf_neq_rfright[mark_arg_h_neq_rf_right]
+
+    n_neq_rf_right_h_wrong = predict_softmax_h_neq_rfright_hwrong.size()[0]
+
+    print("Acc H in {} samples RF rightly predict:".format(n_neq_rf_right_total))
+    print("{}/{} samples that H has greater softmax when when H wrongly predicts\n".format(torch.sum(predict_softmax_rf_neq_rfright_hwrong < predict_softmax_h_neq_rfright_hwrong).item(),n_neq_rf_right_h_wrong))
 
 
 
