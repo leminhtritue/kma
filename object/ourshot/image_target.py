@@ -239,11 +239,7 @@ def train_target(args):
 
         features_test = netB(netF(inputs_test))
         outputs_test = netC(features_test)
-
-        features_test = netB(netF(inputs_test))
-        outputs_test = netC(features_test)
         outputs_test_rf = netCRF(netBRF(features_test.detach()))
-
 
         if args.cls_par > 0:
             pred = mem_label[tar_idx]

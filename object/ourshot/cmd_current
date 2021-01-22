@@ -1,8 +1,8 @@
-python image_source.py --nrf 16384 --w_vat 1.0 --alpha_rf 0.1 --max_epoch 400 --s 2 --t 0 --output ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep400/ --gpu_id 3
-python image_source.py --nrf 16384 --w_vat 1.0 --alpha_rf 0.1 --max_epoch 600 --s 2 --t 0 --output ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep600/ --gpu_id 2
-python image_source.py --nrf 16384 --w_vat 1.0 --alpha_rf 0.1 --max_epoch 1000 --s 2 --t 0 --output ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep1000/ --gpu_id 0
-
-python image_target_compareWH.py --nrf 16384 --s 2 --t 0 --output_src ckps/source0_16384_gm0_1_aw0_1_vat1_arf0_1_ep500/ --gpu_id 
+#python image_source.py --nrf 16384 --w_vat 1.0 --alpha_rf 0.1 --max_epoch 400 --s 2 --t 0 --output ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep400/ --gpu_id 3
+#python image_source.py --nrf 16384 --w_vat 1.0 --alpha_rf 0.1 --max_epoch 600 --s 2 --t 0 --output ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep600/ --gpu_id 2
+#python image_source.py --nrf 16384 --w_vat 1.0 --alpha_rf 0.1 --max_epoch 1000 --s 2 --t 0 --output ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep1000/ --gpu_id 0
+#1 0
+python image_target_compareWH.py --nrf 16384 --s 2 --t 0 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep500/ --gpu_id 0
 
 
 #Epoch
@@ -12,26 +12,29 @@ python image_target.py --nrf 16384 --s 2 --t 0 --output_src ckps/source2_16384_g
 python image_target.py --nrf 16384 --s 2 --t 1 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep30/ --cls_par 1.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 2
 #1 3 Done
 python image_target.py --nrf 16384 --s 2 --t 0 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep30/ --cls_par 0.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 3
-#1 1
+#1 1 Done
 python image_target.py --nrf 16384 --s 2 --t 1 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep30/ --cls_par 0.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 1
 #1 2
 python image_target.py --nrf 16384 --s 2 --t 0 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep30_run2/ --cls_par 1.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 2
-#1 3
+#1 3 Done
 python image_target.py --nrf 16384 --s 2 --t 1 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep30_run2/ --cls_par 1.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 3
 #2 0
 python image_target.py --nrf 16384 --s 2 --t 0 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep30_run2/ --cls_par 0.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 0
-#2 1
+#2 1 Done
 python image_target.py --nrf 16384 --s 2 --t 1 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep30_run2/ --cls_par 0.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 1
 
 #2 2
 python image_target.py --nrf 16384 --s 2 --t 0 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep50/ --cls_par 1.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 2
-#2 3
+#2 3 Done
 python image_target.py --nrf 16384 --s 2 --t 1 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep50/ --cls_par 1.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 3
-python image_target.py --nrf 16384 --s 2 --t 0 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep50/ --cls_par 0.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 
-python image_target.py --nrf 16384 --s 2 --t 1 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep50/ --cls_par 0.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 
-
-python image_target.py --nrf 16384 --s 2 --t 0 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep100/ --cls_par 1.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 
-python image_target.py --nrf 16384 --s 2 --t 1 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep100/ --cls_par 1.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 
+#1 1
+python image_target.py --nrf 16384 --s 2 --t 0 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep50/ --cls_par 0.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 1
+#1 3
+python image_target.py --nrf 16384 --s 2 --t 1 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep50/ --cls_par 0.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 3
+#2 1
+python image_target.py --nrf 16384 --s 2 --t 0 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep100/ --cls_par 1.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 1
+#2 3
+python image_target.py --nrf 16384 --s 2 --t 1 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep100/ --cls_par 1.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 3
 python image_target.py --nrf 16384 --s 2 --t 0 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep100/ --cls_par 0.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 
 python image_target.py --nrf 16384 --s 2 --t 1 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep100/ --cls_par 0.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 
 

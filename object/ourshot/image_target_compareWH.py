@@ -121,6 +121,41 @@ def cal_acc(loader, netF, netB, netC, flag=False):
     else:
         return accuracy*100, mean_ent
 
+def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
+    start_test = True
+    with torch.no_grad():
+        iter_test = iter(loader)
+        for i in range(len(loader)):
+            data = iter_test.next()
+            inputs = data[0]
+            labels = data[1]
+            inputs = inputs.cuda()
+
+            features = netB(netF(inputs))
+            outputs = netC(features)
+            outputs_rf = netCRF(netBRF(features.detach()))
+
+            if start_test:
+                all_output = outputs.float().cpu()
+                all_output_rf = outputs_rf.float().cpu()
+                all_label = labels.float()
+                start_test = False
+            else:
+                all_output = torch.cat((all_output, outputs.float().cpu()), 0)
+                all_output_rf = torch.cat((all_output_rf, outputs_rf.float().cpu()), 0)
+                all_label = torch.cat((all_label, labels.float()), 0)
+
+    softmax_output_h = nn.Softmax(dim=1)(all_output)
+    softmax_output_rf = nn.Softmax(dim=1)(all_output_rf)
+
+    predict_softmax_h, predict_arg_h = torch.max(softmax_output_h, 1)
+    predict_softmax_rf, predict_arg_rf = torch.max(softmax_output_rf, 1)
+
+    accuracy_h = torch.sum(torch.squeeze(predict_arg_h).float() == all_label).item() / float(all_label.size()[0])
+    accuracy_rf = torch.sum(torch.squeeze(predict_arg_rf).float() == all_label).item() / float(all_label.size()[0])
+
+    print(accuracy_h, accuracy_rf)
+
 def normalize_perturbation(d):
     d_ = d.view(d.size()[0], -1)
     eps = d.new_tensor(1e-12)
@@ -239,11 +274,7 @@ def train_target(args):
 
         features_test = netB(netF(inputs_test))
         outputs_test = netC(features_test)
-
-        features_test = netB(netF(inputs_test))
-        outputs_test = netC(features_test)
         outputs_test_rf = netCRF(netBRF(features_test.detach()))
-
 
         if args.cls_par > 0:
             pred = mem_label[tar_idx]
@@ -355,11 +386,12 @@ def train_target(args):
                 # _, predict = torch.max(all_output, 1)
                 acc_s_te, _ = cal_acc(dset_loaders['test'], netF, netB, netC, False)
                 acc_s_tr, _ = cal_acc(dset_loaders['target'], netF, netB, netC, False)
-
                 # log_str = 'Task: {}, Iter:{}/{}; Loss : {:.2f}, , Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(args.name, iter_num, max_iter, \
                 # classifier_loss_total/classifier_loss_count, acc_s_tr, acc_s_te, right_sample_count, sum_sample)
                 log_str = 'Task: {}, Iter:{}/{}; Loss : {:.2f}, , Accuracy target (train/test) = {:.2f}% / {:.2f}%.'.format(args.name, iter_num, max_iter, \
                 classifier_loss_total/classifier_loss_count, acc_s_tr, acc_s_te)
+
+                cal_accWH(dset_loaders['test'], netF, netB, netC, netBRF, netCRF)
 
             args.out_file.write(log_str + '\n')
             args.out_file.flush()
