@@ -36,6 +36,40 @@ class feat_bootleneck(nn.Module):
             x = self.dropout(x)
         return x
 
+class feat_bootleneck_rf(nn.Module):
+    def __init__(self, gamma = 0.5, bottleneck_dim=256, type="ori", nrf = 512):
+        super(feat_bootleneck_rf, self).__init__()
+        self.bn2 = nn.BatchNorm1d(nrf, affine=True)
+        self.type = type
+
+        self.feature_map = RandomFourierFeatures(bottleneck_dim, nrf, gamma)
+        self.feature_map.new_feature_map()
+
+    def forward(self, x):
+        x = self.feature_map(x)
+        if self.type == "bn":
+            x = self.bn2(x)
+        return x
+
+class feat_classifier_rf(nn.Module):
+    def __init__(self, class_num, type="linear", nrf=512):
+        super(feat_classifier_rf, self).__init__()
+        self.type = type
+        if type == 'wn':
+            self.fc = weightNorm(nn.Linear(nrf, class_num), name="weight")
+            self.fc.apply(init_weights)
+        else:
+            self.fc = nn.Linear(nrf, class_num)
+            self.fc.apply(init_weights)
+
+    def forward(self, x):
+        x = self.fc(x)
+        return x
+    def get_weight(self):
+        return self.fc.weight
+    def get_bias(self):
+        return self.fc.bias
+        
 class feat_classifier(nn.Module):
     def __init__(self, class_num, bottleneck_dim=256, type="linear"):
         super(feat_classifier, self).__init__()
