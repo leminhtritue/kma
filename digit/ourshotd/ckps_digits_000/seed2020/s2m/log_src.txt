@@ -1,0 +1,35 @@
+==========================================
+gpu_id:0
+s:0
+t:1
+max_epoch:30
+batch_size:64
+worker:4
+dset:s2m
+lr:0.01
+seed:2020
+cls_par:0.1
+ent_par:1.0
+gent:True
+ent:True
+bottleneck:256
+layer:wn
+classifier:bn
+smooth:0.1
+output:ckps_digits_000
+issave:True
+class_num:10
+output_dir:ckps_digits_000/seed2020/s2m
+out_file:<_io.TextIOWrapper name='ckps_digits_000/seed2020/s2m/log_src.txt' mode='w' encoding='UTF-8'>
+
+Task: s2m, Iter:3435/34350; Accuracy = 90.88%/ 88.67%
+Task: s2m, Iter:6870/34350; Accuracy = 95.38%/ 91.43%
+Task: s2m, Iter:10305/34350; Accuracy = 97.28%/ 92.14%
+Task: s2m, Iter:13740/34350; Accuracy = 98.38%/ 92.33%
+Task: s2m, Iter:17175/34350; Accuracy = 99.04%/ 92.25%
+Task: s2m, Iter:20610/34350; Accuracy = 99.42%/ 92.29%
+Task: s2m, Iter:24045/34350; Accuracy = 99.65%/ 92.18%
+Task: s2m, Iter:27480/34350; Accuracy = 99.77%/ 92.23%
+Task: s2m, Iter:30915/34350; Accuracy = 99.80%/ 92.10%
+Task: s2m, Iter:34350/34350; Accuracy = 99.90%/ 92.33%
+Task: s2m, Accuracy = 67.19%

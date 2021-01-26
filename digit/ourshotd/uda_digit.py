@@ -14,6 +14,8 @@ from tqdm import tqdm
 from scipy.spatial.distance import cdist
 import pickle
 from data_load import mnist, svhn, usps
+import collections
+from operator import itemgetter
 
 def op_copy(optimizer):
     for param_group in optimizer.param_groups:
@@ -58,6 +60,35 @@ def digit_load(args):
                     transforms.ToTensor(),
                     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
                 ]))
+
+    elif args.dset == 's2u':
+        train_source = svhn.SVHN('./data/svhn/', split='train', download=True,
+                transform=transforms.Compose([
+                    transforms.Resize(32),
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+                ]))
+        test_source = svhn.SVHN('./data/svhn/', split='test', download=True,
+                transform=transforms.Compose([
+                    transforms.Resize(32),
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+                ]))  
+        train_target = usps.USPS_idx('./data/usps/', train=True, download=True,
+                transform=transforms.Compose([
+                    transforms.Resize(32),
+                    transforms.Lambda(lambda x: x.convert("RGB")),
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+                ]))
+        test_target = usps.USPS('./data/usps/', train=False, download=True,
+                transform=transforms.Compose([
+                    transforms.Resize(32),
+                    transforms.Lambda(lambda x: x.convert("RGB")),
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+                ]))
+
     elif args.dset == 'u2m':
         train_source = usps.USPS('./data/usps/', train=True, download=True,
                 transform=transforms.Compose([
@@ -83,6 +114,100 @@ def digit_load(args):
                     transforms.ToTensor(),
                     transforms.Normalize((0.5,), (0.5,))
                 ]))
+
+    elif args.dset == 'u2s':
+        train_source = usps.USPS('./data/usps/', train=True, download=True,
+                transform=transforms.Compose([
+                    transforms.RandomCrop(32, padding=4),
+                    transforms.RandomRotation(10),
+                    transforms.Lambda(lambda x: x.convert("RGB")),
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+                ]))
+        test_source = usps.USPS('./data/usps/', train=False, download=True,
+                transform=transforms.Compose([
+                    transforms.RandomCrop(32, padding=4),
+                    transforms.RandomRotation(10),
+                    transforms.Lambda(lambda x: x.convert("RGB")),
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+                ])) 
+
+        train_target = svhn.SVHN_idx('./data/svhn/', split='train', download=True,
+                transform=transforms.Compose([
+                    transforms.Resize(32),
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+                ]))
+        test_target = svhn.SVHN('./data/svhn/', split='test', download=True,
+                transform=transforms.Compose([
+                    transforms.Resize(32),
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+                ]))  
+
+ 
+
+
+    # elif args.dset == 'u2s':
+    #     train_source = usps.USPS('./data/usps/', train=True, download=True,
+    #             transform=transforms.Compose([
+    #                 transforms.RandomCrop(28, padding=4),
+    #                 transforms.RandomRotation(10),
+    #                 transforms.ToTensor(),
+    #                 transforms.Normalize((0.5,), (0.5,))
+    #             ]))
+    #     test_source = usps.USPS('./data/usps/', train=False, download=True,
+    #             transform=transforms.Compose([
+    #                 transforms.RandomCrop(28, padding=4),
+    #                 transforms.RandomRotation(10),
+    #                 transforms.ToTensor(),
+    #                 transforms.Normalize((0.5,), (0.5,))
+    #             ]))    
+    #     train_target = svhn.SVHN_idx('./data/svhn/', split='train', download=True,
+    #             transform=transforms.Compose([
+    #                 transforms.Resize(28),
+    #                 transforms.Lambda(lambda x: x.convert("L")),
+    #                 transforms.ToTensor(),
+    #                 transforms.Normalize((0.5,), (0.5,))
+    #             ]))
+    #     test_target = svhn.SVHN('./data/svhn/', split='test', download=True,
+    #             transform=transforms.Compose([
+    #                 transforms.Resize(28),
+    #                 transforms.Lambda(lambda x: x.convert("L")),
+    #                 transforms.ToTensor(),
+    #                 transforms.Normalize((0.5,), (0.5,))
+    #             ]))  
+
+    elif args.dset == 'm2s':
+        train_source = mnist.MNIST('./data/mnist/', train=True, download=True,
+                transform=transforms.Compose([
+                    transforms.Resize(32),
+                    transforms.Lambda(lambda x: x.convert("RGB")),
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+                ]))
+        test_source = mnist.MNIST('./data/mnist/', train=False, download=True,
+                transform=transforms.Compose([
+                    transforms.Resize(32),
+                    transforms.Lambda(lambda x: x.convert("RGB")),
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+                ]))
+
+        train_target = svhn.SVHN_idx('./data/svhn/', split='train', download=True,
+                transform=transforms.Compose([
+                    transforms.Resize(32),
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+                ]))
+        test_target = svhn.SVHN('./data/svhn/', split='test', download=True,
+                transform=transforms.Compose([
+                    transforms.Resize(32),
+                    transforms.ToTensor(),
+                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+                ]))  
+
     elif args.dset == 'm2u':
         train_source = mnist.MNIST('./data/mnist/', train=True, download=True,
                 transform=transforms.Compose([
@@ -119,6 +244,143 @@ def digit_load(args):
         num_workers=args.worker, drop_last=False)
     return dset_loaders
 
+def cal_acc_plot(loader, netF, netB, ouput_name, label_name):
+    start_test = True
+    with torch.no_grad():
+        iter_test = iter(loader)
+        for i in range(len(loader)):
+            data = iter_test.next()
+            inputs = data[0]
+            labels = data[1]
+            inputs = inputs.cuda()
+            outputs = netF(inputs)
+            if start_test:
+                all_output = outputs.float().cpu()
+                all_label = labels.float()
+                start_test = False
+            else:
+                all_output = torch.cat((all_output, outputs.float().cpu()), 0)
+                all_label = torch.cat((all_label, labels.float()), 0)
+    print(all_output.shape)
+    print(all_label.shape)
+    all_output_np = all_output.numpy()
+    all_label_np = all_label.numpy()
+    np.save(ouput_name, all_output_np)
+    np.save(label_name, all_label_np)
+
+def cal_acc_knn(loader, netF, netB, netC, ouput_name, label_name):
+    start_test = True
+    with torch.no_grad():
+        iter_test = iter(loader)
+        for i in range(len(loader)):
+            data = iter_test.next()
+            inputs = data[0]
+            labels = data[1]
+            inputs = inputs.cuda()
+            outputs_4096 = netB(netF(inputs))
+            outputs_10 = netC(outputs_4096)
+            if start_test:
+                all_output_4096 = outputs_4096.float()
+                all_output_10 = outputs_10.float()
+                all_label = labels.float()
+                start_test = False
+            else:
+                all_output_4096 = torch.cat((all_output_4096, outputs_4096.float()), 0)
+                all_output_10 = torch.cat((all_output_10, outputs_10.float()), 0)
+                all_label = torch.cat((all_label, labels.float()), 0)
+
+    _, predict = torch.max(all_output_10, 1)
+
+
+    all_label = all_label.cuda()
+
+    flag_420 = (predict != all_label)
+    all_output_4096_420 = all_output_4096[flag_420]
+    all_output_10_420 = all_output_10[flag_420]
+    pred_420 = predict[flag_420]
+    all_label_420 = all_label[flag_420]
+
+    all_output_10_420_clone = all_output_10_420.clone()
+    all_output_10_420_clone[all_output_10_420_clone < 0] = 0
+    all_output_10_420_clone[all_output_10_420_clone > 0] = 1
+    all_output_10_420_clone = all_output_10_420_clone.sum(dim = 1)
+    print(collections.Counter(all_output_10_420_clone.cpu().numpy()))
+
+    all_output_10_420_true = all_output_10[predict == all_label]
+    all_output_10_420_true_clone = all_output_10_420_true.clone()
+    all_output_10_420_true_clone[all_output_10_420_true_clone < 0] = 0
+    all_output_10_420_true_clone[all_output_10_420_true_clone > 0] = 1
+    all_output_10_420_true_clone = all_output_10_420_true_clone.sum(dim = 1)
+    print(collections.Counter(all_output_10_420_true_clone.cpu().numpy())) 
+
+    dist_420_4096 = torch.cdist(all_output_4096_420, all_output_4096, p=2)
+    idx = torch.topk(dist_420_4096, 100, dim=1,largest=False).indices
+    pred_420_top100all = predict[idx]
+    pred_420_top100mode = torch.mode(pred_420_top100all, dim = 1).values
+
+    t = collections.Counter(all_label_420.cpu().numpy())
+    counter = torch.zeros((10, 10))
+
+    for i in range(10):
+        current_pred = pred_420[all_label_420 == i]
+        for j in range(10):
+            counter[i,j] = (current_pred==j).sum()
+    np.savetxt("counter.csv", counter.cpu().numpy(), delimiter=",")
+
+    all_label_420 = torch.unsqueeze(all_label_420, 1)
+    pred_420 = torch.unsqueeze(pred_420, 1)
+    pred_420_top100mode = torch.unsqueeze(pred_420_top100mode, 1)
+    all_output_10_420_clone = torch.unsqueeze(all_output_10_420_clone, 1)
+    all_out = torch.cat((all_output_10_420, all_label_420, pred_420, pred_420_top100mode, all_output_10_420_clone), 1)
+
+    print((pred_420_top100mode == all_label_420).sum())
+    print((pred_420 == all_label_420).sum())
+    print(all_out.shape)
+    np.savetxt("out_numpy.csv", all_out.cpu().numpy(), delimiter=",")
+
+    sys.exit()
+
+
+def extract_plot(args):
+    dset_loaders = digit_load(args)
+    ## set base network
+    if args.dset == 'u2m' :
+        netF = network.LeNetBase().cuda()
+    elif args.dset == 'm2u':
+        netF = network.LeNetBase().cuda()  
+    elif args.dset == 's2m' or args.dset == 's2u' or args.dset == 'm2s' or args.dset == 'u2s':
+        netF = network.DTNBase().cuda()
+
+    netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
+    netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
+
+    # args.modelpath = args.output_dir + '/source_F.pt'   
+    # netF.load_state_dict(torch.load(args.modelpath))
+    # args.modelpath = args.output_dir + '/source_B.pt'   
+    # netB.load_state_dict(torch.load(args.modelpath))
+    # args.modelpath = args.output_dir + '/source_C.pt'   
+    # netC.load_state_dict(torch.load(args.modelpath))
+    # netF.eval()
+    # netB.eval()
+    # netC.eval()
+
+    # cal_acc_plot(dset_loaders['source_tr'], netF, netB, "source_train_data", "source_train_label")
+    # cal_acc_plot(dset_loaders['source_te'], netF, netB, "source_test_data", "source_test_label")
+
+    args.modelpath = args.output_dir + '/target_F_par_0.1.pt'   
+    netF.load_state_dict(torch.load(args.modelpath))
+    args.modelpath = args.output_dir + '/target_B_par_0.1.pt'   
+    netB.load_state_dict(torch.load(args.modelpath))
+    args.modelpath = args.output_dir + '/target_C_par_0.1.pt'   
+    netC.load_state_dict(torch.load(args.modelpath))
+    netF.eval()
+    netB.eval()
+    netC.eval()
+
+    # cal_acc_plot(dset_loaders['target_te'], netF, netB, "target_train_data", "target_train_label")
+    # cal_acc_plot(dset_loaders['test'], netF, netB, "target_test_data", "target_test_label")
+    cal_acc_knn(dset_loaders['test'], netF, netB, netC, "target_test_data", "target_test_label")
+
 def cal_acc(loader, netF, netB, netC):
     start_test = True
     with torch.no_grad():
@@ -144,11 +406,11 @@ def cal_acc(loader, netF, netB, netC):
 def train_source(args):
     dset_loaders = digit_load(args)
     ## set base network
-    if args.dset == 'u2m':
+    if args.dset == 'u2m' :
         netF = network.LeNetBase().cuda()
     elif args.dset == 'm2u':
         netF = network.LeNetBase().cuda()  
-    elif args.dset == 's2m':
+    elif args.dset == 's2m' or args.dset == 's2u' or args.dset == 'm2s' or args.dset == 'u2s':
         netF = network.DTNBase().cuda()
 
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
@@ -171,9 +433,9 @@ def train_source(args):
     interval_iter = max_iter // 10
     iter_num = 0
 
-    netF.train()
-    netB.train()
-    netC.train()
+    # netF.train()
+    # netB.train()
+    # netC.train()
 
     while iter_num < max_iter:
         try:
@@ -201,8 +463,7 @@ def train_source(args):
             netC.eval()
             acc_s_tr, _ = cal_acc(dset_loaders['source_tr'], netF, netB, netC)
             acc_s_te, _ = cal_acc(dset_loaders['source_te'], netF, netB, netC)
-            acc_t_te, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
-            log_str = 'Task: {}, Iter:{}/{}; Accuracy = {:.2f}%/{:.2f}%/{:.2f}%'.format(args.dset, iter_num, max_iter, acc_s_tr, acc_s_te, acc_t_te)
+            log_str = 'Task: {}, Iter:{}/{}; Accuracy = {:.2f}%/ {:.2f}%'.format(args.dset, iter_num, max_iter, acc_s_tr, acc_s_te)
             args.out_file.write(log_str + '\n')
             args.out_file.flush()
             print(log_str+'\n')
@@ -212,10 +473,6 @@ def train_source(args):
                 best_netF = netF.state_dict()
                 best_netB = netB.state_dict()
                 best_netC = netC.state_dict()
-            
-            netF.train()
-            netB.train()
-            netC.train()
 
     torch.save(best_netF, osp.join(args.output_dir, "source_F.pt"))
     torch.save(best_netB, osp.join(args.output_dir, "source_B.pt"))
@@ -226,11 +483,11 @@ def train_source(args):
 def test_target(args):
     dset_loaders = digit_load(args)
     ## set base network
-    if args.dset == 'u2m':
+    if args.dset == 'u2m' :
         netF = network.LeNetBase().cuda()
     elif args.dset == 'm2u':
         netF = network.LeNetBase().cuda()  
-    elif args.dset == 's2m':
+    elif args.dset == 's2m' or args.dset == 's2u' or args.dset == 'm2s' or args.dset == 'u2s':
         netF = network.DTNBase().cuda()
 
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
@@ -261,11 +518,11 @@ def print_args(args):
 def train_target(args):
     dset_loaders = digit_load(args)
     ## set base network
-    if args.dset == 'u2m':
+    if args.dset == 'u2m' :
         netF = network.LeNetBase().cuda()
     elif args.dset == 'm2u':
         netF = network.LeNetBase().cuda()  
-    elif args.dset == 's2m':
+    elif args.dset == 's2m' or args.dset == 's2u' or args.dset == 'm2s' or args.dset == 'u2s':
         netF = network.DTNBase().cuda()
 
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
@@ -277,15 +534,17 @@ def train_target(args):
     netB.load_state_dict(torch.load(args.modelpath))
     args.modelpath = args.output_dir + '/source_C.pt'    
     netC.load_state_dict(torch.load(args.modelpath))
-    netC.eval()
-    for k, v in netC.named_parameters():
-        v.requires_grad = False
+
+    # for k, v in netC.named_parameters():
+    #     v.requires_grad = False
 
     param_group = []
     for k, v in netF.named_parameters():
         param_group += [{'params': v, 'lr': args.lr}]
     for k, v in netB.named_parameters():
         param_group += [{'params': v, 'lr': args.lr}]
+    # for k, v in netC.named_parameters():
+    #     param_group += [{'params': v, 'lr': args.lr}]    
 
     optimizer = optim.SGD(param_group)
     optimizer = op_copy(optimizer)
@@ -295,6 +554,9 @@ def train_target(args):
     # interval_iter = max_iter // args.interval
     iter_num = 0
 
+    netF.train()
+    netB.train()
+    netC.train()
     while iter_num < max_iter:
         optimizer.zero_grad()
         try:
@@ -309,10 +571,12 @@ def train_target(args):
         if iter_num % interval_iter == 0 and args.cls_par > 0:
             netF.eval()
             netB.eval()
+            netC.eval()
             mem_label = obtain_label(dset_loaders['target_te'], netF, netB, netC, args)
             mem_label = torch.from_numpy(mem_label).cuda()
             netF.train()
             netB.train()
+            netC.train()
 
         iter_num += 1
         lr_scheduler(optimizer, iter_num=iter_num, max_iter=max_iter)
@@ -344,13 +608,16 @@ def train_target(args):
         if iter_num % interval_iter == 0 or iter_num == max_iter:
             netF.eval()
             netB.eval()
+            netC.eval()
             acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
-            log_str = 'Task: {}, Iter:{}/{}; Accuracy = {:.2f}%'.format(args.dset, iter_num, max_iter, acc)
+            acc_tr, _ = cal_acc(dset_loaders['target_te'], netF, netB, netC)
+            log_str = 'Task: {}, Iter:{}/{}; Accuracy target (train/test) = {:.2f}%/{:.2f}%'.format(args.dset, iter_num, max_iter, acc_tr, acc)
             args.out_file.write(log_str + '\n')
             args.out_file.flush()
             print(log_str+'\n')
             netF.train()
             netB.train()
+            netC.train()
 
     if args.issave:
         torch.save(netF.state_dict(), osp.join(args.output_dir, "target_F_" + args.savename + ".pt"))
@@ -417,7 +684,7 @@ if __name__ == "__main__":
     parser.add_argument('--max_epoch', type=int, default=30, help="maximum epoch")
     parser.add_argument('--batch_size', type=int, default=64, help="batch_size")
     parser.add_argument('--worker', type=int, default=4, help="number of workers")
-    parser.add_argument('--dset', type=str, default='s2m', choices=['u2m', 'm2u','s2m'])
+    parser.add_argument('--dset', type=str, default='s2m', choices=['u2m', 'u2s', 'm2u', 'm2s', 's2m', 's2u'])
     parser.add_argument('--lr', type=float, default=0.01, help="learning rate")
     parser.add_argument('--seed', type=int, default=2020, help="random seed")
     parser.add_argument('--cls_par', type=float, default=0.3)
@@ -458,4 +725,9 @@ if __name__ == "__main__":
     args.out_file = open(osp.join(args.output_dir, 'log_tar_' + args.savename + '.txt'), 'w')
     args.out_file.write(print_args(args)+'\n')
     args.out_file.flush()
+
+    # extract_plot(args)
+    # sys.exit()
+
+    test_target(args)
     train_target(args)
