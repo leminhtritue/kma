@@ -381,6 +381,30 @@ def extract_plot(args):
     # cal_acc_plot(dset_loaders['test'], netF, netB, "target_test_data", "target_test_label")
     cal_acc_knn(dset_loaders['test'], netF, netB, netC, "target_test_data", "target_test_label")
 
+def normalize_perturbation(d):
+    d_ = d.view(d.size()[0], -1)
+    eps = d.new_tensor(1e-12)
+    output = d / torch.sqrt(torch.max((d_**2).sum(dim = -1), eps)[0] )
+    return output
+
+class KLDivWithLogits(nn.Module):
+
+    def __init__(self):
+
+        super(KLDivWithLogits, self).__init__()
+
+        self.kl = nn.KLDivLoss(size_average=False, reduce=True)
+        self.logsoftmax = nn.LogSoftmax(dim = 1)
+        self.softmax = nn.Softmax(dim = 1)
+
+
+    def forward(self, x, y):
+
+        log_p = self.logsoftmax(x)
+        q     = self.softmax(y)
+
+        return self.kl(log_p, q) / x.size()[0]
+
 def cal_acc(loader, netF, netB, netC):
     start_test = True
     with torch.no_grad():
@@ -416,6 +440,9 @@ def train_source(args):
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
     netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
 
+    netBRF = network.feat_bootleneck_rf(nrf=args.nrf, type=args.classifier, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
+    netCRF = network.feat_classifier_rf(nrf=args.nrf, type=args.layer_rf, class_num = args.class_num).cuda()
+    
     param_group = []
     learning_rate = args.lr
     for k, v in netF.named_parameters():
@@ -423,6 +450,10 @@ def train_source(args):
     for k, v in netB.named_parameters():
         param_group += [{'params': v, 'lr': learning_rate}]
     for k, v in netC.named_parameters():
+        param_group += [{'params': v, 'lr': learning_rate}]   
+    for k, v in netBRF.named_parameters():
+        param_group += [{'params': v, 'lr': learning_rate}]
+    for k, v in netCRF.named_parameters():
         param_group += [{'params': v, 'lr': learning_rate}]   
 
     optimizer = optim.SGD(param_group)
@@ -451,8 +482,13 @@ def train_source(args):
         lr_scheduler(optimizer, iter_num=iter_num, max_iter=max_iter)
 
         inputs_source, labels_source = inputs_source.cuda(), labels_source.cuda()
-        outputs_source = netC(netB(netF(inputs_source)))
+        output_latent = netB(netF(inputs_source))
+        outputs_source = netC(output_latent)
+        outputs_source_rf = netCRF(netBRF(output_latent))
+
+
         classifier_loss = loss.CrossEntropyLabelSmooth(num_classes=args.class_num, epsilon=args.smooth)(outputs_source, labels_source)            
+
         optimizer.zero_grad()
         classifier_loss.backward()
         optimizer.step()
