@@ -542,8 +542,8 @@ def train_source(args):
     torch.save(best_netF, osp.join(args.output_dir, "source_F.pt"))
     torch.save(best_netB, osp.join(args.output_dir, "source_B.pt"))
     torch.save(best_netC, osp.join(args.output_dir, "source_C.pt"))
-    torch.save(best_netBRF, osp.join(args.output_dir_src, "source_BRF.pt"))
-    torch.save(best_netCRF, osp.join(args.output_dir_src, "source_CRF.pt"))
+    torch.save(best_netBRF, osp.join(args.output_dir, "source_BRF.pt"))
+    torch.save(best_netCRF, osp.join(args.output_dir, "source_CRF.pt"))
 
     return netF, netB, netC
 
