@@ -6,29 +6,6 @@ import math
 import torch.nn.functional as F
 import pdb
 
-class KernelSource(nn.Module):
-    def __init__(self, num_classes, alpha = 0.1, use_gpu=True):
-        super(KernelSource, self).__init__()
-        self.num_classes = num_classes
-        self.use_gpu = use_gpu
-        self.alpha = alpha
-
-    def forward(self, inputs, targets, hyperplanceNet):
-        if self.use_gpu: 
-            targets = targets.cuda()
-        mark_multiply = torch.ones(inputs.size()).cuda()
-        mark_add = torch.ones(inputs.size()).cuda()
-        mark_cmp = torch.zeros(inputs.size()).cuda()
-        for i in range(self.num_classes):
-            mark_multiply[:, i][targets==i] = -1
-            mark_add[:, i][targets==i] = 0
-
-        loss_02 = torch.maximum(inputs * mark_multiply + mark_add, mark_cmp).mean(dim=0)
-        loss_01 = 0.5* hyperplanceNet.get_weight().norm(dim=1)
-        loss = self.alpha * loss_01.mean() + loss_02.mean()
-        return loss
-        
-        
 def Entropy(input_):
     bs = input_.size(0)
     entropy = -input_ * torch.log(input_ + 1e-5)
