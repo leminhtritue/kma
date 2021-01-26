@@ -467,6 +467,7 @@ def train_source(args):
 
         output_latent = netB(netF(inputs_source))
         outputs_source = netC(output_latent)
+        outputs_source_rf = netCRF(netBRF(output_latent))
 
         classifier_loss = loss.CrossEntropyLabelSmooth(num_classes=args.class_num, epsilon=args.smooth)(outputs_source, labels_source)  
         classifier_loss += args.alpha_rf * loss.KernelSource(num_classes=args.class_num, alpha=args.alpha_w)(outputs_source_rf, labels_source, netCRF)
