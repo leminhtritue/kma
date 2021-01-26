@@ -487,8 +487,7 @@ def train_source(args):
         outputs_source_rf = netCRF(netBRF(output_latent))
 
 
-        classifier_loss = loss.CrossEntropyLabelSmooth(num_classes=args.class_num, epsilon=args.smooth)(outputs_source, labels_source)
-        # classifier_loss += args.alpha_rf * loss.KernelSource(num_classes=args.class_num, alpha=args.alpha_w)(outputs_source_rf, labels_source, netCRF)            
+        classifier_loss = loss.CrossEntropyLabelSmooth(num_classes=args.class_num, epsilon=args.smooth)(outputs_source, labels_source)            
 
         optimizer.zero_grad()
         classifier_loss.backward()
@@ -735,17 +734,6 @@ if __name__ == "__main__":
     parser.add_argument('--smooth', type=float, default=0.1)   
     parser.add_argument('--output', type=str, default='')
     parser.add_argument('--issave', type=bool, default=True)
-
-    parser.add_argument('--gamma', type=float, default=0.1)
-    parser.add_argument('--nrf', type=int, default=512) #16384
-    parser.add_argument('--alpha_w', type=float, default=0.1)
-
-    parser.add_argument('--alpha_rf', type=float, default=0.0)  #0.1  
-    parser.add_argument('--layer_rf', type=str, default="linear", choices=["linear", "wn"])
-    
-    parser.add_argument('--w_vat', type=float, default=0.0) #1.0
-    parser.add_argument('--radius', type=float, default=0.01)
-
     args = parser.parse_args()
     args.class_num = 10
 
