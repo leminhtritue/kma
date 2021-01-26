@@ -141,6 +141,30 @@ def cal_acc(loader, netF, netB, netC):
     mean_ent = torch.mean(loss.Entropy(nn.Softmax(dim=1)(all_output))).cpu().data.item()
     return accuracy*100, mean_ent
 
+def normalize_perturbation(d):
+    d_ = d.view(d.size()[0], -1)
+    eps = d.new_tensor(1e-12)
+    output = d / torch.sqrt(torch.max((d_**2).sum(dim = -1), eps)[0] )
+    return output
+
+class KLDivWithLogits(nn.Module):
+
+    def __init__(self):
+
+        super(KLDivWithLogits, self).__init__()
+
+        self.kl = nn.KLDivLoss(size_average=False, reduce=True)
+        self.logsoftmax = nn.LogSoftmax(dim = 1)
+        self.softmax = nn.Softmax(dim = 1)
+
+
+    def forward(self, x, y):
+
+        log_p = self.logsoftmax(x)
+        q     = self.softmax(y)
+
+        return self.kl(log_p, q) / x.size()[0]
+        
 def train_source(args):
     dset_loaders = digit_load(args)
     ## set base network
@@ -424,6 +448,17 @@ if __name__ == "__main__":
     parser.add_argument('--smooth', type=float, default=0.1)   
     parser.add_argument('--output', type=str, default='')
     parser.add_argument('--issave', type=bool, default=True)
+
+    parser.add_argument('--gamma', type=float, default=0.1)
+    parser.add_argument('--nrf', type=int, default=512) #16384
+    parser.add_argument('--alpha_w', type=float, default=0.1)
+
+    parser.add_argument('--alpha_rf', type=float, default=0.0)  #0.1  
+    parser.add_argument('--layer_rf', type=str, default="linear", choices=["linear", "wn"])
+    
+    parser.add_argument('--w_vat', type=float, default=0.0) #1.0
+    parser.add_argument('--radius', type=float, default=0.01)
+
     args = parser.parse_args()
     args.class_num = 10
 
