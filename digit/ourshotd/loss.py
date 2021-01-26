@@ -28,7 +28,6 @@ class KernelSource(nn.Module):
         loss = self.alpha * loss_01.mean() + loss_02.mean()
         return loss
         
-        
 def Entropy(input_):
     bs = input_.size(0)
     entropy = -input_ * torch.log(input_ + 1e-5)
