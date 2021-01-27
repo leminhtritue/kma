@@ -1,0 +1,149 @@
+#Target Run 1 2 3 Done
+python image_target.py --nrf 16384 --s 0 --t 1 --output_src ckps/source0_16384_gm0_1_aw0_1_vat1_arf0_1_ep500/ --cls_par 1.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 3
+python image_target.py --nrf 16384 --s 0 --t 2 --output_src ckps/source0_16384_gm0_1_aw0_1_vat1_arf0_1_ep500/ --cls_par 1.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 0
+python image_target.py --nrf 16384 --s 1 --t 0 --output_src ckps/source1_16384_gm0_1_aw0_1_vat1_arf0_1_ep500/ --cls_par 1.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 1
+python image_target.py --nrf 16384 --s 1 --t 2 --output_src ckps/source1_16384_gm0_1_aw0_1_vat1_arf0_1_ep500/ --cls_par 1.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 2
+python image_target.py --nrf 16384 --s 2 --t 0 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep500/ --cls_par 1.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 3
+python image_target.py --nrf 16384 --s 2 --t 1 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep500/ --cls_par 1.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 3
+python image_target.py --nrf 16384 --s 0 --t 1 --output_src ckps/source0_16384_gm0_1_aw0_1_vat1_arf0_1_ep500/ --cls_par 0.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 0
+python image_target.py --nrf 16384 --s 0 --t 2 --output_src ckps/source0_16384_gm0_1_aw0_1_vat1_arf0_1_ep500/ --cls_par 0.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 2
+python image_target.py --nrf 16384 --s 1 --t 0 --output_src ckps/source1_16384_gm0_1_aw0_1_vat1_arf0_1_ep500/ --cls_par 0.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 2
+python image_target.py --nrf 16384 --s 1 --t 2 --output_src ckps/source1_16384_gm0_1_aw0_1_vat1_arf0_1_ep500/ --cls_par 0.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 0
+python image_target.py --nrf 16384 --s 2 --t 0 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep500/ --cls_par 0.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 1
+python image_target.py --nrf 16384 --s 2 --t 1 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep500/ --cls_par 0.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --gpu_id 3
+
+#Source Run 1 2 3 Done
+python image_source.py --nrf 16384 --w_vat 1.0 --alpha_rf 0.1 --max_epoch 500 --s 0 --t 1 --output ckps/source0_16384_gm0_1_aw0_1_vat1_arf0_1_ep500_run2/ --gpu_id 0
+python image_source.py --nrf 16384 --w_vat 1.0 --alpha_rf 0.1 --max_epoch 500 --s 1 --t 0 --output ckps/source1_16384_gm0_1_aw0_1_vat1_arf0_1_ep500_run2/ --gpu_id 1
+python image_source.py --nrf 16384 --w_vat 1.0 --alpha_rf 0.1 --max_epoch 500 --s 2 --t 0 --output ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep500_run2/ --gpu_id 2
+
+
+
+
+
+python image_source_Dinh.py --nrf 16384 --w_vat 1.0 --alpha_rf 0.1 --max_epoch 100 --s 2 --t 0 --output ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep500_dinh_run/ --gpu_id 2
+
+python image_source.py --nrf 16384 --w_vat 1.0 --alpha_rf 0.1 --max_epoch 100 --s 2 --t 0 --output ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep500_dinh_base/ --gpu_id 2
+
+
+#Shot
+Task: W, Iter:120/1200; Accuracy source (train/test/target) = 100.00% / 96.25% / 61.98%
+Task: W, Iter:240/1200; Accuracy source (train/test/target) = 100.00% / 97.50% / 62.30%
+Task: W, Iter:360/1200; Accuracy source (train/test/target) = 100.00% / 98.75% / 62.76%
+Task: W, Iter:480/1200; Accuracy source (train/test/target) = 100.00% / 98.75% / 62.37%
+Task: W, Iter:600/1200; Accuracy source (train/test/target) = 100.00% / 98.75% / 62.69%
+Task: W, Iter:720/1200; Accuracy source (train/test/target) = 100.00% / 98.75% / 62.55%
+Task: W, Iter:840/1200; Accuracy source (train/test/target) = 100.00% / 98.75% / 63.08%
+Task: W, Iter:960/1200; Accuracy source (train/test/target) = 100.00% / 98.75% / 63.44%
+Task: W, Iter:1080/1200; Accuracy source (train/test/target) = 100.00% / 98.75% / 63.15%
+Task: W, Iter:1200/1200; Accuracy source (train/test/target) = 100.00% / 98.75% / 63.33%
+Training: val, Task: WA, Accuracy = 63.33%
+Training: val, Task: WD, Accuracy = 97.79%
+
+#Our
+Task: W, Iter:120/1200; Accuracy source (train/test/target) = 100.00% / 96.25% / 61.20%
+Task: W, Iter:240/1200; Accuracy source (train/test/target) = 100.00% / 95.00% / 61.48%
+Task: W, Iter:360/1200; Accuracy source (train/test/target) = 100.00% / 96.25% / 62.34%
+Task: W, Iter:480/1200; Accuracy source (train/test/target) = 100.00% / 98.75% / 63.15%
+Task: W, Iter:600/1200; Accuracy source (train/test/target) = 100.00% / 97.50% / 62.05%
+Task: W, Iter:720/1200; Accuracy source (train/test/target) = 100.00% / 98.75% / 62.02%
+Task: W, Iter:840/1200; Accuracy source (train/test/target) = 100.00% / 98.75% / 63.05%
+Task: W, Iter:960/1200; Accuracy source (train/test/target) = 100.00% / 98.75% / 63.58%
+Task: W, Iter:1080/1200; Accuracy source (train/test/target) = 100.00% / 98.75% / 63.33%
+Task: W, Iter:1200/1200; Accuracy source (train/test/target) = 100.00% / 98.75% / 63.26%
+Training: val, Task: WA, Accuracy = 63.26%
+Training: val, Task: WD, Accuracy = 98.19%
+
+#Round 1 + 2
+Task: W, Iter:120/1200; Accuracy source (train/test/target) = 100.00% / 97.50% / 61.63%, Loss = 0.94
+Task: W, Iter:240/1200; Accuracy source (train/test/target) = 100.00% / 98.75% / 61.55%, Loss = 0.70
+Task: W, Iter:360/1200; Accuracy source (train/test/target) = 100.00% / 98.75% / 61.98%, Loss = 0.69
+Task: W, Iter:480/1200; Accuracy source (train/test/target) = 100.00% / 98.75% / 62.09%, Loss = 0.69
+Task: W, Iter:600/1200; Accuracy source (train/test/target) = 100.00% / 98.75% / 62.37%, Loss = 0.69
+Task: W, Iter:720/1200; Accuracy source (train/test/target) = 100.00% / 98.75% / 62.48%, Loss = 0.68
+Task: W, Iter:840/1200; Accuracy source (train/test/target) = 100.00% / 98.75% / 61.95%, Loss = 0.68
+Task: W, Iter:960/1200; Accuracy source (train/test/target) = 100.00% / 98.75% / 62.44%, Loss = 0.68
+Task: W, Iter:1080/1200; Accuracy source (train/test/target) = 100.00% / 98.75% / 62.55%, Loss = 0.68
+Task: W, Iter:1200/1200; Accuracy source (train/test/target) = 100.00% / 98.75% / 62.69%, Loss = 0.68
+Task: W, Iter:120/1200; Accuracy source (train/test/target) = 100.00% / 100.00% / 62.62%, Loss = 0.79
+Task: W, Iter:240/1200; Accuracy source (train/test/target) = 100.00% / 100.00% / 61.73%, Loss = 0.77
+Task: W, Iter:360/1200; Accuracy source (train/test/target) = 100.00% / 100.00% / 62.09%, Loss = 0.76
+Task: W, Iter:480/1200; Accuracy source (train/test/target) = 100.00% / 100.00% / 62.51%, Loss = 0.75
+Task: W, Iter:600/1200; Accuracy source (train/test/target) = 100.00% / 100.00% / 62.51%, Loss = 0.74
+Task: W, Iter:720/1200; Accuracy source (train/test/target) = 100.00% / 100.00% / 63.40%, Loss = 0.74
+Task: W, Iter:840/1200; Accuracy source (train/test/target) = 100.00% / 100.00% / 63.19%, Loss = 0.73
+Task: W, Iter:960/1200; Accuracy source (train/test/target) = 100.00% / 100.00% / 62.41%, Loss = 0.73
+Task: W, Iter:1080/1200; Accuracy source (train/test/target) = 100.00% / 100.00% / 62.66%, Loss = 0.73
+Task: W, Iter:1200/1200; Accuracy source (train/test/target) = 100.00% / 100.00% / 62.12%, Loss = 0.72
+Training: val, Task: WA, Accuracy = 62.12%
+Training: val, Task: WD, Accuracy = 98.59%
+
+
+
+(tpytorch) root@trainman-k8s-job-90a0e01c-0b69-4938-b23d-0b8b721fec8b-fvgjp:/trainman-mount/trainman-storage-3f66db6b-0e06-4bbb-8676-ecbf01ceab69/Tue/kma/object/shot# python image_source.py --trte val --output ckps/source_dinh_500/ --da uda --gpu_id 0 --dset office --max_epoch 500 --s 2 --t 0
+
+Task: W, Iter:600/6000; Accuracy source (train/test/target) = 100.00% / 98.75% / 63.22%
+
+Task: W, Iter:1200/6000; Accuracy source (train/test/target) = 100.00% / 98.75% / 64.04%
+
+Task: W, Iter:1800/6000; Accuracy source (train/test/target) = 100.00% / 98.75% / 65.07%
+
+
+Task: W, Iter:2400/6000; Accuracy source (train/test/target) = 100.00% / 100.00% / 64.86%
+
+
+Task: W, Iter:3000/6000; Accuracy source (train/test/target) = 100.00% / 98.75% / 65.00%
+
+Task: W, Iter:3600/6000; Accuracy source (train/test/target) = 100.00% / 100.00% / 65.07%
+
+
+Task: W, Iter:4200/6000; Accuracy source (train/test/target) = 100.00% / 100.00% / 64.64%
+
+
+Task: W, Iter:4800/6000; Accuracy source (train/test/target) = 100.00% / 100.00% / 64.75%
+
+
+Task: W, Iter:5400/6000; Accuracy source (train/test/target) = 100.00% / 100.00% / 65.07%
+
+Task: W, Iter:6000/6000; Accuracy source (train/test/target) = 100.00% / 100.00% / 64.89%
+
+
+Training: val, Task: WA, Accuracy = 64.89%
+
+Training: val, Task: WD, Accuracy = 99.20%
+
+
+
+
+(tpytorch) root@trainman-k8s-job-90a0e01c-0b69-4938-b23d-0b8b721fec8b-fvgjp:/trainman-mount/trainman-storage-3f66db6b-0e06-4bbb-8676-ecbf01ceab69/Tue/kma/object/ourshot# python image_source.py --nrf 16384 --w_vat 1.0 --alpha_rf 0.1 --max_epoch 500 --s 2 --t 0 --output ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep500_dinh_base_500_1/ --gpu_id 2
+/opt/conda/envs/tpytorch/lib/python3.6/site-packages/torch/nn/_reduction.py:44: UserWarning: size_average and reduce args will be deprecated, please use reduction='sum' instead.
+  warnings.warn(warning.format(ret))
+
+
+Task: W, Iter:600/6000; Accuracy source (train/test/target) = 100.00% / 98.75% / 63.83%, Loss = 0.81
+
+
+
+Task: W, Iter:1200/6000; Accuracy source (train/test/target) = 100.00% / 98.75% / 64.00%, Loss = 0.71
+
+
+Task: W, Iter:1800/6000; Accuracy source (train/test/target) = 100.00% / 98.75% / 65.03%, Loss = 0.70
+
+Task: W, Iter:2400/6000; Accuracy source (train/test/target) = 100.00% / 98.75% / 64.22%, Loss = 0.69
+
+Task: W, Iter:3000/6000; Accuracy source (train/test/target) = 100.00% / 98.75% / 65.81%, Loss = 0.68
+
+Task: W, Iter:3600/6000; Accuracy source (train/test/target) = 100.00% / 100.00% / 64.50%, Loss = 0.68
+
+Task: W, Iter:4200/6000; Accuracy source (train/test/target) = 100.00% / 98.75% / 64.08%, Loss = 0.68
+
+Task: W, Iter:4800/6000; Accuracy source (train/test/target) = 100.00% / 100.00% / 64.32%, Loss = 0.68
+
+Task: W, Iter:5400/6000; Accuracy source (train/test/target) = 100.00% / 98.75% / 65.14%, Loss = 0.67
+
+Task: W, Iter:6000/6000; Accuracy source (train/test/target) = 100.00% / 98.75% / 65.42%, Loss = 0.67
+
+
+Training: val, Task: WA, Accuracy = 65.42%
+
+Training: val, Task: WD, Accuracy = 99.20%

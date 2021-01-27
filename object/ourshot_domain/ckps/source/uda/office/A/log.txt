@@ -1,0 +1,38 @@
+==========================================
+gpu_id:0
+s:0
+t:1
+max_epoch:500
+batch_size:64
+worker:4
+dset:office
+lr:0.01
+net:resnet50
+seed:2020
+bottleneck:256
+epsilon:1e-05
+layer:linear
+classifier:bn
+smooth:0.1
+output:ckps/source/
+da:uda
+trte:val
+gamma:0.1
+nrf:16384
+class_num:31
+s_dset_path:./data/office/amazon_list.txt
+test_dset_path:./data/office/dslr_list.txt
+output_dir_src:ckps/source/uda/office/A
+name_src:A
+out_file:<_io.TextIOWrapper name='ckps/source/uda/office/A/log.txt' mode='w' encoding='UTF-8'>
+
+Task: A, Iter:2000/20000; Accuracy source (train/test/target) = 100.00% / 87.23% / 76.31%, Loss = 0.11
+Task: A, Iter:4000/20000; Accuracy source (train/test/target) = 100.00% / 89.36% / 76.10%, Loss = 0.05
+Task: A, Iter:6000/20000; Accuracy source (train/test/target) = 100.00% / 89.01% / 78.31%, Loss = 0.04
+Task: A, Iter:8000/20000; Accuracy source (train/test/target) = 100.00% / 89.36% / 79.32%, Loss = 0.03
+Task: A, Iter:10000/20000; Accuracy source (train/test/target) = 100.00% / 89.72% / 80.12%, Loss = 0.02
+Task: A, Iter:12000/20000; Accuracy source (train/test/target) = 100.00% / 89.36% / 80.32%, Loss = 0.02
+Task: A, Iter:14000/20000; Accuracy source (train/test/target) = 100.00% / 89.72% / 80.92%, Loss = 0.02
+Task: A, Iter:16000/20000; Accuracy source (train/test/target) = 100.00% / 89.36% / 81.33%, Loss = 0.02
+Task: A, Iter:18000/20000; Accuracy source (train/test/target) = 100.00% / 89.72% / 81.53%, Loss = 0.02
+Task: A, Iter:20000/20000; Accuracy source (train/test/target) = 100.00% / 89.01% / 81.93%, Loss = 0.02
