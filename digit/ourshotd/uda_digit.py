@@ -335,9 +335,9 @@ def train_target(args):
 
     args.modelpath = args.output_dir + '/source_C.pt'    
     netC.load_state_dict(torch.load(args.modelpath))
-    args.modelpath = args.output_dir_src + '/source_BRF.pt'    
+    args.modelpath = args.output_dir + '/source_BRF.pt'    
     netBRF.load_state_dict(torch.load(args.modelpath))
-    args.modelpath = args.output_dir_src + '/source_CRF.pt'    
+    args.modelpath = args.output_dir + '/source_CRF.pt'    
     netCRF.load_state_dict(torch.load(args.modelpath))
     netC.eval()
     netBRF.eval()
