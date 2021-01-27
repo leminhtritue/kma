@@ -178,9 +178,8 @@ def train_source(args):
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
     netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
 
-    if (args.is_our != 0):
-    	netBRF = network.feat_bootleneck_rf(nrf=args.nrf, type=args.classifier, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
-    	netCRF = network.feat_classifier_rf(nrf=args.nrf, type=args.layer_rf, class_num = args.class_num).cuda()
+    netBRF = network.feat_bootleneck_rf(nrf=args.nrf, type=args.classifier, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
+    netCRF = network.feat_classifier_rf(nrf=args.nrf, type=args.layer_rf, class_num = args.class_num).cuda()
     
     param_group = []
     learning_rate = args.lr
@@ -190,6 +189,10 @@ def train_source(args):
         param_group += [{'params': v, 'lr': learning_rate}]
     for k, v in netC.named_parameters():
         param_group += [{'params': v, 'lr': learning_rate}]   
+    for k, v in netBRF.named_parameters():
+        param_group += [{'params': v, 'lr': learning_rate}]
+    for k, v in netCRF.named_parameters():
+        param_group += [{'params': v, 'lr': learning_rate}]    
 
     optimizer = optim.SGD(param_group)
     optimizer = op_copy(optimizer)
@@ -216,9 +219,30 @@ def train_source(args):
         iter_num += 1
         lr_scheduler(optimizer, iter_num=iter_num, max_iter=max_iter)
 
-        inputs_source, labels_source = inputs_source.cuda(), labels_source.cuda()
-        outputs_source = netC(netB(netF(inputs_source)))
+        output_latent = netB(netF(inputs_source))
+        outputs_source = netC(output_latent)
+        outputs_source_rf = netCRF(netBRF(output_latent))
+
+
         classifier_loss = loss.CrossEntropyLabelSmooth(num_classes=args.class_num, epsilon=args.smooth)(outputs_source, labels_source)            
+        classifier_loss += args.alpha_rf * loss.KernelSource(num_classes=args.class_num, alpha=args.alpha_w)(outputs_source_rf, labels_source, netCRF)
+
+        if (args.w_vat > 0):
+            eps = (torch.randn(size=inputs_source.size())).type(inputs_source.type())
+            eps = 1e-6 * normalize_perturbation(eps)
+            eps.requires_grad = True
+            outputs_source_adv_eps = netC(netB(netF(inputs_source + eps)))
+            loss_func_nll = KLDivWithLogits()
+            loss_eps  = loss_func_nll(outputs_source_adv_eps, outputs_source.detach())
+            loss_eps.backward()
+            eps_adv = eps.grad
+            eps_adv = normalize_perturbation(eps_adv)
+            inputs_source_adv = inputs_source + args.radius * eps_adv
+            output_source_adv = netC(netB(netF(inputs_source_adv.detach())))
+            loss_vat     = loss_func_nll(output_source_adv, outputs_source.detach())
+
+            classifier_loss += args.w_vat * loss_vat
+
         optimizer.zero_grad()
         classifier_loss.backward()
         optimizer.step()
@@ -240,11 +264,14 @@ def train_source(args):
                 best_netF = netF.state_dict()
                 best_netB = netB.state_dict()
                 best_netC = netC.state_dict()
+                best_netBRF = netBRF.state_dict()
+                best_netCRF = netCRF.state_dict()
 
     torch.save(best_netF, osp.join(args.output_dir, "source_F.pt"))
     torch.save(best_netB, osp.join(args.output_dir, "source_B.pt"))
     torch.save(best_netC, osp.join(args.output_dir, "source_C.pt"))
-
+    torch.save(best_netBRF, osp.join(args.output_dir, "source_BRF.pt"))
+    torch.save(best_netCRF, osp.join(args.output_dir, "source_CRF.pt"))
     return netF, netB, netC
 
 def test_target(args):
@@ -462,8 +489,6 @@ if __name__ == "__main__":
     
     parser.add_argument('--w_vat', type=float, default=0.0) #1.0
     parser.add_argument('--radius', type=float, default=0.01)
-
-    parser.add_argument('--is_our', type=float, default=0.0)    
 
     args = parser.parse_args()
     args.class_num = 10
