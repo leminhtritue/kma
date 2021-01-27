@@ -170,16 +170,38 @@ def train_target(args):
     netBRF.load_state_dict(torch.load(modelpath))
     modelpath = args.output_dir_src + '/source_CRF.pt'    
     netCRF.load_state_dict(torch.load(modelpath))
-    netC.eval()
-    netBRF.eval()
-    netCRF.eval()
-    for k, v in netC.named_parameters():
-        v.requires_grad = False
-    for k, v in netBRF.named_parameters():
-        v.requires_grad = False
-    for k, v in netCRF.named_parameters():
-        v.requires_grad = False
 
+    if args.train_c == 0.0:
+        netC.eval()
+        for k, v in netC.named_parameters():
+            v.requires_grad = False
+    else:
+        for k, v in netC.named_parameters():
+            if args.lr_decay2 > 0:
+                param_group += [{'params': v, 'lr': args.lr * args.lr_decay2}]
+            else:
+                v.requires_grad = False        
+
+    if args.train_rf == 0.0:
+        netBRF.eval()
+        netCRF.eval()
+        for k, v in netBRF.named_parameters():
+            v.requires_grad = False
+        for k, v in netCRF.named_parameters():
+            v.requires_grad = False
+    else:
+        for k, v in netBRF.named_parameters():
+            if args.lr_decay2 > 0:
+                param_group += [{'params': v, 'lr': args.lr * args.lr_decay2}]
+            else:
+                v.requires_grad = False          
+
+        for k, v in netCRF.named_parameters():
+            if args.lr_decay2 > 0:
+                param_group += [{'params': v, 'lr': args.lr * args.lr_decay2}]
+            else:
+                v.requires_grad = False   
+                
     param_group = []
     for k, v in netF.named_parameters():
         if args.lr_decay1 > 0:
@@ -520,6 +542,8 @@ if __name__ == "__main__":
     parser.add_argument('--radius', type=float, default=0.01)    
     parser.add_argument('--layer_rf', type=str, default="linear", choices=["linear", "wn"])
     parser.add_argument('--grid', type=float, default=0.0)    
+    parser.add_argument('--train_c', type=float, default=0.0)    
+    parser.add_argument('--train_rf', type=float, default=0.0)
     
     args = parser.parse_args()
 
