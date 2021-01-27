@@ -189,7 +189,7 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
         accuracy_neq_rf =  n_neq_rf_right/ float(n_neq_total)
     else:
         accuracy_neq_h = 0
-        accuracy_neq_h = 0
+        accuracy_neq_rf = 0
     print("Acc Disagree: H:{:.2f}% - {}/{}, RF:{:.2f}% - {}/{} samples\n".format(accuracy_neq_h*100, n_neq_h_right, n_neq_total, accuracy_neq_rf*100, n_neq_rf_right, n_neq_total))
 
 
