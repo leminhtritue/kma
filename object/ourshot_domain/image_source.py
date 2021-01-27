@@ -448,7 +448,7 @@ if __name__ == "__main__":
         names = ['Art', 'Clipart', 'Product', 'RealWorld']
         args.class_num = 65 
     if args.dset == 'office':
-        names = ['amazon', 'dslr', 'webcam']
+        names = ['amazon', 'dslr']
         args.class_num = 345
     if args.dset == 'VISDA-C':
         names = ['train', 'validation']
