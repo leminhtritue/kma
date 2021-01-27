@@ -219,6 +219,7 @@ def train_source(args):
         iter_num += 1
         lr_scheduler(optimizer, iter_num=iter_num, max_iter=max_iter)
 
+        inputs_source, labels_source = inputs_source.cuda(), labels_source.cuda()
         output_latent = netB(netF(inputs_source))
         outputs_source = netC(output_latent)
         outputs_source_rf = netCRF(netBRF(output_latent))
