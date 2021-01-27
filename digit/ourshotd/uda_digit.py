@@ -178,8 +178,9 @@ def train_source(args):
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
     netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
 
-    # netBRF = network.feat_bootleneck_rf(nrf=args.nrf, type=args.classifier, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
-    # netCRF = network.feat_classifier_rf(nrf=args.nrf, type=args.layer_rf, class_num = args.class_num).cuda()
+    if (args.is_our != 0):
+    	netBRF = network.feat_bootleneck_rf(nrf=args.nrf, type=args.classifier, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
+    	netCRF = network.feat_classifier_rf(nrf=args.nrf, type=args.layer_rf, class_num = args.class_num).cuda()
     
     param_group = []
     learning_rate = args.lr
@@ -461,6 +462,8 @@ if __name__ == "__main__":
     
     parser.add_argument('--w_vat', type=float, default=0.0) #1.0
     parser.add_argument('--radius', type=float, default=0.01)
+
+    parser.add_argument('--is_our', type=float, default=0.0)    
 
     args = parser.parse_args()
     args.class_num = 10
