@@ -18,8 +18,16 @@ python image_source.py --nrf 16384 --w_vat 1.0 --alpha_rf 0.1 --max_epoch 500 --
 python image_source.py --nrf 16384 --w_vat 1.0 --alpha_rf 0.1 --max_epoch 500 --s 2 --t 0 --output ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep500_run2/ --gpu_id 2
 
 
+#Train WH
+python image_target.py --nrf 16384 --s 2 --t 0 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep500/ --cls_par 0.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --train_c 0.0 --train_rf 0.0
+python image_target.py --nrf 16384 --s 2 --t 0 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep500/ --cls_par 0.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --train_c 0.0 --train_rf 0.1
+python image_target.py --nrf 16384 --s 2 --t 0 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep500/ --cls_par 0.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --train_c 0.1 --train_rf 0.0
+python image_target.py --nrf 16384 --s 2 --t 0 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep500/ --cls_par 0.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 --train_c 0.1 --train_rf 0.1
 
 
+
+
+#Dinh
 
 python image_source_Dinh.py --nrf 16384 --w_vat 1.0 --alpha_rf 0.1 --max_epoch 100 --s 2 --t 0 --output ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep500_dinh_run/ --gpu_id 2
 

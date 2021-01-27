@@ -168,6 +168,8 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
     predict_softmax_rf_neq = predict_softmax_rf[mask_HneqRF]
     predict_arg_rf_neq = predict_arg_rf[mask_HneqRF]
     all_label_neq = all_label[mask_HneqRF]
+    softmax_output_h_neq = softmax_output_h[mask_HneqRF]
+    softmax_output_rf_neq = softmax_output_rf[mask_HneqRF]
 
     print("Acc total H: {:.2f}%, Acc total RF: {:.2f}%".format(accuracy_h*100, accuracy_rf*100))
     print("Total samples/Agree/Disagree: {}/{}/{} samples".format(predict_arg_h.size()[0], predict_arg_h_eq.size()[0], predict_arg_h_neq.size()[0]))
@@ -190,33 +192,87 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
     predict_arg_rf_neq_h_wrong = predict_arg_rf_neq[mark_arg_h_neq_wrong]
     predict_softmax_h_neq_hwrong = predict_softmax_h_neq[mark_arg_h_neq_wrong]
     predict_softmax_rf_neq_hwrong = predict_softmax_rf_neq[mark_arg_h_neq_wrong]
+    softmax_output_h_neq_hwrong = softmax_output_h_neq[mark_arg_h_neq_wrong]
+    softmax_output_rf_neq_hwrong = softmax_output_rf_neq[mark_arg_h_neq_wrong]
 
     n_neq_h_wrong_total = all_label_neq_h_wrong.size()[0]
     mark_arg_rf_neq_h_wrong = (torch.squeeze(predict_arg_rf_neq_h_wrong).float() == all_label_neq_h_wrong)
-    predict_softmax_h_neq_hwrong_rfright = predict_softmax_h_neq_hwrong[mark_arg_rf_neq_h_wrong]
-    predict_softmax_rf_neq_hwrong_rfright = predict_softmax_rf_neq_hwrong[mark_arg_rf_neq_h_wrong]
+    predict_softmax_h_neq_hwrong_rfright = predict_softmax_h_neq_hwrong[mark_arg_rf_neq_h_wrong] #
+    predict_softmax_rf_neq_hwrong_rfright = predict_softmax_rf_neq_hwrong[mark_arg_rf_neq_h_wrong] #
+    softmax_output_h_neq_hwrong_rfright = softmax_output_h_neq_hwrong[mark_arg_rf_neq_h_wrong] #
+    softmax_output_rf_neq_hwrong_rfright = softmax_output_rf_neq_hwrong[mark_arg_rf_neq_h_wrong] #
+    all_label_neq_hwrong_rfright = all_label_neq_h_wrong[mark_arg_rf_neq_h_wrong] #
 
     n_neq_h_wrong_rf_right = predict_softmax_h_neq_hwrong_rfright.size()[0]
 
     print("In {} samples H wrongly predict:".format(n_neq_h_wrong_total))
     print("{}/{} samples that RF has greater softmax when when RF rightly predicts\n".format(torch.sum(predict_softmax_h_neq_hwrong_rfright < predict_softmax_rf_neq_hwrong_rfright).item(),n_neq_h_wrong_rf_right))
+    
+    ###
+    softmax_output_average_hwrong_rfright = (softmax_output_h_neq_hwrong_rfright + softmax_output_rf_neq_hwrong_rfright)/2 #
+    predict_softmax_average_hwrong_rfright, predict_arg_average_hwrong_rfright = torch.max(softmax_output_average_hwrong_rfright, 1) #
+
+    softmax_output_h_neq_hwrong_rfright_idx = torch.topk(softmax_output_h_neq_hwrong_rfright, 3, dim=1,largest=True, sorted=True).indices #
+    softmax_output_h_neq_hwrong_rfright_val = torch.topk(softmax_output_h_neq_hwrong_rfright, 3, dim=1,largest=True, sorted=True).values #
+    softmax_output_rf_neq_hwrong_rfright_idx = torch.topk(softmax_output_rf_neq_hwrong_rfright, 3, dim=1,largest=True, sorted=True).indices #
+    softmax_output_rf_neq_hwrong_rfright_val = torch.topk(softmax_output_rf_neq_hwrong_rfright, 3, dim=1,largest=True, sorted=True).values #
+
+    entropy_h_neq_hwrong_rfright = loss.Entropy(softmax_output_h_neq_hwrong_rfright)
+    entropy_rf_neq_hwrong_rfright = loss.Entropy(softmax_output_rf_neq_hwrong_rfright)
+
+    for cur_i in range(n_neq_h_wrong_rf_right):
+        print("{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}".format(all_label_neq_hwrong_rfright[cur_i], \
+            softmax_output_h_neq_hwrong_rfright_idx[cur_i][0], softmax_output_h_neq_hwrong_rfright_idx[cur_i][1], softmax_output_h_neq_hwrong_rfright_idx[cur_i][2], \
+            softmax_output_rf_neq_hwrong_rfright_idx[cur_i][0], softmax_output_rf_neq_hwrong_rfright_idx[cur_i][1], softmax_output_rf_neq_hwrong_rfright_idx[cur_i][2], \
+            predict_arg_average_hwrong_rfright[cur_i], \
+            softmax_output_h_neq_hwrong_rfright_val[cur_i][0], softmax_output_h_neq_hwrong_rfright_val[cur_i][1], softmax_output_h_neq_hwrong_rfright_val[cur_i][2], \
+            softmax_output_rf_neq_hwrong_rfright_val[cur_i][0], softmax_output_rf_neq_hwrong_rfright_val[cur_i][1], softmax_output_rf_neq_hwrong_rfright_val[cur_i][2], \
+            entropy_h_neq_hwrong_rfright[cur_i], entropy_rf_neq_hwrong_rfright[cur_i]))
+    ###
+
 
     mark_arg_h_neq_right = (torch.squeeze(predict_arg_h_neq).float() == all_label_neq)
     all_label_neq_h_right = all_label_neq[mark_arg_h_neq_right]
     predict_arg_rf_neq_h_right = predict_arg_rf_neq[mark_arg_h_neq_right]
     predict_softmax_h_neq_hright = predict_softmax_h_neq[mark_arg_h_neq_right]
     predict_softmax_rf_neq_hright = predict_softmax_rf_neq[mark_arg_h_neq_right]
+    softmax_output_h_neq_hright = softmax_output_h_neq[mark_arg_h_neq_right]
+    softmax_output_rf_neq_hright = softmax_output_rf_neq[mark_arg_h_neq_right]
 
     n_neq_h_right_total = all_label_neq_h_right.size()[0]
     mark_arg_rf_neq_h_right = (torch.squeeze(predict_arg_rf_neq_h_right).float() != all_label_neq_h_right)
     predict_softmax_h_neq_hright_rfwrong = predict_softmax_h_neq_hright[mark_arg_rf_neq_h_right]
     predict_softmax_rf_neq_hright_rfwrong = predict_softmax_rf_neq_hright[mark_arg_rf_neq_h_right]
+    softmax_output_h_neq_hright_rfwrong = softmax_output_h_neq_hright[mark_arg_rf_neq_h_right]
+    softmax_output_rf_neq_hright_rfwrong = softmax_output_rf_neq_hright[mark_arg_rf_neq_h_right]
+    all_label_neq_hright_rfwrong = all_label_neq_h_right[mark_arg_rf_neq_h_right]
 
     n_neq_h_wrong_rf_wrong = predict_softmax_h_neq_hright_rfwrong.size()[0]
 
     print("In {} samples H rightly predict:".format(n_neq_h_right_total))
     print("{}/{} samples that RF has greater softmax when when RF wrongly predicts\n".format(torch.sum(predict_softmax_h_neq_hright_rfwrong < predict_softmax_rf_neq_hright_rfwrong).item(),n_neq_h_wrong_rf_wrong))
 
+    ###
+    softmax_output_average_hright_rfwrong = (softmax_output_h_neq_hright_rfwrong + softmax_output_rf_neq_hright_rfwrong)/2 #
+    predict_softmax_average_hright_rfwrong, predict_arg_average_hright_rfwrong = torch.max(softmax_output_average_hright_rfwrong, 1) #
+
+    softmax_output_h_neq_hright_rfwrong_idx = torch.topk(softmax_output_h_neq_hright_rfwrong, 3, dim=1,largest=True, sorted=True).indices #
+    softmax_output_h_neq_hright_rfwrong_val = torch.topk(softmax_output_h_neq_hright_rfwrong, 3, dim=1,largest=True, sorted=True).values #
+    softmax_output_rf_neq_hright_rfwrong_idx = torch.topk(softmax_output_rf_neq_hright_rfwrong, 3, dim=1,largest=True, sorted=True).indices #
+    softmax_output_rf_neq_hright_rfwrong_val = torch.topk(softmax_output_rf_neq_hright_rfwrong, 3, dim=1,largest=True, sorted=True).values #
+
+    entropy_h_neq_hright_rfwrong = loss.Entropy(softmax_output_h_neq_hright_rfwrong)
+    entropy_rf_neq_hright_rfwrong = loss.Entropy(softmax_output_rf_neq_hright_rfwrong)
+
+    for cur_i in range(n_neq_h_wrong_rf_right):
+        print("{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}".format(all_label_neq_hright_rfwrong[cur_i], \
+            softmax_output_h_neq_hright_rfwrong_idx[cur_i][0], softmax_output_h_neq_hright_rfwrong_idx[cur_i][1], softmax_output_h_neq_hright_rfwrong_idx[cur_i][2], \
+            softmax_output_rf_neq_hright_rfwrong_idx[cur_i][0], softmax_output_rf_neq_hright_rfwrong_idx[cur_i][1], softmax_output_rf_neq_hright_rfwrong_idx[cur_i][2], \
+            predict_arg_average_hright_rfwrong[cur_i], \
+            softmax_output_h_neq_hright_rfwrong_val[cur_i][0], softmax_output_h_neq_hright_rfwrong_val[cur_i][1], softmax_output_h_neq_hright_rfwrong_val[cur_i][2], \
+            softmax_output_rf_neq_hright_rfwrong_val[cur_i][0], softmax_output_rf_neq_hright_rfwrong_val[cur_i][1], softmax_output_rf_neq_hright_rfwrong_val[cur_i][2], \
+            entropy_h_neq_hright_rfwrong[cur_i], entropy_rf_neq_hright_rfwrong[cur_i]))
+    ###
 
 
     mark_arg_rf_neq_wrong = (torch.squeeze(predict_arg_rf_neq).float() != all_label_neq)
@@ -224,11 +280,16 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
     predict_arg_h_neq_rfwrong = predict_arg_h_neq[mark_arg_rf_neq_wrong]
     predict_softmax_h_neq_rfwrong = predict_softmax_h_neq[mark_arg_rf_neq_wrong]
     predict_softmax_rf_neq_rfwrong = predict_softmax_rf_neq[mark_arg_rf_neq_wrong]
+    softmax_output_h_neq_rfwrong = softmax_output_h_neq[mark_arg_rf_neq_wrong]
+    softmax_output_rf_neq_rfwrong = softmax_output_rf_neq[mark_arg_rf_neq_wrong]
 
     n_neq_rf_wrong_total = all_label_neq_rf_wrong.size()[0]
     mark_arg_h_neq_rf_wrong = (torch.squeeze(predict_arg_h_neq_rfwrong).float() == all_label_neq_rf_wrong)
     predict_softmax_h_neq_rfwrong_hright = predict_softmax_h_neq_rfwrong[mark_arg_h_neq_rf_wrong]
     predict_softmax_rf_neq_rfwrong_hright = predict_softmax_rf_neq_rfwrong[mark_arg_h_neq_rf_wrong]
+    softmax_output_h_neq_rfwrong_hright = softmax_output_h_neq_rfwrong[mark_arg_h_neq_rf_wrong]
+    softmax_output_rf_neq_rfwrong_hright = softmax_output_rf_neq_rfwrong[mark_arg_h_neq_rf_wrong]
+    all_label_neq_rf_wrong_hright = all_label_neq_rf_wrong[mark_arg_h_neq_rf_wrong]
 
     n_neq_rf_wrong_h_right = predict_softmax_h_neq_rfwrong_hright.size()[0]
 
@@ -241,11 +302,16 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
     predict_arg_h_neq_rfright = predict_arg_h_neq[mark_arg_rf_neq_right]
     predict_softmax_h_neq_rfright = predict_softmax_h_neq[mark_arg_rf_neq_right]
     predict_softmax_rf_neq_rfright = predict_softmax_rf_neq[mark_arg_rf_neq_right]
+    softmax_output_h_neq_rfright = softmax_output_h_neq[mark_arg_rf_neq_right]
+    softmax_output_rf_neq_rfright = softmax_output_rf_neq[mark_arg_rf_neq_right]
 
     n_neq_rf_right_total = all_label_neq_rf_right.size()[0]
     mark_arg_h_neq_rf_right = (torch.squeeze(predict_arg_h_neq_rfright).float() != all_label_neq_rf_right)
     predict_softmax_h_neq_rfright_hwrong = predict_softmax_h_neq_rfright[mark_arg_h_neq_rf_right]
     predict_softmax_rf_neq_rfright_hwrong = predict_softmax_rf_neq_rfright[mark_arg_h_neq_rf_right]
+    softmax_output_h_neq_rfright_hwrong = softmax_output_h_neq_rfright[mark_arg_h_neq_rf_right]
+    softmax_output_rf_neq_rfright_hwrong = softmax_output_rf_neq_rfright[mark_arg_h_neq_rf_right]
+    all_label_neq_rf_right_hwrong = all_label_neq_rf_right[mark_arg_h_neq_rf_right]
 
     n_neq_rf_right_h_wrong = predict_softmax_h_neq_rfright_hwrong.size()[0]
 
