@@ -225,10 +225,11 @@ def train_source(args):
         outputs_source_rf = netCRF(netBRF(output_latent))
 
 
-        classifier_loss = loss.CrossEntropyLabelSmooth(num_classes=args.class_num, epsilon=args.smooth)(outputs_source, labels_source)            
-        classifier_loss += args.alpha_rf * loss.KernelSource(num_classes=args.class_num, alpha=args.alpha_w)(outputs_source_rf, labels_source, netCRF)
+        classifier_loss = loss.CrossEntropyLabelSmooth(num_classes=args.class_num, epsilon=args.smooth)(outputs_source, labels_source)
+        if args.alpha_rf_tr > 0:
+            classifier_loss += args.alpha_rf_tr * loss.KernelSource(num_classes=args.class_num, alpha=args.alpha_w)(outputs_source_rf, labels_source, netCRF)
 
-        if (args.w_vat > 0):
+        if (args.w_vat_tr > 0):
             eps = (torch.randn(size=inputs_source.size())).type(inputs_source.type())
             eps = 1e-6 * normalize_perturbation(eps)
             eps.requires_grad = True
@@ -242,7 +243,7 @@ def train_source(args):
             output_source_adv = netC(netB(netF(inputs_source_adv.detach())))
             loss_vat     = loss_func_nll(output_source_adv, outputs_source.detach())
 
-            classifier_loss += args.w_vat * loss_vat
+            classifier_loss += args.w_vat_tr * loss_vat
 
         optimizer.zero_grad()
         classifier_loss.backward()
@@ -323,14 +324,29 @@ def train_target(args):
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
     netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
 
+    netBRF = network.feat_bootleneck_rf(nrf=args.nrf, type=args.classifier, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
+    netCRF = network.feat_classifier_rf(nrf=args.nrf, type=args.layer_rf, class_num = args.class_num).cuda()
+    
     args.modelpath = args.output_dir + '/source_F.pt'   
     netF.load_state_dict(torch.load(args.modelpath))
     args.modelpath = args.output_dir + '/source_B.pt'   
     netB.load_state_dict(torch.load(args.modelpath))
+
+
     args.modelpath = args.output_dir + '/source_C.pt'    
     netC.load_state_dict(torch.load(args.modelpath))
+    args.modelpath = args.output_dir_src + '/source_BRF.pt'    
+    netBRF.load_state_dict(torch.load(args.modelpath))
+    args.modelpath = args.output_dir_src + '/source_CRF.pt'    
+    netCRF.load_state_dict(torch.load(args.modelpath))
     netC.eval()
+    netBRF.eval()
+    netCRF.eval()
     for k, v in netC.named_parameters():
+        v.requires_grad = False
+    for k, v in netBRF.named_parameters():
+        v.requires_grad = False
+    for k, v in netCRF.named_parameters():
         v.requires_grad = False
 
     param_group = []
@@ -370,8 +386,11 @@ def train_target(args):
         lr_scheduler(optimizer, iter_num=iter_num, max_iter=max_iter)
 
         inputs_test = inputs_test.cuda()
+
+
         features_test = netB(netF(inputs_test))
         outputs_test = netC(features_test)
+        outputs_test_rf = netCRF(netBRF(features_test.detach()))
 
         if args.cls_par > 0:
             pred = mem_label[tar_idx]
@@ -379,8 +398,8 @@ def train_target(args):
         else:
             classifier_loss = torch.tensor(0.0).cuda()
 
+        softmax_out = nn.Softmax(dim=1)(outputs_test)
         if args.ent:
-            softmax_out = nn.Softmax(dim=1)(outputs_test)
             entropy_loss = torch.mean(loss.Entropy(softmax_out))
             if args.gent:
                 msoftmax = softmax_out.mean(dim=0)
@@ -389,6 +408,40 @@ def train_target(args):
             im_loss = entropy_loss * args.ent_par
             classifier_loss += im_loss
 
+        if args.alpha_rf_te > 0:
+            mark_max = torch.zeros(outputs_test_rf.size()).cuda()
+            
+            mark_zeros = torch.zeros(outputs_test_rf.size()).cuda()
+            if (args.max_zero > 0.0):
+                outputs_test_max = torch.maximum(outputs_test_rf, mark_zeros)
+            else:
+                outputs_test_max = outputs_test_rf
+
+            for i in range(args.class_num):
+                mark_max[:,i] = torch.max(torch.cat((outputs_test_max[:, :i],outputs_test_max[:, i+1:]), dim = 1), dim = 1).values        
+            cost_s = outputs_test_max - mark_max
+       
+            softmax_si = nn.Softmax(dim=1)(cost_s)
+            entropy_si = -(softmax_out * torch.log(softmax_si + 1e-5))
+            entropy_si = torch.sum(entropy_si, dim=1)
+            entropy_si_loss = torch.mean(entropy_si)
+            classifier_loss += args.alpha_rf_te * entropy_si_loss
+
+        if (args.w_vat_te > 0):
+            eps = (torch.randn(size=inputs_test.size())).type(inputs_test.type())
+            eps = 1e-6 * normalize_perturbation(eps)
+            eps.requires_grad = True
+            outputs_source_adv_eps = netC(netB(netF(inputs_test + eps)))
+            loss_func_nll = KLDivWithLogits()
+            loss_eps  = loss_func_nll(outputs_source_adv_eps, outputs_test.detach())
+            loss_eps.backward()
+            eps_adv = eps.grad
+            eps_adv = normalize_perturbation(eps_adv)
+            inputs_source_adv = inputs_test + args.radius * eps_adv
+            output_source_adv = netC(netB(netF(inputs_source_adv.detach())))
+            loss_vat     = loss_func_nll(output_source_adv, outputs_test.detach())
+            classifier_loss += args.w_vat_te * loss_vat
+
         optimizer.zero_grad()
         classifier_loss.backward()
         optimizer.step()
@@ -396,8 +449,9 @@ def train_target(args):
         if iter_num % interval_iter == 0 or iter_num == max_iter:
             netF.eval()
             netB.eval()
-            acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
-            log_str = 'Task: {}, Iter:{}/{}; Accuracy = {:.2f}%'.format(args.dset, iter_num, max_iter, acc)
+            acc_t_te, _ = cal_acc(dset_loaders['test'], netF, netB, netC)
+            acc_t_tr, _ = cal_acc(dset_loaders['target'], netF, netB, netC)
+            log_str = 'Task: {}, Iter:{}/{}; Accuracy target (train/test) = {:.2f}/{:.2f}%'.format(args.dset, iter_num, max_iter, acc_t_tr, acc_t_te)
             args.out_file.write(log_str + '\n')
             args.out_file.flush()
             print(log_str+'\n')
@@ -406,6 +460,8 @@ def train_target(args):
         torch.save(netF.state_dict(), osp.join(args.output_dir, "target_F_" + args.savename + ".pt"))
         torch.save(netB.state_dict(), osp.join(args.output_dir, "target_B_" + args.savename + ".pt"))
         torch.save(netC.state_dict(), osp.join(args.output_dir, "target_C_" + args.savename + ".pt"))
+        torch.save(netBRF.state_dict(), osp.join(args.output_dir, "target_BRF_" + args.savename + ".pt"))
+        torch.save(netCRF.state_dict(), osp.join(args.output_dir, "target_CRF_" + args.savename + ".pt"))
 
     return netF, netB, netC
 
@@ -485,11 +541,14 @@ if __name__ == "__main__":
     parser.add_argument('--nrf', type=int, default=512) #16384
     parser.add_argument('--alpha_w', type=float, default=0.1)
 
-    parser.add_argument('--alpha_rf', type=float, default=0.0)  #0.1  
+    parser.add_argument('--alpha_rf_tr', type=float, default=0.0)  #0.1  
+    parser.add_argument('--alpha_rf_te', type=float, default=0.0)  #0.1  
     parser.add_argument('--layer_rf', type=str, default="linear", choices=["linear", "wn"])
     
-    parser.add_argument('--w_vat', type=float, default=0.0) #1.0
+    parser.add_argument('--w_vat_tr', type=float, default=0.0) #1.0
+    parser.add_argument('--w_vat_te', type=float, default=0.0)
     parser.add_argument('--radius', type=float, default=0.01)
+    parser.add_argument('--max_zero', type=float, default=1.0)
 
     args = parser.parse_args()
     args.class_num = 10
