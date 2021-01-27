@@ -175,14 +175,21 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
     print("Total samples/Agree/Disagree: {}/{}/{} samples".format(predict_arg_h.size()[0], predict_arg_h_eq.size()[0], predict_arg_h_neq.size()[0]))
     n_eq_right = (torch.sum(torch.squeeze(predict_arg_h_eq).float() == all_label_eq).item())
     n_eq_total = all_label_eq.size()[0]
-    accuracy_eq = n_eq_right / float(n_eq_total)
+    if (n_eq_total != 0):
+        accuracy_eq = n_eq_right / float(n_eq_total)
+    else:
+        accuracy_eq = 0
     print("Acc Agree: {:.2f}% - {}/{} samples".format(accuracy_eq*100, n_eq_right, n_eq_total))
 
     n_neq_h_right = (torch.sum(torch.squeeze(predict_arg_h_neq).float() == all_label_neq).item())
     n_neq_rf_right = (torch.sum(torch.squeeze(predict_arg_rf_neq).float() == all_label_neq).item())
     n_neq_total = all_label_neq.size()[0]
-    accuracy_neq_h =  n_neq_h_right / float(n_neq_total)
-    accuracy_neq_rf =  n_neq_rf_right/ float(n_neq_total)
+    if (n_neq_total != 0):
+        accuracy_neq_h =  n_neq_h_right / float(n_neq_total)
+        accuracy_neq_rf =  n_neq_rf_right/ float(n_neq_total)
+    else:
+        accuracy_neq_h = 0
+        accuracy_neq_h = 0
     print("Acc Disagree: H:{:.2f}% - {}/{}, RF:{:.2f}% - {}/{} samples\n".format(accuracy_neq_h*100, n_neq_h_right, n_neq_total, accuracy_neq_rf*100, n_neq_rf_right, n_neq_total))
 
 
@@ -210,7 +217,7 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
     
     ###
     if n_neq_h_wrong_rf_right > 0:
-        
+
         softmax_output_average_hwrong_rfright = (softmax_output_h_neq_hwrong_rfright + softmax_output_rf_neq_hwrong_rfright)/2 #
         predict_softmax_average_hwrong_rfright, predict_arg_average_hwrong_rfright = torch.max(softmax_output_average_hwrong_rfright, 1) #
 
