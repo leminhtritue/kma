@@ -209,16 +209,18 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
     print("{}/{} samples that RF has greater softmax when when RF rightly predicts\n".format(torch.sum(predict_softmax_h_neq_hwrong_rfright < predict_softmax_rf_neq_hwrong_rfright).item(),n_neq_h_wrong_rf_right))
     
     ###
-    softmax_output_average_hwrong_rfright = (softmax_output_h_neq_hwrong_rfright + softmax_output_rf_neq_hwrong_rfright)/2 #
-    predict_softmax_average_hwrong_rfright, predict_arg_average_hwrong_rfright = torch.max(softmax_output_average_hwrong_rfright, 1) #
+    if n_neq_h_wrong_rf_right > 0:
+        
+        softmax_output_average_hwrong_rfright = (softmax_output_h_neq_hwrong_rfright + softmax_output_rf_neq_hwrong_rfright)/2 #
+        predict_softmax_average_hwrong_rfright, predict_arg_average_hwrong_rfright = torch.max(softmax_output_average_hwrong_rfright, 1) #
 
-    softmax_output_h_neq_hwrong_rfright_idx = torch.topk(softmax_output_h_neq_hwrong_rfright, 3, dim=1,largest=True, sorted=True).indices #
-    softmax_output_h_neq_hwrong_rfright_val = torch.topk(softmax_output_h_neq_hwrong_rfright, 3, dim=1,largest=True, sorted=True).values #
-    softmax_output_rf_neq_hwrong_rfright_idx = torch.topk(softmax_output_rf_neq_hwrong_rfright, 3, dim=1,largest=True, sorted=True).indices #
-    softmax_output_rf_neq_hwrong_rfright_val = torch.topk(softmax_output_rf_neq_hwrong_rfright, 3, dim=1,largest=True, sorted=True).values #
+        softmax_output_h_neq_hwrong_rfright_idx = torch.topk(softmax_output_h_neq_hwrong_rfright, 3, dim=1,largest=True, sorted=True).indices #
+        softmax_output_h_neq_hwrong_rfright_val = torch.topk(softmax_output_h_neq_hwrong_rfright, 3, dim=1,largest=True, sorted=True).values #
+        softmax_output_rf_neq_hwrong_rfright_idx = torch.topk(softmax_output_rf_neq_hwrong_rfright, 3, dim=1,largest=True, sorted=True).indices #
+        softmax_output_rf_neq_hwrong_rfright_val = torch.topk(softmax_output_rf_neq_hwrong_rfright, 3, dim=1,largest=True, sorted=True).values #
 
-    entropy_h_neq_hwrong_rfright = loss.Entropy(softmax_output_h_neq_hwrong_rfright)
-    entropy_rf_neq_hwrong_rfright = loss.Entropy(softmax_output_rf_neq_hwrong_rfright)
+        entropy_h_neq_hwrong_rfright = loss.Entropy(softmax_output_h_neq_hwrong_rfright)
+        entropy_rf_neq_hwrong_rfright = loss.Entropy(softmax_output_rf_neq_hwrong_rfright)
 
     for cur_i in range(n_neq_h_wrong_rf_right):
         print("{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}".format(all_label_neq_hwrong_rfright[cur_i], \
@@ -253,16 +255,17 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
     print("{}/{} samples that RF has greater softmax when when RF wrongly predicts\n".format(torch.sum(predict_softmax_h_neq_hright_rfwrong < predict_softmax_rf_neq_hright_rfwrong).item(),n_neq_hright_rf_wrong))
 
     ###
-    softmax_output_average_hright_rfwrong = (softmax_output_h_neq_hright_rfwrong + softmax_output_rf_neq_hright_rfwrong)/2 #
-    predict_softmax_average_hright_rfwrong, predict_arg_average_hright_rfwrong = torch.max(softmax_output_average_hright_rfwrong, 1) #
+    if (n_neq_hright_rf_wrong > 0):
+        softmax_output_average_hright_rfwrong = (softmax_output_h_neq_hright_rfwrong + softmax_output_rf_neq_hright_rfwrong)/2 #
+        predict_softmax_average_hright_rfwrong, predict_arg_average_hright_rfwrong = torch.max(softmax_output_average_hright_rfwrong, 1) #
 
-    softmax_output_h_neq_hright_rfwrong_idx = torch.topk(softmax_output_h_neq_hright_rfwrong, 3, dim=1,largest=True, sorted=True).indices #
-    softmax_output_h_neq_hright_rfwrong_val = torch.topk(softmax_output_h_neq_hright_rfwrong, 3, dim=1,largest=True, sorted=True).values #
-    softmax_output_rf_neq_hright_rfwrong_idx = torch.topk(softmax_output_rf_neq_hright_rfwrong, 3, dim=1,largest=True, sorted=True).indices #
-    softmax_output_rf_neq_hright_rfwrong_val = torch.topk(softmax_output_rf_neq_hright_rfwrong, 3, dim=1,largest=True, sorted=True).values #
+        softmax_output_h_neq_hright_rfwrong_idx = torch.topk(softmax_output_h_neq_hright_rfwrong, 3, dim=1,largest=True, sorted=True).indices #
+        softmax_output_h_neq_hright_rfwrong_val = torch.topk(softmax_output_h_neq_hright_rfwrong, 3, dim=1,largest=True, sorted=True).values #
+        softmax_output_rf_neq_hright_rfwrong_idx = torch.topk(softmax_output_rf_neq_hright_rfwrong, 3, dim=1,largest=True, sorted=True).indices #
+        softmax_output_rf_neq_hright_rfwrong_val = torch.topk(softmax_output_rf_neq_hright_rfwrong, 3, dim=1,largest=True, sorted=True).values #
 
-    entropy_h_neq_hright_rfwrong = loss.Entropy(softmax_output_h_neq_hright_rfwrong)
-    entropy_rf_neq_hright_rfwrong = loss.Entropy(softmax_output_rf_neq_hright_rfwrong)
+        entropy_h_neq_hright_rfwrong = loss.Entropy(softmax_output_h_neq_hright_rfwrong)
+        entropy_rf_neq_hright_rfwrong = loss.Entropy(softmax_output_rf_neq_hright_rfwrong)
 
     for cur_i in range(n_neq_hright_rf_wrong):
         print("{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}".format(all_label_neq_hright_rfwrong[cur_i], \
