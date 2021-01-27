@@ -221,7 +221,7 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
     entropy_rf_neq_hwrong_rfright = loss.Entropy(softmax_output_rf_neq_hwrong_rfright)
 
     for cur_i in range(n_neq_h_wrong_rf_right):
-        print("{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}".format(all_label_neq_hwrong_rfright[cur_i], \
+        print("{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}".format(all_label_neq_hwrong_rfright[cur_i], \
             softmax_output_h_neq_hwrong_rfright_idx[cur_i][0], softmax_output_h_neq_hwrong_rfright_idx[cur_i][1], softmax_output_h_neq_hwrong_rfright_idx[cur_i][2], \
             softmax_output_rf_neq_hwrong_rfright_idx[cur_i][0], softmax_output_rf_neq_hwrong_rfright_idx[cur_i][1], softmax_output_rf_neq_hwrong_rfright_idx[cur_i][2], \
             predict_arg_average_hwrong_rfright[cur_i], \
@@ -247,10 +247,10 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
     softmax_output_rf_neq_hright_rfwrong = softmax_output_rf_neq_hright[mark_arg_rf_neq_h_right]
     all_label_neq_hright_rfwrong = all_label_neq_h_right[mark_arg_rf_neq_h_right]
 
-    n_neq_h_wrong_rf_wrong = predict_softmax_h_neq_hright_rfwrong.size()[0]
+    n_neq_hright_rf_wrong = predict_softmax_h_neq_hright_rfwrong.size()[0]
 
     print("In {} samples H rightly predict:".format(n_neq_h_right_total))
-    print("{}/{} samples that RF has greater softmax when when RF wrongly predicts\n".format(torch.sum(predict_softmax_h_neq_hright_rfwrong < predict_softmax_rf_neq_hright_rfwrong).item(),n_neq_h_wrong_rf_wrong))
+    print("{}/{} samples that RF has greater softmax when when RF wrongly predicts\n".format(torch.sum(predict_softmax_h_neq_hright_rfwrong < predict_softmax_rf_neq_hright_rfwrong).item(),n_neq_hright_rf_wrong))
 
     ###
     softmax_output_average_hright_rfwrong = (softmax_output_h_neq_hright_rfwrong + softmax_output_rf_neq_hright_rfwrong)/2 #
@@ -264,8 +264,8 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
     entropy_h_neq_hright_rfwrong = loss.Entropy(softmax_output_h_neq_hright_rfwrong)
     entropy_rf_neq_hright_rfwrong = loss.Entropy(softmax_output_rf_neq_hright_rfwrong)
 
-    for cur_i in range(n_neq_h_wrong_rf_right):
-        print("{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}-{}".format(all_label_neq_hright_rfwrong[cur_i], \
+    for cur_i in range(n_neq_hright_rf_wrong):
+        print("{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}".format(all_label_neq_hright_rfwrong[cur_i], \
             softmax_output_h_neq_hright_rfwrong_idx[cur_i][0], softmax_output_h_neq_hright_rfwrong_idx[cur_i][1], softmax_output_h_neq_hright_rfwrong_idx[cur_i][2], \
             softmax_output_rf_neq_hright_rfwrong_idx[cur_i][0], softmax_output_rf_neq_hright_rfwrong_idx[cur_i][1], softmax_output_rf_neq_hright_rfwrong_idx[cur_i][2], \
             predict_arg_average_hright_rfwrong[cur_i], \
