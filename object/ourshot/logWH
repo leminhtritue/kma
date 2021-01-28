@@ -1,0 +1,840 @@
+python image_target_compareWH.py --nrf 16384 --s 2 --t 0 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep500/ --cls_par 1.0 --w_vat 0.1 --alpha_rf 0.1 --max_zero 1.0 2>&1 | tee outfile
+
+Training:, Task: WA, Accuracy = 65.25%
+
+Accuracy = 65.25% -> 72.24%
+
+/opt/conda/envs/tpy36_1/lib/python3.6/site-packages/torch/nn/_reduction.py:44: UserWarning: size_average and reduce args will be deprecated, please use reduction='sum' instead.
+  warnings.warn(warning.format(ret))
+Epoch 1:
+Acc total H: 74.09%, Acc total RF: 73.23%
+Total samples/Agree/Disagree: 2817/2709/108 samples
+Acc Agree: 75.53% - 2046/2709 samples
+Acc Disagree: H:37.96% - 41/108, RF:15.74% - 17/108 samples
+
+In 67 samples H wrongly predict:
+16/17 samples that RF has greater softmax when when RF rightly predicts
+
+29-0-29-18-29-0-2-29-0.21-0.20-0.08-0.54-0.15-0.05-2.77-1.92
+24-13-24-15-24-13-18-24-0.15-0.14-0.08-0.37-0.10-0.08-3.03-2.47
+27-14-27-22-27-14-22-27-0.44-0.39-0.03-0.81-0.17-0.00-1.55-0.62
+19-18-19-14-19-18-24-19-0.39-0.22-0.05-0.76-0.19-0.00-2.28-0.80
+12-13-12-24-12-13-24-13-0.56-0.17-0.07-0.49-0.27-0.09-1.75-1.64
+29-13-29-10-29-13-20-29-0.43-0.31-0.04-0.70-0.17-0.02-1.85-1.26
+6-7-10-6-6-7-10-6-0.35-0.21-0.20-0.57-0.35-0.04-2.11-1.08
+22-18-22-10-22-18-16-18-0.36-0.17-0.06-0.48-0.37-0.03-2.50-1.43
+17-18-17-26-17-18-26-18-0.29-0.17-0.14-0.46-0.36-0.08-2.59-1.44
+26-18-26-23-26-18-23-18-0.38-0.21-0.06-0.50-0.46-0.01-2.34-0.97
+23-27-22-18-23-22-27-22-0.23-0.18-0.11-0.29-0.23-0.15-2.65-2.33
+19-18-19-8-19-18-4-19-0.47-0.41-0.01-0.97-0.03-0.00-1.35-0.12
+24-13-24-12-24-13-12-24-0.65-0.25-0.04-0.84-0.13-0.01-1.07-0.63
+12-15-12-5-12-5-15-12-0.13-0.11-0.10-0.63-0.08-0.04-3.14-1.77
+18-8-18-24-18-8-14-18-0.18-0.14-0.09-0.25-0.13-0.12-2.98-2.70
+18-13-18-24-18-13-24-13-0.45-0.18-0.08-0.53-0.36-0.02-2.14-1.27
+9-3-9-6-9-3-1-9-0.64-0.32-0.00-0.94-0.06-0.00-0.89-0.28
+In 41 samples H rightly predict:
+29/41 samples that RF has greater softmax when when RF wrongly predicts
+
+27-27-15-26-15-10-27-15-0.14-0.12-0.09-0.37-0.14-0.10-3.08-2.45
+20-20-5-21-5-20-28-5-0.39-0.29-0.03-0.67-0.24-0.02-2.10-1.10
+8-8-21-22-21-8-22-21-0.29-0.27-0.08-0.57-0.32-0.02-2.32-1.24
+21-21-29-22-29-21-28-21-0.32-0.15-0.06-0.30-0.27-0.08-2.66-2.35
+21-21-13-29-13-23-21-13-0.23-0.20-0.14-0.26-0.15-0.13-2.55-2.65
+29-29-17-2-2-17-29-2-0.19-0.18-0.14-0.64-0.09-0.06-2.64-1.66
+13-13-27-29-27-13-24-13-0.35-0.17-0.11-0.24-0.21-0.12-2.43-2.46
+13-13-24-7-24-13-29-13-0.67-0.05-0.05-0.49-0.19-0.07-1.52-1.91
+17-17-1-18-1-17-30-17-0.21-0.17-0.07-0.39-0.35-0.04-2.88-1.88
+29-29-23-13-23-29-2-29-0.29-0.17-0.08-0.19-0.19-0.14-2.52-2.73
+7-7-4-8-4-7-16-4-0.45-0.37-0.02-0.67-0.30-0.00-1.58-0.84
+25-25-19-7-19-25-12-19-0.65-0.19-0.02-0.73-0.26-0.00-1.39-0.64
+25-25-18-13-18-25-4-18-0.43-0.29-0.03-0.85-0.09-0.01-2.00-0.69
+27-27-15-10-10-15-27-27-0.19-0.12-0.10-0.23-0.22-0.17-2.97-2.50
+13-13-27-0-27-13-24-13-0.89-0.08-0.00-0.62-0.25-0.02-0.49-1.34
+13-13-29-24-24-13-29-13-0.49-0.12-0.11-0.50-0.19-0.12-2.01-1.82
+20-20-5-11-5-20-11-5-0.31-0.30-0.04-0.51-0.15-0.05-2.33-2.04
+29-29-2-7-2-7-29-2-0.12-0.11-0.11-0.26-0.15-0.11-3.05-2.70
+13-13-23-26-23-13-6-13-0.64-0.15-0.05-0.45-0.37-0.02-1.51-1.59
+7-7-0-24-0-7-29-0-0.14-0.11-0.08-0.13-0.09-0.09-3.10-3.10
+7-7-4-2-2-7-29-7-0.37-0.12-0.11-0.28-0.25-0.10-2.45-2.30
+28-28-23-26-16-28-26-28-0.19-0.17-0.13-0.23-0.15-0.08-2.61-2.72
+7-7-19-26-19-7-28-19-0.42-0.22-0.07-0.64-0.16-0.03-2.12-1.52
+24-24-18-19-18-24-19-18-0.36-0.22-0.07-0.75-0.21-0.01-2.34-0.78
+28-28-6-23-16-6-28-16-0.26-0.14-0.13-0.35-0.23-0.13-2.53-2.21
+28-28-16-23-16-28-29-16-0.46-0.35-0.03-0.62-0.37-0.00-1.65-0.75
+7-7-4-30-4-7-24-4-0.49-0.41-0.01-0.70-0.27-0.00-1.24-0.81
+13-13-24-18-24-13-22-13-0.69-0.18-0.01-0.58-0.41-0.00-1.26-0.76
+13-13-29-24-24-13-29-13-0.54-0.11-0.09-0.46-0.26-0.09-1.87-1.81
+3-3-9-6-9-3-6-3-0.51-0.29-0.02-0.58-0.40-0.00-1.67-0.83
+17-17-26-10-26-17-10-26-0.16-0.10-0.10-0.36-0.13-0.10-3.07-2.39
+14-14-12-5-5-14-12-5-0.18-0.17-0.15-0.44-0.37-0.06-2.73-1.58
+13-13-29-24-29-13-24-13-0.48-0.21-0.05-0.42-0.23-0.12-1.97-2.01
+30-30-17-16-17-30-25-17-0.57-0.36-0.01-0.89-0.11-0.00-1.09-0.35
+24-24-18-19-18-24-19-18-0.36-0.22-0.07-0.75-0.21-0.01-2.34-0.78
+4-4-29-10-29-4-16-4-0.38-0.23-0.08-0.43-0.43-0.03-2.22-1.40
+28-28-23-16-16-6-23-16-0.21-0.18-0.13-0.20-0.18-0.13-2.70-2.71
+28-28-23-26-23-28-26-23-0.48-0.40-0.03-0.76-0.23-0.00-1.34-0.66
+13-13-29-23-23-24-13-23-0.23-0.19-0.16-0.30-0.23-0.13-2.57-2.30
+30-30-9-21-9-30-19-9-0.34-0.34-0.03-0.75-0.14-0.02-2.05-1.10
+8-8-11-14-11-8-14-8-0.21-0.15-0.10-0.28-0.27-0.06-2.85-2.44
+In 91 samples RF wrongly predict:
+12/41 samples that H has greater softmax when when H right predicts
+
+In 17 samples RF rightly predict:
+1/17 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 73.62%, Acc total RF (refined by H): 73.62%
+
+Accuracy = 74.09% -> 74.51%
+
+Epoch 2:
+Acc total H: 74.69%, Acc total RF: 74.69%
+Total samples/Agree/Disagree: 2817/2760/57 samples
+Acc Agree: 75.83% - 2093/2760 samples
+Acc Disagree: H:19.30% - 11/57, RF:19.30% - 11/57 samples
+
+In 46 samples H wrongly predict:
+10/11 samples that RF has greater softmax when when RF rightly predicts
+
+12-13-12-24-12-13-28-13-0.43-0.08-0.07-0.30-0.21-0.10-2.42-2.36
+29-18-29-10-29-18-2-29-0.41-0.39-0.04-0.61-0.30-0.03-1.63-1.11
+8-9-8-14-8-9-14-8-0.49-0.36-0.03-0.67-0.28-0.00-1.47-0.92
+23-29-23-21-23-29-30-23-0.49-0.36-0.03-0.76-0.22-0.00-1.47-0.66
+29-13-29-10-29-13-14-29-0.49-0.37-0.03-0.73-0.19-0.01-1.42-1.00
+19-18-19-4-19-18-10-19-0.54-0.37-0.01-0.68-0.32-0.00-1.22-0.64
+24-13-24-12-24-13-12-24-0.50-0.41-0.04-0.83-0.14-0.01-1.14-0.60
+12-15-12-3-12-15-3-12-0.16-0.14-0.07-0.69-0.05-0.02-3.03-1.56
+29-10-29-16-29-16-10-29-0.19-0.11-0.07-0.30-0.17-0.14-2.97-2.51
+29-16-29-2-29-16-2-29-0.30-0.26-0.05-0.62-0.35-0.00-2.48-0.83
+19-11-19-4-19-11-18-19-0.37-0.21-0.12-0.54-0.11-0.10-2.18-1.81
+In 11 samples H rightly predict:
+9/11 samples that RF has greater softmax when when RF wrongly predicts
+
+27-27-26-15-15-26-27-15-0.22-0.15-0.12-0.35-0.13-0.12-2.84-2.41
+27-27-16-6-16-27-6-16-0.48-0.44-0.03-0.71-0.27-0.00-1.14-0.71
+13-13-24-18-24-13-29-13-0.78-0.05-0.03-0.41-0.38-0.04-1.09-1.66
+28-28-16-23-16-28-26-16-0.51-0.34-0.02-0.75-0.23-0.00-1.48-0.67
+30-30-17-18-17-30-25-17-0.55-0.28-0.03-0.91-0.09-0.00-1.49-0.35
+28-28-16-23-16-28-23-16-0.40-0.29-0.18-0.89-0.06-0.02-1.69-0.57
+29-29-2-10-2-29-7-2-0.28-0.15-0.09-0.41-0.24-0.07-2.67-2.08
+9-9-24-8-24-9-11-24-0.48-0.42-0.01-0.68-0.31-0.00-1.25-0.74
+19-19-18-21-18-19-10-19-0.53-0.41-0.00-0.51-0.49-0.00-1.04-0.70
+3-3-9-6-9-3-6-9-0.42-0.42-0.02-0.91-0.09-0.00-1.56-0.37
+13-13-3-7-3-13-7-3-0.17-0.15-0.10-0.25-0.16-0.14-2.90-2.62
+In 46 samples RF wrongly predict:
+2/11 samples that H has greater softmax when when H right predicts
+
+In 11 samples RF rightly predict:
+1/11 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.72%, Acc total RF (refined by H): 74.72%
+
+Accuracy = 74.69% -> 74.62%
+
+Epoch 3:
+Acc total H: 74.80%, Acc total RF: 74.97%
+Total samples/Agree/Disagree: 2817/2791/26 samples
+Acc Agree: 75.35% - 2103/2791 samples
+Acc Disagree: H:15.38% - 4/26, RF:34.62% - 9/26 samples
+
+In 22 samples H wrongly predict:
+8/9 samples that RF has greater softmax when when RF rightly predicts
+
+27-7-27-17-27-7-17-27-0.45-0.35-0.07-0.71-0.26-0.01-1.60-0.77
+12-13-12-11-12-13-11-13-0.61-0.10-0.06-0.64-0.17-0.07-1.74-1.38
+29-18-29-10-29-18-2-18-0.48-0.36-0.03-0.51-0.42-0.02-1.49-1.09
+8-9-8-14-8-9-14-8-0.45-0.38-0.03-0.69-0.27-0.00-1.59-0.83
+24-29-24-13-24-29-0-24-0.49-0.32-0.05-0.54-0.36-0.02-1.51-1.21
+24-13-24-12-24-13-12-13-0.72-0.20-0.05-0.53-0.40-0.03-0.87-1.06
+12-15-12-23-12-15-23-12-0.25-0.18-0.05-0.78-0.08-0.01-2.76-1.14
+14-12-14-21-14-5-12-14-0.28-0.21-0.10-0.59-0.13-0.11-2.42-1.60
+23-29-23-0-23-29-0-23-0.48-0.43-0.01-0.67-0.33-0.00-1.22-0.68
+In 4 samples H rightly predict:
+3/4 samples that RF has greater softmax when when RF wrongly predicts
+
+27-27-15-26-15-27-26-15-0.36-0.15-0.15-0.46-0.24-0.09-2.39-1.90
+0-0-12-29-12-0-19-12-0.49-0.46-0.01-0.56-0.42-0.00-0.98-0.78
+30-30-17-18-17-30-18-17-0.59-0.26-0.03-0.87-0.13-0.00-1.37-0.44
+28-28-16-23-16-28-23-28-0.58-0.19-0.13-0.53-0.41-0.02-1.46-1.02
+In 17 samples RF wrongly predict:
+1/4 samples that H has greater softmax when when H right predicts
+
+In 9 samples RF rightly predict:
+1/9 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.97%, Acc total RF (refined by H): 74.97%
+
+Accuracy = 74.80% -> 74.83%
+
+Epoch 4:
+Acc total H: 74.97%, Acc total RF: 74.80%
+Total samples/Agree/Disagree: 2817/2805/12 samples
+Acc Agree: 75.12% - 2107/2805 samples
+Acc Disagree: H:41.67% - 5/12, RF:0.00% - 0/12 samples
+
+In 7 samples H wrongly predict:
+0/0 samples that RF has greater softmax when when RF rightly predicts
+
+In 5 samples H rightly predict:
+4/5 samples that RF has greater softmax when when RF wrongly predicts
+
+13-13-29-3-29-13-23-29-0.45-0.45-0.02-0.79-0.08-0.02-1.22-1.02
+30-30-17-18-17-30-18-17-0.62-0.26-0.02-0.91-0.09-0.00-1.25-0.35
+18-18-24-8-24-18-8-18-0.27-0.26-0.21-0.41-0.40-0.12-2.18-1.37
+27-27-26-15-26-27-15-26-0.38-0.26-0.13-0.38-0.20-0.20-2.04-2.04
+3-3-9-8-9-3-28-3-0.60-0.27-0.01-0.56-0.42-0.00-1.34-0.83
+In 12 samples RF wrongly predict:
+1/5 samples that H has greater softmax when when H right predicts
+
+In 0 samples RF rightly predict:
+0/0 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.83%, Acc total RF (refined by H): 74.83%
+
+Accuracy = 74.97% -> 74.90%
+
+Epoch 5:
+Acc total H: 74.90%, Acc total RF: 75.04%
+Total samples/Agree/Disagree: 2817/2811/6 samples
+Acc Agree: 75.06% - 2110/2811 samples
+Acc Disagree: H:0.00% - 0/6, RF:66.67% - 4/6 samples
+
+In 6 samples H wrongly predict:
+3/4 samples that RF has greater softmax when when RF rightly predicts
+
+29-16-29-4-29-16-17-16-0.59-0.37-0.01-0.52-0.40-0.01-0.94-1.14
+18-8-18-24-18-8-24-18-0.38-0.37-0.07-0.73-0.18-0.04-1.76-0.96
+24-13-24-12-24-13-12-24-0.55-0.43-0.01-0.58-0.38-0.00-0.85-0.93
+12-15-12-5-12-15-14-12-0.46-0.13-0.04-0.66-0.24-0.01-2.28-1.14
+In 0 samples H rightly predict:
+0/0 samples that RF has greater softmax when when RF wrongly predicts
+
+In 2 samples RF wrongly predict:
+0/0 samples that H has greater softmax when when H right predicts
+
+In 4 samples RF rightly predict:
+1/4 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 75.01%, Acc total RF (refined by H): 75.01%
+
+Accuracy = 74.90% -> 74.83%
+
+Epoch 6:
+Acc total H: 74.80%, Acc total RF: 74.76%
+Total samples/Agree/Disagree: 2817/2813/4 samples
+Acc Agree: 74.83% - 2105/2813 samples
+Acc Disagree: H:50.00% - 2/4, RF:25.00% - 1/4 samples
+
+In 2 samples H wrongly predict:
+1/1 samples that RF has greater softmax when when RF rightly predicts
+
+24-8-24-18-24-8-18-24-0.62-0.33-0.01-0.75-0.19-0.02-0.98-0.88
+In 2 samples H rightly predict:
+1/2 samples that RF has greater softmax when when RF wrongly predicts
+
+25-25-18-6-18-25-19-18-0.43-0.40-0.02-0.93-0.07-0.00-1.57-0.32
+30-30-17-18-17-30-25-30-0.80-0.14-0.01-0.55-0.44-0.00-0.81-0.77
+In 3 samples RF wrongly predict:
+1/2 samples that H has greater softmax when when H right predicts
+
+In 1 samples RF rightly predict:
+0/1 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.80%, Acc total RF (refined by H): 74.80%
+
+Accuracy = 74.80% -> 74.80%
+
+Epoch 7:
+Acc total H: 74.80%, Acc total RF: 74.83%
+Total samples/Agree/Disagree: 2817/2816/1 samples
+Acc Agree: 74.82% - 2107/2816 samples
+Acc Disagree: H:0.00% - 0/1, RF:100.00% - 1/1 samples
+
+In 1 samples H wrongly predict:
+1/1 samples that RF has greater softmax when when RF rightly predicts
+
+24-8-24-18-24-8-18-24-0.67-0.29-0.01-0.73-0.22-0.01-0.88-0.90
+In 0 samples H rightly predict:
+0/0 samples that RF has greater softmax when when RF wrongly predicts
+
+In 0 samples RF wrongly predict:
+0/0 samples that H has greater softmax when when H right predicts
+
+In 1 samples RF rightly predict:
+0/1 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.83%, Acc total RF (refined by H): 74.83%
+
+Accuracy = 74.80% -> 74.80%
+
+Epoch 8:
+Acc total H: 74.80%, Acc total RF: 74.80%
+Total samples/Agree/Disagree: 2817/2817/0 samples
+Acc Agree: 74.80% - 2107/2817 samples
+Acc Disagree: H:0.00% - 0/0, RF:0.00% - 0/0 samples
+
+In 0 samples H wrongly predict:
+0/0 samples that RF has greater softmax when when RF rightly predicts
+
+In 0 samples H rightly predict:
+0/0 samples that RF has greater softmax when when RF wrongly predicts
+
+In 0 samples RF wrongly predict:
+0/0 samples that H has greater softmax when when H right predicts
+
+In 0 samples RF rightly predict:
+0/0 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.80%, Acc total RF (refined by H): 74.80%
+
+Accuracy = 74.80% -> 74.80%
+
+Epoch 9:
+Acc total H: 74.80%, Acc total RF: 74.76%
+Total samples/Agree/Disagree: 2817/2816/1 samples
+Acc Agree: 74.79% - 2106/2816 samples
+Acc Disagree: H:100.00% - 1/1, RF:0.00% - 0/1 samples
+
+In 0 samples H wrongly predict:
+0/0 samples that RF has greater softmax when when RF rightly predicts
+
+In 1 samples H rightly predict:
+0/1 samples that RF has greater softmax when when RF wrongly predicts
+
+28-28-16-1-16-28-30-28-0.83-0.13-0.00-0.66-0.28-0.01-0.67-0.95
+In 1 samples RF wrongly predict:
+1/1 samples that H has greater softmax when when H right predicts
+
+In 0 samples RF rightly predict:
+0/0 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.80%, Acc total RF (refined by H): 74.80%
+
+Accuracy = 74.80% -> 74.80%
+
+Epoch 10:
+Acc total H: 74.80%, Acc total RF: 74.80%
+Total samples/Agree/Disagree: 2817/2817/0 samples
+Acc Agree: 74.80% - 2107/2817 samples
+Acc Disagree: H:0.00% - 0/0, RF:0.00% - 0/0 samples
+
+In 0 samples H wrongly predict:
+0/0 samples that RF has greater softmax when when RF rightly predicts
+
+In 0 samples H rightly predict:
+0/0 samples that RF has greater softmax when when RF wrongly predicts
+
+In 0 samples RF wrongly predict:
+0/0 samples that H has greater softmax when when H right predicts
+
+In 0 samples RF rightly predict:
+0/0 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.80%, Acc total RF (refined by H): 74.80%
+
+Accuracy = 74.80% -> 74.80%
+
+Epoch 11:
+Acc total H: 74.80%, Acc total RF: 74.80%
+Total samples/Agree/Disagree: 2817/2817/0 samples
+Acc Agree: 74.80% - 2107/2817 samples
+Acc Disagree: H:0.00% - 0/0, RF:0.00% - 0/0 samples
+
+In 0 samples H wrongly predict:
+0/0 samples that RF has greater softmax when when RF rightly predicts
+
+In 0 samples H rightly predict:
+0/0 samples that RF has greater softmax when when RF wrongly predicts
+
+In 0 samples RF wrongly predict:
+0/0 samples that H has greater softmax when when H right predicts
+
+In 0 samples RF rightly predict:
+0/0 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.80%, Acc total RF (refined by H): 74.80%
+
+Accuracy = 74.80% -> 74.80%
+
+Epoch 12:
+Acc total H: 74.80%, Acc total RF: 74.80%
+Total samples/Agree/Disagree: 2817/2817/0 samples
+Acc Agree: 74.80% - 2107/2817 samples
+Acc Disagree: H:0.00% - 0/0, RF:0.00% - 0/0 samples
+
+In 0 samples H wrongly predict:
+0/0 samples that RF has greater softmax when when RF rightly predicts
+
+In 0 samples H rightly predict:
+0/0 samples that RF has greater softmax when when RF wrongly predicts
+
+In 0 samples RF wrongly predict:
+0/0 samples that H has greater softmax when when H right predicts
+
+In 0 samples RF rightly predict:
+0/0 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.80%, Acc total RF (refined by H): 74.80%
+
+Accuracy = 74.80% -> 74.80%
+
+Epoch 13:
+Acc total H: 74.80%, Acc total RF: 74.80%
+Total samples/Agree/Disagree: 2817/2817/0 samples
+Acc Agree: 74.80% - 2107/2817 samples
+Acc Disagree: H:0.00% - 0/0, RF:0.00% - 0/0 samples
+
+In 0 samples H wrongly predict:
+0/0 samples that RF has greater softmax when when RF rightly predicts
+
+In 0 samples H rightly predict:
+0/0 samples that RF has greater softmax when when RF wrongly predicts
+
+In 0 samples RF wrongly predict:
+0/0 samples that H has greater softmax when when H right predicts
+
+In 0 samples RF rightly predict:
+0/0 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.80%, Acc total RF (refined by H): 74.80%
+
+Accuracy = 74.80% -> 74.80%
+
+Epoch 14:
+Acc total H: 74.80%, Acc total RF: 74.80%
+Total samples/Agree/Disagree: 2817/2817/0 samples
+Acc Agree: 74.80% - 2107/2817 samples
+Acc Disagree: H:0.00% - 0/0, RF:0.00% - 0/0 samples
+
+In 0 samples H wrongly predict:
+0/0 samples that RF has greater softmax when when RF rightly predicts
+
+In 0 samples H rightly predict:
+0/0 samples that RF has greater softmax when when RF wrongly predicts
+
+In 0 samples RF wrongly predict:
+0/0 samples that H has greater softmax when when H right predicts
+
+In 0 samples RF rightly predict:
+0/0 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.80%, Acc total RF (refined by H): 74.80%
+
+Accuracy = 74.80% -> 74.80%
+
+Epoch 15:
+Acc total H: 74.80%, Acc total RF: 74.80%
+Total samples/Agree/Disagree: 2817/2817/0 samples
+Acc Agree: 74.80% - 2107/2817 samples
+Acc Disagree: H:0.00% - 0/0, RF:0.00% - 0/0 samples
+
+In 0 samples H wrongly predict:
+0/0 samples that RF has greater softmax when when RF rightly predicts
+
+In 0 samples H rightly predict:
+0/0 samples that RF has greater softmax when when RF wrongly predicts
+
+In 0 samples RF wrongly predict:
+0/0 samples that H has greater softmax when when H right predicts
+
+In 0 samples RF rightly predict:
+0/0 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.80%, Acc total RF (refined by H): 74.80%
+
+Accuracy = 74.80% -> 74.80%
+
+Epoch 16:
+Acc total H: 74.80%, Acc total RF: 74.80%
+Total samples/Agree/Disagree: 2817/2817/0 samples
+Acc Agree: 74.80% - 2107/2817 samples
+Acc Disagree: H:0.00% - 0/0, RF:0.00% - 0/0 samples
+
+In 0 samples H wrongly predict:
+0/0 samples that RF has greater softmax when when RF rightly predicts
+
+In 0 samples H rightly predict:
+0/0 samples that RF has greater softmax when when RF wrongly predicts
+
+In 0 samples RF wrongly predict:
+0/0 samples that H has greater softmax when when H right predicts
+
+In 0 samples RF rightly predict:
+0/0 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.80%, Acc total RF (refined by H): 74.80%
+
+Accuracy = 74.80% -> 74.80%
+
+Epoch 17:
+Acc total H: 74.80%, Acc total RF: 74.80%
+Total samples/Agree/Disagree: 2817/2817/0 samples
+Acc Agree: 74.80% - 2107/2817 samples
+Acc Disagree: H:0.00% - 0/0, RF:0.00% - 0/0 samples
+
+In 0 samples H wrongly predict:
+0/0 samples that RF has greater softmax when when RF rightly predicts
+
+In 0 samples H rightly predict:
+0/0 samples that RF has greater softmax when when RF wrongly predicts
+
+In 0 samples RF wrongly predict:
+0/0 samples that H has greater softmax when when H right predicts
+
+In 0 samples RF rightly predict:
+0/0 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.80%, Acc total RF (refined by H): 74.80%
+
+Accuracy = 74.80% -> 74.80%
+
+Epoch 18:
+Acc total H: 74.80%, Acc total RF: 74.80%
+Total samples/Agree/Disagree: 2817/2817/0 samples
+Acc Agree: 74.80% - 2107/2817 samples
+Acc Disagree: H:0.00% - 0/0, RF:0.00% - 0/0 samples
+
+In 0 samples H wrongly predict:
+0/0 samples that RF has greater softmax when when RF rightly predicts
+
+In 0 samples H rightly predict:
+0/0 samples that RF has greater softmax when when RF wrongly predicts
+
+In 0 samples RF wrongly predict:
+0/0 samples that H has greater softmax when when H right predicts
+
+In 0 samples RF rightly predict:
+0/0 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.80%, Acc total RF (refined by H): 74.80%
+
+Accuracy = 74.80% -> 74.80%
+
+Epoch 19:
+Acc total H: 74.80%, Acc total RF: 74.80%
+Total samples/Agree/Disagree: 2817/2817/0 samples
+Acc Agree: 74.80% - 2107/2817 samples
+Acc Disagree: H:0.00% - 0/0, RF:0.00% - 0/0 samples
+
+In 0 samples H wrongly predict:
+0/0 samples that RF has greater softmax when when RF rightly predicts
+
+In 0 samples H rightly predict:
+0/0 samples that RF has greater softmax when when RF wrongly predicts
+
+In 0 samples RF wrongly predict:
+0/0 samples that H has greater softmax when when H right predicts
+
+In 0 samples RF rightly predict:
+0/0 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.80%, Acc total RF (refined by H): 74.80%
+
+Accuracy = 74.80% -> 74.80%
+
+Epoch 20:
+Acc total H: 74.80%, Acc total RF: 74.80%
+Total samples/Agree/Disagree: 2817/2817/0 samples
+Acc Agree: 74.80% - 2107/2817 samples
+Acc Disagree: H:0.00% - 0/0, RF:0.00% - 0/0 samples
+
+In 0 samples H wrongly predict:
+0/0 samples that RF has greater softmax when when RF rightly predicts
+
+In 0 samples H rightly predict:
+0/0 samples that RF has greater softmax when when RF wrongly predicts
+
+In 0 samples RF wrongly predict:
+0/0 samples that H has greater softmax when when H right predicts
+
+In 0 samples RF rightly predict:
+0/0 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.80%, Acc total RF (refined by H): 74.80%
+
+Accuracy = 74.80% -> 74.80%
+
+Epoch 21:
+Acc total H: 74.80%, Acc total RF: 74.80%
+Total samples/Agree/Disagree: 2817/2817/0 samples
+Acc Agree: 74.80% - 2107/2817 samples
+Acc Disagree: H:0.00% - 0/0, RF:0.00% - 0/0 samples
+
+In 0 samples H wrongly predict:
+0/0 samples that RF has greater softmax when when RF rightly predicts
+
+In 0 samples H rightly predict:
+0/0 samples that RF has greater softmax when when RF wrongly predicts
+
+In 0 samples RF wrongly predict:
+0/0 samples that H has greater softmax when when H right predicts
+
+In 0 samples RF rightly predict:
+0/0 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.80%, Acc total RF (refined by H): 74.80%
+
+Accuracy = 74.80% -> 74.80%
+
+
+Epoch 22:
+Acc total H: 74.80%, Acc total RF: 74.80%
+Total samples/Agree/Disagree: 2817/2817/0 samples
+Acc Agree: 74.80% - 2107/2817 samples
+Acc Disagree: H:0.00% - 0/0, RF:0.00% - 0/0 samples
+
+In 0 samples H wrongly predict:
+0/0 samples that RF has greater softmax when when RF rightly predicts
+
+In 0 samples H rightly predict:
+0/0 samples that RF has greater softmax when when RF wrongly predicts
+
+In 0 samples RF wrongly predict:
+0/0 samples that H has greater softmax when when H right predicts
+
+In 0 samples RF rightly predict:
+0/0 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.80%, Acc total RF (refined by H): 74.80%
+
+Accuracy = 74.80% -> 74.80%
+
+Epoch 23:
+Acc total H: 74.80%, Acc total RF: 74.80%
+Total samples/Agree/Disagree: 2817/2817/0 samples
+Acc Agree: 74.80% - 2107/2817 samples
+Acc Disagree: H:0.00% - 0/0, RF:0.00% - 0/0 samples
+
+In 0 samples H wrongly predict:
+0/0 samples that RF has greater softmax when when RF rightly predicts
+
+In 0 samples H rightly predict:
+0/0 samples that RF has greater softmax when when RF wrongly predicts
+
+In 0 samples RF wrongly predict:
+0/0 samples that H has greater softmax when when H right predicts
+
+In 0 samples RF rightly predict:
+0/0 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.80%, Acc total RF (refined by H): 74.80%
+
+Accuracy = 74.80% -> 74.80%
+
+Epoch 24:
+Acc total H: 74.80%, Acc total RF: 74.80%
+Total samples/Agree/Disagree: 2817/2817/0 samples
+Acc Agree: 74.80% - 2107/2817 samples
+Acc Disagree: H:0.00% - 0/0, RF:0.00% - 0/0 samples
+
+In 0 samples H wrongly predict:
+0/0 samples that RF has greater softmax when when RF rightly predicts
+
+In 0 samples H rightly predict:
+0/0 samples that RF has greater softmax when when RF wrongly predicts
+
+In 0 samples RF wrongly predict:
+0/0 samples that H has greater softmax when when H right predicts
+
+In 0 samples RF rightly predict:
+0/0 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.80%, Acc total RF (refined by H): 74.80%
+
+Accuracy = 74.80% -> 74.80%
+
+Epoch 25:
+Acc total H: 74.80%, Acc total RF: 74.80%
+Total samples/Agree/Disagree: 2817/2817/0 samples
+Acc Agree: 74.80% - 2107/2817 samples
+Acc Disagree: H:0.00% - 0/0, RF:0.00% - 0/0 samples
+
+In 0 samples H wrongly predict:
+0/0 samples that RF has greater softmax when when RF rightly predicts
+
+In 0 samples H rightly predict:
+0/0 samples that RF has greater softmax when when RF wrongly predicts
+
+In 0 samples RF wrongly predict:
+0/0 samples that H has greater softmax when when H right predicts
+
+In 0 samples RF rightly predict:
+0/0 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.80%, Acc total RF (refined by H): 74.80%
+
+Accuracy = 74.80% -> 74.80%
+
+Epoch 26:
+Acc total H: 74.80%, Acc total RF: 74.80%
+Total samples/Agree/Disagree: 2817/2817/0 samples
+Acc Agree: 74.80% - 2107/2817 samples
+Acc Disagree: H:0.00% - 0/0, RF:0.00% - 0/0 samples
+
+In 0 samples H wrongly predict:
+0/0 samples that RF has greater softmax when when RF rightly predicts
+
+In 0 samples H rightly predict:
+0/0 samples that RF has greater softmax when when RF wrongly predicts
+
+In 0 samples RF wrongly predict:
+0/0 samples that H has greater softmax when when H right predicts
+
+In 0 samples RF rightly predict:
+0/0 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.80%, Acc total RF (refined by H): 74.80%
+
+Accuracy = 74.80% -> 74.80%
+
+Epoch 27:
+Acc total H: 74.80%, Acc total RF: 74.80%
+Total samples/Agree/Disagree: 2817/2817/0 samples
+Acc Agree: 74.80% - 2107/2817 samples
+Acc Disagree: H:0.00% - 0/0, RF:0.00% - 0/0 samples
+
+In 0 samples H wrongly predict:
+0/0 samples that RF has greater softmax when when RF rightly predicts
+
+In 0 samples H rightly predict:
+0/0 samples that RF has greater softmax when when RF wrongly predicts
+
+In 0 samples RF wrongly predict:
+0/0 samples that H has greater softmax when when H right predicts
+
+In 0 samples RF rightly predict:
+0/0 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.80%, Acc total RF (refined by H): 74.80%
+
+Accuracy = 74.80% -> 74.80%
+
+^[[3;5~Epoch 28:
+Acc total H: 74.80%, Acc total RF: 74.80%
+Total samples/Agree/Disagree: 2817/2817/0 samples
+Acc Agree: 74.80% - 2107/2817 samples
+Acc Disagree: H:0.00% - 0/0, RF:0.00% - 0/0 samples
+
+In 0 samples H wrongly predict:
+0/0 samples that RF has greater softmax when when RF rightly predicts
+
+In 0 samples H rightly predict:
+0/0 samples that RF has greater softmax when when RF wrongly predicts
+
+In 0 samples RF wrongly predict:
+0/0 samples that H has greater softmax when when H right predicts
+
+In 0 samples RF rightly predict:
+0/0 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.80%, Acc total RF (refined by H): 74.80%
+
+Accuracy = 74.80% -> 74.80%
+
+Epoch 29:
+Acc total H: 74.80%, Acc total RF: 74.80%
+Total samples/Agree/Disagree: 2817/2817/0 samples
+Acc Agree: 74.80% - 2107/2817 samples
+Acc Disagree: H:0.00% - 0/0, RF:0.00% - 0/0 samples
+
+In 0 samples H wrongly predict:
+0/0 samples that RF has greater softmax when when RF rightly predicts
+
+In 0 samples H rightly predict:
+0/0 samples that RF has greater softmax when when RF wrongly predicts
+
+In 0 samples RF wrongly predict:
+0/0 samples that H has greater softmax when when H right predicts
+
+In 0 samples RF rightly predict:
+0/0 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.80%, Acc total RF (refined by H): 74.80%
+
+Accuracy = 74.80% -> 74.80%
+
+Epoch 30:
+Acc total H: 74.80%, Acc total RF: 74.80%
+Total samples/Agree/Disagree: 2817/2817/0 samples
+Acc Agree: 74.80% - 2107/2817 samples
+Acc Disagree: H:0.00% - 0/0, RF:0.00% - 0/0 samples
+
+In 0 samples H wrongly predict:
+0/0 samples that RF has greater softmax when when RF rightly predicts
+
+In 0 samples H rightly predict:
+0/0 samples that RF has greater softmax when when RF wrongly predicts
+
+In 0 samples RF wrongly predict:
+0/0 samples that H has greater softmax when when H right predicts
+
+In 0 samples RF rightly predict:
+0/0 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.80%, Acc total RF (refined by H): 74.80%
+
+Accuracy = 74.80% -> 74.80%
+
+Epoch 31:
+Acc total H: 74.80%, Acc total RF: 74.80%
+Total samples/Agree/Disagree: 2817/2817/0 samples
+Acc Agree: 74.80% - 2107/2817 samples
+Acc Disagree: H:0.00% - 0/0, RF:0.00% - 0/0 samples
+
+In 0 samples H wrongly predict:
+0/0 samples that RF has greater softmax when when RF rightly predicts
+
+In 0 samples H rightly predict:
+0/0 samples that RF has greater softmax when when RF wrongly predicts
+
+In 0 samples RF wrongly predict:
+0/0 samples that H has greater softmax when when H right predicts
+
+In 0 samples RF rightly predict:
+0/0 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.80%, Acc total RF (refined by H): 74.80%
+
+Accuracy = 74.80% -> 74.80%
+
+Epoch 32:
+Acc total H: 74.80%, Acc total RF: 74.80%
+Total samples/Agree/Disagree: 2817/2817/0 samples
+Acc Agree: 74.80% - 2107/2817 samples
+Acc Disagree: H:0.00% - 0/0, RF:0.00% - 0/0 samples
+
+In 0 samples H wrongly predict:
+0/0 samples that RF has greater softmax when when RF rightly predicts
+
+In 0 samples H rightly predict:
+0/0 samples that RF has greater softmax when when RF wrongly predicts
+
+In 0 samples RF wrongly predict:
+0/0 samples that H has greater softmax when when H right predicts
+
+In 0 samples RF rightly predict:
+0/0 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.80%, Acc total RF (refined by H): 74.80%
+
+Accuracy = 74.80% -> 74.80%
+
+Epoch 33:
+
+Acc total H: 74.80%, Acc total RF: 74.80%
+Total samples/Agree/Disagree: 2817/2817/0 samples
+Acc Agree: 74.80% - 2107/2817 samples
+Acc Disagree: H:0.00% - 0/0, RF:0.00% - 0/0 samples
+
+In 0 samples H wrongly predict:
+0/0 samples that RF has greater softmax when when RF rightly predicts
+
+In 0 samples H rightly predict:
+0/0 samples that RF has greater softmax when when RF wrongly predicts
+
+In 0 samples RF wrongly predict:
+0/0 samples that H has greater softmax when when H right predicts
+
+In 0 samples RF rightly predict:
+0/0 samples that H has greater softmax when when H wrongly predicts
+
+Acc total H (refined by RF): 74.80%, Acc total RF (refined by H): 74.80%

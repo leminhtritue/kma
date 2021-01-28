@@ -171,6 +171,7 @@ def train_target(args):
     modelpath = args.output_dir_src + '/source_CRF.pt'    
     netCRF.load_state_dict(torch.load(modelpath))
 
+    param_group = []
     if args.train_c == 0.0:
         netC.eval()
         for k, v in netC.named_parameters():
@@ -202,7 +203,7 @@ def train_target(args):
             else:
                 v.requires_grad = False   
 
-    param_group = []
+    
     for k, v in netF.named_parameters():
         if args.lr_decay1 > 0:
             param_group += [{'params': v, 'lr': args.lr * args.lr_decay1}]
