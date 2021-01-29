@@ -188,7 +188,8 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
     predict_arg_rf_eq_wrong = predict_arg_rf_eq[n_eq_wrong]
     all_label_eq_wrong = all_label_eq[n_eq_wrong]
 
-    n_all_label_eq_wrong = all_label_eq_wrong.size()[0]
+    n_all_label_eq_wrong = all_label_eq_wrong.size()
+    print(all_label_eq_wrong.size())
     if n_all_label_eq_wrong > 0:
 
         softmax_average_eq_wrong = (predict_softmax_h_eq_wrong + predict_softmax_rf_eq_wrong)/2 #
@@ -212,7 +213,7 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
             predict_softmax_rf_eq_wrong_val[cur_i][0], predict_softmax_rf_eq_wrong_val[cur_i][1], predict_softmax_rf_eq_wrong_val[cur_i][2], \
             predict_softmax_h_eq_wrong_entropy[cur_i], predict_softmax_rf_eq_wrong_entropy[cur_i]))
 
-        
+
     predict_softmax_h_eq_right = predict_softmax_h_eq[n_eq_right]
     predict_arg_h_eq_right = predict_arg_h_eq[n_eq_right]
     predict_softmax_rf_eq_right = predict_softmax_rf_eq[n_eq_right]
