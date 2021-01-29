@@ -174,12 +174,76 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
     print("Acc total H: {:.2f}%, Acc total RF: {:.2f}%".format(accuracy_h*100, accuracy_rf*100))
     print("Total samples/Agree/Disagree: {}/{}/{} samples".format(predict_arg_h.size()[0], predict_arg_h_eq.size()[0], predict_arg_h_neq.size()[0]))
     n_eq_right = (torch.sum(torch.squeeze(predict_arg_h_eq).float() == all_label_eq).item())
+    n_eq_wrong = (torch.sum(torch.squeeze(predict_arg_h_eq).float() != all_label_eq).item())
     n_eq_total = all_label_eq.size()[0]
     if (n_eq_total != 0):
         accuracy_eq = n_eq_right / float(n_eq_total)
     else:
         accuracy_eq = 0
     print("Acc Agree: {:.2f}% - {}/{} samples".format(accuracy_eq*100, n_eq_right, n_eq_total))
+
+    predict_softmax_h_eq_wrong = predict_softmax_h_eq[n_eq_wrong]
+    predict_arg_h_eq_wrong = predict_arg_h_eq[n_eq_wrong]
+    predict_softmax_rf_eq_wrong = predict_softmax_rf_eq[n_eq_wrong]
+    predict_arg_rf_eq_wrong = predict_arg_rf_eq[n_eq_wrong]
+    all_label_eq_wrong = all_label_eq[n_eq_wrong]
+
+    n_all_label_eq_wrong = all_label_eq_wrong.size()[0]
+    if n_all_label_eq_wrong > 0:
+
+        softmax_average_eq_wrong = (predict_softmax_h_eq_wrong + predict_softmax_rf_eq_wrong)/2 #
+        predict_softmax_average_eq_wrong, arg_softmax_average_eq_wrong = torch.max(softmax_average_eq_wrong, 1) #
+
+        predict_softmax_h_eq_wrong_idx = torch.topk(predict_softmax_h_eq_wrong, 3, dim=1,largest=True, sorted=True).indices #
+        predict_softmax_h_eq_wrong_val = torch.topk(predict_softmax_h_eq_wrong, 3, dim=1,largest=True, sorted=True).values #
+        predict_softmax_rf_eq_wrong_idx = torch.topk(predict_softmax_rf_eq_wrong, 3, dim=1,largest=True, sorted=True).indices #
+        predict_softmax_rf_eq_wrong_val = torch.topk(predict_softmax_rf_eq_wrong, 3, dim=1,largest=True, sorted=True).values #
+
+        predict_softmax_h_eq_wrong_entropy = loss.Entropy(predict_softmax_h_eq_wrong)
+        predict_softmax_rf_eq_wrong_entropy = loss.Entropy(predict_softmax_rf_eq_wrong)
+
+    print("N agree wrong: {}".format(n_all_label_eq_wrong))
+    for cur_i in range(n_all_label_eq_wrong):
+        print("{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}".format(all_label_eq_wrong[cur_i], \
+            predict_softmax_h_eq_wrong_idx[cur_i][0], predict_softmax_h_eq_wrong_idx[cur_i][1], predict_softmax_h_eq_wrong_idx[cur_i][2], \
+            predict_softmax_rf_eq_wrong_idx[cur_i][0], predict_softmax_rf_eq_wrong_idx[cur_i][1], predict_softmax_rf_eq_wrong_idx[cur_i][2], \
+            arg_softmax_average_eq_wrong[cur_i], \
+            predict_softmax_h_eq_wrong_val[cur_i][0], predict_softmax_h_eq_wrong_val[cur_i][1], predict_softmax_h_eq_wrong_val[cur_i][2], \
+            predict_softmax_rf_eq_wrong_val[cur_i][0], predict_softmax_rf_eq_wrong_val[cur_i][1], predict_softmax_rf_eq_wrong_val[cur_i][2], \
+            predict_softmax_h_eq_wrong_entropy[cur_i], predict_softmax_rf_eq_wrong_entropy[cur_i]))
+
+        
+    predict_softmax_h_eq_right = predict_softmax_h_eq[n_eq_right]
+    predict_arg_h_eq_right = predict_arg_h_eq[n_eq_right]
+    predict_softmax_rf_eq_right = predict_softmax_rf_eq[n_eq_right]
+    predict_arg_rf_eq_right = predict_arg_rf_eq[n_eq_right]
+    all_label_eq_right = all_label_eq[n_eq_right]
+
+    n_all_label_eq_right = all_label_eq_right.size()[0]
+    if n_all_label_eq_right > 0:
+
+        softmax_average_eq_right = (predict_softmax_h_eq_right + predict_softmax_rf_eq_right)/2 #
+        predict_softmax_average_eq_right, arg_softmax_average_eq_right = torch.max(softmax_average_eq_right, 1) #
+
+        predict_softmax_h_eq_right_idx = torch.topk(predict_softmax_h_eq_right, 3, dim=1,largest=True, sorted=True).indices #
+        predict_softmax_h_eq_right_val = torch.topk(predict_softmax_h_eq_right, 3, dim=1,largest=True, sorted=True).values #
+        predict_softmax_rf_eq_right_idx = torch.topk(predict_softmax_rf_eq_right, 3, dim=1,largest=True, sorted=True).indices #
+        predict_softmax_rf_eq_right_val = torch.topk(predict_softmax_rf_eq_right, 3, dim=1,largest=True, sorted=True).values #
+
+        predict_softmax_h_eq_right_entropy = loss.Entropy(predict_softmax_h_eq_right)
+        predict_softmax_rf_eq_right_entropy = loss.Entropy(predict_softmax_rf_eq_right)
+
+    print("N agree right: {}".format(n_all_label_eq_right))
+    for cur_i in range(n_all_label_eq_right):
+        print("{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.0f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}-{:.2f}".format(all_label_eq_right[cur_i], \
+            predict_softmax_h_eq_right_idx[cur_i][0], predict_softmax_h_eq_right_idx[cur_i][1], predict_softmax_h_eq_right_idx[cur_i][2], \
+            predict_softmax_rf_eq_right_idx[cur_i][0], predict_softmax_rf_eq_right_idx[cur_i][1], predict_softmax_rf_eq_right_idx[cur_i][2], \
+            arg_softmax_average_eq_right[cur_i], \
+            predict_softmax_h_eq_right_val[cur_i][0], predict_softmax_h_eq_right_val[cur_i][1], predict_softmax_h_eq_right_val[cur_i][2], \
+            predict_softmax_rf_eq_right_val[cur_i][0], predict_softmax_rf_eq_right_val[cur_i][1], predict_softmax_rf_eq_right_val[cur_i][2], \
+            predict_softmax_h_eq_right_entropy[cur_i], predict_softmax_rf_eq_right_entropy[cur_i]))
+
+
 
     n_neq_h_right = (torch.sum(torch.squeeze(predict_arg_h_neq).float() == all_label_neq).item())
     n_neq_rf_right = (torch.sum(torch.squeeze(predict_arg_rf_neq).float() == all_label_neq).item())
