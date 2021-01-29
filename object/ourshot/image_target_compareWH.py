@@ -175,6 +175,8 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
     print("Total samples/Agree/Disagree: {}/{}/{} samples".format(predict_arg_h.size()[0], predict_arg_h_eq.size()[0], predict_arg_h_neq.size()[0]))
     n_eq_right = (torch.sum(torch.squeeze(predict_arg_h_eq).float() == all_label_eq).item())
     n_eq_wrong = (torch.sum(torch.squeeze(predict_arg_h_eq).float() != all_label_eq).item())
+    eq_wrong = (torch.squeeze(predict_arg_h_eq).float() != all_label_eq)
+    eq_right = (torch.squeeze(predict_arg_h_eq).float() == all_label_eq)
     n_eq_total = all_label_eq.size()[0]
     if (n_eq_total != 0):
         accuracy_eq = n_eq_right / float(n_eq_total)
@@ -182,14 +184,13 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
         accuracy_eq = 0
     print("Acc Agree: {:.2f}% - {}/{} samples".format(accuracy_eq*100, n_eq_right, n_eq_total))
 
-    predict_softmax_h_eq_wrong = predict_softmax_h_eq[n_eq_wrong]
-    predict_arg_h_eq_wrong = predict_arg_h_eq[n_eq_wrong]
-    predict_softmax_rf_eq_wrong = predict_softmax_rf_eq[n_eq_wrong]
-    predict_arg_rf_eq_wrong = predict_arg_rf_eq[n_eq_wrong]
-    all_label_eq_wrong = all_label_eq[n_eq_wrong]
+    predict_softmax_h_eq_wrong = predict_softmax_h_eq[eq_wrong]
+    predict_arg_h_eq_wrong = predict_arg_h_eq[eq_wrong]
+    predict_softmax_rf_eq_wrong = predict_softmax_rf_eq[eq_wrong]
+    predict_arg_rf_eq_wrong = predict_arg_rf_eq[eq_wrong]
+    all_label_eq_wrong = all_label_eq[eq_wrong]
 
-    n_all_label_eq_wrong = all_label_eq_wrong.size()
-    print(all_label_eq_wrong.size())
+    n_all_label_eq_wrong = all_label_eq_wrong.size()[0]
     if n_all_label_eq_wrong > 0:
 
         softmax_average_eq_wrong = (predict_softmax_h_eq_wrong + predict_softmax_rf_eq_wrong)/2 #
@@ -214,11 +215,11 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
             predict_softmax_h_eq_wrong_entropy[cur_i], predict_softmax_rf_eq_wrong_entropy[cur_i]))
 
 
-    predict_softmax_h_eq_right = predict_softmax_h_eq[n_eq_right]
-    predict_arg_h_eq_right = predict_arg_h_eq[n_eq_right]
-    predict_softmax_rf_eq_right = predict_softmax_rf_eq[n_eq_right]
-    predict_arg_rf_eq_right = predict_arg_rf_eq[n_eq_right]
-    all_label_eq_right = all_label_eq[n_eq_right]
+    predict_softmax_h_eq_right = predict_softmax_h_eq[eq_right]
+    predict_arg_h_eq_right = predict_arg_h_eq[eq_right]
+    predict_softmax_rf_eq_right = predict_softmax_rf_eq[eq_right]
+    predict_arg_rf_eq_right = predict_arg_rf_eq[eq_right]
+    all_label_eq_right = all_label_eq[eq_right]
 
     n_all_label_eq_right = all_label_eq_right.size()[0]
     if n_all_label_eq_right > 0:
