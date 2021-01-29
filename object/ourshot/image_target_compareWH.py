@@ -162,6 +162,8 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
     predict_softmax_rf_eq = predict_softmax_rf[mask_HeqRF]
     predict_arg_rf_eq = predict_arg_rf[mask_HeqRF]
     all_label_eq = all_label[mask_HeqRF]
+    softmax_output_h_eq = softmax_output_h[mask_HeqRF]
+    softmax_output_rf_eq = softmax_output_rf[mask_HeqRF]
 
     predict_softmax_h_neq = predict_softmax_h[mask_HneqRF]
     predict_arg_h_neq = predict_arg_h[mask_HneqRF]
@@ -184,9 +186,9 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
         accuracy_eq = 0
     print("Acc Agree: {:.2f}% - {}/{} samples".format(accuracy_eq*100, n_eq_right, n_eq_total))
 
-    predict_softmax_h_eq_wrong = predict_softmax_h_eq[eq_wrong]
+    predict_softmax_h_eq_wrong = softmax_output_h_neq[eq_wrong]
     predict_arg_h_eq_wrong = predict_arg_h_eq[eq_wrong]
-    predict_softmax_rf_eq_wrong = predict_softmax_rf_eq[eq_wrong]
+    predict_softmax_rf_eq_wrong = softmax_output_rf_neq[eq_wrong]
     predict_arg_rf_eq_wrong = predict_arg_rf_eq[eq_wrong]
     all_label_eq_wrong = all_label_eq[eq_wrong]
 
@@ -215,9 +217,9 @@ def cal_accWH(loader, netF, netB, netC, netBRF, netCRF):
             predict_softmax_h_eq_wrong_entropy[cur_i], predict_softmax_rf_eq_wrong_entropy[cur_i]))
 
 
-    predict_softmax_h_eq_right = predict_softmax_h_eq[eq_right]
+    predict_softmax_h_eq_right = softmax_output_h_neq[eq_right]
     predict_arg_h_eq_right = predict_arg_h_eq[eq_right]
-    predict_softmax_rf_eq_right = predict_softmax_rf_eq[eq_right]
+    predict_softmax_rf_eq_right = softmax_output_rf_neq[eq_right]
     predict_arg_rf_eq_right = predict_arg_rf_eq[eq_right]
     all_label_eq_right = all_label_eq[eq_right]
 
