@@ -520,11 +520,11 @@ def obtain_label(loader, netF, netB, netC, args):
         all_fea = (all_fea.t() / torch.norm(all_fea, p=2, dim=1)).t()
 
     all_fea = all_fea.float().cpu().numpy()
-    all_fea_filtered = all_fea[difftop12 > 0.6]
+    all_fea_filtered = all_fea[difftop12 > 0.8]
     K = all_output.size(1)
     aff = all_output.float().cpu().numpy()
-    aff_filtered = aff[difftop12 > 0.6]
-    predict_filtered = predict[difftop12 > 0.6]
+    aff_filtered = aff[difftop12 > 0.8]
+    predict_filtered = predict[difftop12 > 0.8]
 
     # initc = aff.transpose().dot(all_fea)
     initc = aff_filtered.transpose().dot(all_fea_filtered)
