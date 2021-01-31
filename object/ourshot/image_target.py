@@ -178,8 +178,8 @@ def train_target(args):
             v.requires_grad = False
     else:
         for k, v in netC.named_parameters():
-            if args.lr_decay2 > 0:
-                param_group += [{'params': v, 'lr': args.lr * args.lr_decay2}]
+            if args.lr_decayc > 0:
+                param_group += [{'params': v, 'lr': args.lr * args.lr_decayc}]
             else:
                 v.requires_grad = False        
 
@@ -565,6 +565,7 @@ if __name__ == "__main__":
     parser.add_argument('--grid', type=float, default=0.0)    
     parser.add_argument('--train_c', type=float, default=0.0)    
     parser.add_argument('--train_rf', type=float, default=0.0)
+    parser.add_argument('--lr_decayc', type=float, default=0.1)
     
     args = parser.parse_args()
 
