@@ -529,8 +529,8 @@ def obtain_label(loader, netF, netB, netC, args):
     # initc = aff.transpose().dot(all_fea)
     initc = aff_filtered.transpose().dot(all_fea_filtered)
     initc = initc / (1e-8 + aff.sum(axis=0)[:,None])
-    cls_count = np.eye(K)[predict_filtered].sum(axis=0)
-    # cls_count = np.eye(K)[predict].sum(axis=0)
+    # cls_count = np.eye(K)[predict_filtered].sum(axis=0)
+    cls_count = np.eye(K)[predict].sum(axis=0)
     labelset = np.where(cls_count>args.threshold)
     labelset = labelset[0]
     # print(labelset)
