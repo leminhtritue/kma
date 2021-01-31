@@ -511,17 +511,20 @@ def obtain_label(loader, netF, netB, netC, args):
     all_output = nn.Softmax(dim=1)(all_output)
     predict_val, predict = torch.max(all_output, 1)
 
+    all_output_top2_val = torch.topk(all_output, 2, dim=1,largest=True, sorted=True).values
+    difftop12 = all_output_top2_val[:,0] - all_output_top2_val[:,1]
+
     accuracy = torch.sum(torch.squeeze(predict).float() == all_label).item() / float(all_label.size()[0])
     if args.distance == 'cosine':
         all_fea = torch.cat((all_fea, torch.ones(all_fea.size(0), 1)), 1)
         all_fea = (all_fea.t() / torch.norm(all_fea, p=2, dim=1)).t()
 
     all_fea = all_fea.float().cpu().numpy()
-    all_fea_filtered = all_fea[predict_val > 0.7]
+    all_fea_filtered = all_fea[difftop12 > 0.7]
     K = all_output.size(1)
     aff = all_output.float().cpu().numpy()
-    aff_filtered = aff[predict_val > 0.7]
-    predict_filtered = predict[predict_val > 0.7]
+    aff_filtered = aff[difftop12 > 0.7]
+    predict_filtered = predict[difftop12 > 0.7]
 
     # initc = aff.transpose().dot(all_fea)
     initc = aff_filtered.transpose().dot(all_fea_filtered)
