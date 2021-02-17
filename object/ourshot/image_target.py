@@ -627,10 +627,16 @@ if __name__ == "__main__":
         test_target(args)
 
         if (args.grid > 0.0):
-            list_cls_par = [0.0, 0.1, 1.0]
-            list_w_vat = [0.0, 0.1, 1.0]
-            list_alpha_rf = [0.1, 1.0]
-            list_max_zero = [0.0, 1.0]
+            # list_cls_par = [0.0, 0.1, 1.0]
+            # list_w_vat = [0.0, 0.1, 1.0]
+            # list_alpha_rf = [0.1, 1.0]
+            # list_max_zero = [0.0, 1.0]
+
+            list_cls_par = [1.0]
+            list_w_vat = [1.0]
+            list_alpha_rf = [0.1]
+            list_max_zero = [0.0]
+
         else:
             list_cls_par = [args.cls_par]
             list_w_vat = [args.w_vat]
