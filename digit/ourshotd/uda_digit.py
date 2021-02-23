@@ -227,6 +227,8 @@ def train_source(args):
         t = loss.KernelSource(num_classes=args.class_num, alpha=args.alpha_w)
         tt = netCRF.get_weight()
         print(tt.shape)
+        ttt = tt.norm(dim=1)
+        print(ttt.shape)
         sys.exit()
         classifier_loss = loss.CrossEntropyLabelSmooth(num_classes=args.class_num, epsilon=args.smooth)(outputs_source, labels_source)
         if args.alpha_rf_tr > 0:
