@@ -289,8 +289,7 @@ def train_source(args):
 
         classifier_loss = args.alpha_en * CrossEntropyLabelSmooth(num_classes=args.class_num, epsilon=args.smooth)(outputs_source, labels_source)            
 
-        if (args.debug_in > 0):
-        	classifier_loss += args.alpha_rf * loss.KernelSource(num_classes=args.class_num, alpha=args.alpha_w)(outputs_source_rf, labels_source, netCRF)
+        classifier_loss += args.alpha_rf * loss.KernelSource(num_classes=args.class_num, alpha=args.alpha_w)(outputs_source_rf, labels_source, netCRF)
 
         if (args.w_vat > 0):
         	eps = (torch.randn(size=inputs_source.size())).type(inputs_source.type())
@@ -443,8 +442,6 @@ if __name__ == "__main__":
     
     parser.add_argument('--w_vat', type=float, default=0.0)
     parser.add_argument('--radius', type=float, default=0.01)
-
-    parser.add_argument('--debug_in', type=float, default=0.00)
 
     args = parser.parse_args()
 
