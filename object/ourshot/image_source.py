@@ -237,8 +237,9 @@ def train_source(args):
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
     netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
 
-    netBRF = network.feat_bootleneck_rf(nrf=args.nrf, type=args.classifier, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
-    netCRF = network.feat_classifier_rf(nrf=args.nrf, type=args.layer_rf, class_num = args.class_num).cuda()
+    if (args.debug_in > 0):
+    	netBRF = network.feat_bootleneck_rf(nrf=args.nrf, type=args.classifier, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
+    	netCRF = network.feat_classifier_rf(nrf=args.nrf, type=args.layer_rf, class_num = args.class_num).cuda()
     
     param_group = []
     learning_rate = args.lr
@@ -248,10 +249,11 @@ def train_source(args):
         param_group += [{'params': v, 'lr': learning_rate}]
     for k, v in netC.named_parameters():
         param_group += [{'params': v, 'lr': learning_rate}]   
-    for k, v in netBRF.named_parameters():
-        param_group += [{'params': v, 'lr': learning_rate}]
-    for k, v in netCRF.named_parameters():
-        param_group += [{'params': v, 'lr': learning_rate}]   
+    if (args.debug_in > 0):
+    	for k, v in netBRF.named_parameters():
+    		param_group += [{'params': v, 'lr': learning_rate}]
+    	for k, v in netCRF.named_parameters():
+    		param_group += [{'params': v, 'lr': learning_rate}]   
     optimizer = optim.SGD(param_group)
     optimizer = op_copy(optimizer)
 
@@ -263,8 +265,9 @@ def train_source(args):
     netF.train()
     netB.train()
     netC.train()
-    netBRF.train()
-    netCRF.train()
+    if (args.debug_in > 0):
+    	netBRF.train()
+    	netCRF.train()
 
     total_loss = 0.0
     count_loss = 0
@@ -285,7 +288,8 @@ def train_source(args):
         inputs_source, labels_source = inputs_source.cuda(), labels_source.cuda()
         output_latent = netB(netF(inputs_source))
         outputs_source = netC(output_latent)
-        outputs_source_rf = netCRF(netBRF(output_latent))
+        if (args.debug_in > 0):
+        	outputs_source_rf = netCRF(netBRF(output_latent))
 
         classifier_loss = args.alpha_en * CrossEntropyLabelSmooth(num_classes=args.class_num, epsilon=args.smooth)(outputs_source, labels_source)            
 
@@ -340,13 +344,15 @@ def train_source(args):
                 best_netF = netF.state_dict()
                 best_netB = netB.state_dict()
                 best_netC = netC.state_dict()
-                best_netBRF = netBRF.state_dict()
-                best_netCRF = netCRF.state_dict()
+                if (args.debug_in > 0):
+                	best_netBRF = netBRF.state_dict()
+                	best_netCRF = netCRF.state_dict()
                 torch.save(best_netF, osp.join(args.output_dir_src, "source_F.pt"))
                 torch.save(best_netB, osp.join(args.output_dir_src, "source_B.pt"))
                 torch.save(best_netC, osp.join(args.output_dir_src, "source_C.pt"))
-                torch.save(best_netBRF, osp.join(args.output_dir_src, "source_BRF.pt"))
-                torch.save(best_netCRF, osp.join(args.output_dir_src, "source_CRF.pt"))
+                if (args.debug_in > 0):
+                	torch.save(best_netBRF, osp.join(args.output_dir_src, "source_BRF.pt"))
+                	torch.save(best_netCRF, osp.join(args.output_dir_src, "source_CRF.pt"))
             netF.train()
             netB.train()
             netC.train()
@@ -366,8 +372,9 @@ def train_source(args):
     torch.save(best_netF, osp.join(args.output_dir_src, "source_F.pt"))
     torch.save(best_netB, osp.join(args.output_dir_src, "source_B.pt"))
     torch.save(best_netC, osp.join(args.output_dir_src, "source_C.pt"))
-    torch.save(best_netBRF, osp.join(args.output_dir_src, "source_BRF.pt"))
-    torch.save(best_netCRF, osp.join(args.output_dir_src, "source_CRF.pt"))
+    if (args.debug_in > 0):
+    	torch.save(best_netBRF, osp.join(args.output_dir_src, "source_BRF.pt"))
+    	torch.save(best_netCRF, osp.join(args.output_dir_src, "source_CRF.pt"))
     return netF, netB, netC
 
 def test_target(args):
