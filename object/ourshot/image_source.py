@@ -237,9 +237,9 @@ def train_source(args):
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
     netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
 
-    if (args.debug_in001 > 0):
+    if (args.debug_in000 > 0):
     	netBRF = network.feat_bootleneck_rf(nrf=args.nrf, type=args.classifier, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
-    if (args.debug_in002 > 0):
+    if (args.debug_turnon > 0):
     	netCRF = network.feat_classifier_rf(nrf=args.nrf, type=args.layer_rf, class_num = args.class_num).cuda()
     
     param_group = []
@@ -455,6 +455,7 @@ if __name__ == "__main__":
     parser.add_argument('--debug_in000', type=float, default=0.1)
     parser.add_argument('--debug_in001', type=float, default=0.1)
     parser.add_argument('--debug_in002', type=float, default=0.1)
+    parser.add_argument('--debug_turnon', type=float, default=0.1)
 
     args = parser.parse_args()
 
