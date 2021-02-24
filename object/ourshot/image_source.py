@@ -250,7 +250,6 @@ def train_source(args):
     for k, v in netC.named_parameters():
         param_group += [{'params': v, 'lr': learning_rate}]   
     if (args.debug_in000 > 0):
-
     	for k, v in netBRF.named_parameters():
     		param_group += [{'params': v, 'lr': learning_rate}]
     	for k, v in netCRF.named_parameters():
