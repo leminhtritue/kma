@@ -166,10 +166,12 @@ def train_target(args):
 
     modelpath = args.output_dir_src + '/source_C.pt'    
     netC.load_state_dict(torch.load(modelpath))
-    modelpath = args.output_dir_src + '/source_BRF.pt'    
-    netBRF.load_state_dict(torch.load(modelpath))
-    modelpath = args.output_dir_src + '/source_CRF.pt'    
-    netCRF.load_state_dict(torch.load(modelpath))
+
+    if args.fromShot == 0.0:
+        modelpath = args.output_dir_src + '/source_BRF.pt'    
+        netBRF.load_state_dict(torch.load(modelpath))
+        modelpath = args.output_dir_src + '/source_CRF.pt'    
+        netCRF.load_state_dict(torch.load(modelpath))
 
     param_group = []
     if args.train_c == 0.0:
@@ -566,6 +568,8 @@ if __name__ == "__main__":
     parser.add_argument('--train_c', type=float, default=0.0)    
     parser.add_argument('--train_rf', type=float, default=0.0)
     parser.add_argument('--lr_decayc', type=float, default=0.1)
+
+    parser.add_argument('--fromShot', type=float, default=0.0)
     
     args = parser.parse_args()
 
