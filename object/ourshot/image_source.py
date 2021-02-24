@@ -266,7 +266,6 @@ def train_source(args):
     netB.train()
     netC.train()
     if (args.debug_in000 > 0):
-
     	netBRF.train()
     	netCRF.train()
 
@@ -290,13 +289,11 @@ def train_source(args):
         output_latent = netB(netF(inputs_source))
         outputs_source = netC(output_latent)
         if (args.debug_in000 > 0):
-
         	outputs_source_rf = netCRF(netBRF(output_latent))
 
         classifier_loss = args.alpha_en * CrossEntropyLabelSmooth(num_classes=args.class_num, epsilon=args.smooth)(outputs_source, labels_source)            
 
         if (args.debug_in000 > 0):
-
         	classifier_loss += args.alpha_rf * loss.KernelSource(num_classes=args.class_num, alpha=args.alpha_w)(outputs_source_rf, labels_source, netCRF)
 
         if (args.w_vat > 0):
@@ -348,14 +345,12 @@ def train_source(args):
                 best_netB = netB.state_dict()
                 best_netC = netC.state_dict()
                 if (args.debug_in000 > 0):
-
                 	best_netBRF = netBRF.state_dict()
                 	best_netCRF = netCRF.state_dict()
                 torch.save(best_netF, osp.join(args.output_dir_src, "source_F.pt"))
                 torch.save(best_netB, osp.join(args.output_dir_src, "source_B.pt"))
                 torch.save(best_netC, osp.join(args.output_dir_src, "source_C.pt"))
                 if (args.debug_in000 > 0):
-
                 	torch.save(best_netBRF, osp.join(args.output_dir_src, "source_BRF.pt"))
                 	torch.save(best_netCRF, osp.join(args.output_dir_src, "source_CRF.pt"))
             netF.train()
@@ -378,7 +373,6 @@ def train_source(args):
     torch.save(best_netB, osp.join(args.output_dir_src, "source_B.pt"))
     torch.save(best_netC, osp.join(args.output_dir_src, "source_C.pt"))
     if (args.debug_in000 > 0):
-
     	torch.save(best_netBRF, osp.join(args.output_dir_src, "source_BRF.pt"))
     	torch.save(best_netCRF, osp.join(args.output_dir_src, "source_CRF.pt"))
     return netF, netB, netC
