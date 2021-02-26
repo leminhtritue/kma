@@ -672,8 +672,8 @@ if __name__ == "__main__":
                         args.alpha_rf = cur_alpha_rf
                         for cur_max_zero in list_max_zero:
                             args.max_zero = cur_max_zero
-
+                            print(args.max_epoch)
                             _,_,_, acc = train_target(args)
-                            dict_result[(args.cls_par, args.w_vat, args.alpha_rf, args.max_zero)] = acc
+                            dict_result[(args.cls_par, args.w_vat, args.alpha_rfen, args.alpha_rf, args.max_zero)] = acc
                             for key in dict_result:
-                                print("{}-{}-{}-{}-{}".format(key[0], key[1], key[2], key[3], dict_result[key]))
+                                print("{}-{}-{}-{}-{}".format(key[0], key[1], key[2], key[3], key[4] dict_result[key]))
