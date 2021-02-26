@@ -646,7 +646,7 @@ if __name__ == "__main__":
             list_alpha_rfen = [0.1, 1.0]
             list_alpha_rf = [0.1, 1.0, 0.0]
             list_max_zero = [1.0, 0.0]
-            args.max_epoch = 25
+            args.max_epoch = 100
 
             # list_cls_par = [1.0]
             # list_w_vat = [1.0]
