@@ -642,7 +642,8 @@ if __name__ == "__main__":
 
         if (args.grid > 0.0):
             list_cls_par = [0.3, 0.1, 1.0]
-            list_w_vat = [0.1, 1.0, 0.0]
+            # list_w_vat = [0.1, 1.0, 0.0]
+            list_w_vat = [0.0]
             list_alpha_rfen = [0.1, 1.0]
             list_alpha_rf = [0.1, 1.0, 0.0]
             list_max_zero = [1.0, 0.0]
@@ -673,6 +674,6 @@ if __name__ == "__main__":
                         for cur_max_zero in list_max_zero:
                             args.max_zero = cur_max_zero
                             _,_,_, acc = train_target(args)
-                            dict_result[(args.cls_par, args.w_vat, args.alpha_rfen, args.alpha_rf, args.max_zero)] = acc
+                            dict_result[(args.cls_par, args.alpha_rfen, args.alpha_rf, args.max_zero, args.w_vat)] = acc
                             for key in dict_result:
                                 print("{}-{}-{}-{}-{}-{}".format(key[0], key[1], key[2], key[3], key[4], dict_result[key]))
