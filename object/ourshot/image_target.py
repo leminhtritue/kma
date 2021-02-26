@@ -598,10 +598,10 @@ if __name__ == "__main__":
         
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_id
     SEED = args.seed
-    torch.manual_seed(SEED)
-    torch.cuda.manual_seed(SEED)
-    np.random.seed(SEED)
-    random.seed(SEED)
+    # torch.manual_seed(SEED)
+    # torch.cuda.manual_seed(SEED)
+    # np.random.seed(SEED)
+    # random.seed(SEED)
     # torch.backends.cudnn.deterministic = True
 
     for i in range(len(names)):
@@ -673,6 +673,11 @@ if __name__ == "__main__":
                         args.alpha_rf = cur_alpha_rf
                         for cur_max_zero in list_max_zero:
                             args.max_zero = cur_max_zero
+                            torch.manual_seed(SEED)
+                            torch.cuda.manual_seed(SEED)
+                            np.random.seed(SEED)
+                            random.seed(SEED)
+                            
                             _,_,_, acc = train_target(args)
                             dict_result[(args.cls_par, args.alpha_rfen, args.alpha_rf, args.max_zero, args.w_vat)] = acc
                             for key in dict_result:
