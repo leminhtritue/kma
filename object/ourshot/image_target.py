@@ -646,7 +646,7 @@ if __name__ == "__main__":
             list_alpha_rfen = [0.1, 1.0]
             list_alpha_rf = [0.1, 1.0, 0.0]
             list_max_zero = [1.0, 0.0]
-            args.max_epoch = 100
+            args.max_epoch = 30
 
             # list_cls_par = [1.0]
             # list_w_vat = [1.0]
@@ -672,7 +672,6 @@ if __name__ == "__main__":
                         args.alpha_rf = cur_alpha_rf
                         for cur_max_zero in list_max_zero:
                             args.max_zero = cur_max_zero
-                            print(args.max_epoch)
                             _,_,_, acc = train_target(args)
                             dict_result[(args.cls_par, args.w_vat, args.alpha_rfen, args.alpha_rf, args.max_zero)] = acc
                             for key in dict_result:
