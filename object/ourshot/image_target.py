@@ -642,7 +642,7 @@ def obtain_labelrf(loader, netF, netB, netBRF, netCRF, args):
         pred_label = labelset[pred_label]
 
     acc = np.sum(pred_label == all_label.float().numpy()) / len(all_fea)
-    log_str = 'Accuracy = {:.2f}% -> {:.2f}%'.format(accuracy * 100, acc * 100)
+    log_str = 'Accuracy RF = {:.2f}% -> {:.2f}%'.format(accuracy * 100, acc * 100)
 
     args.out_file.write(log_str + '\n')
     args.out_file.flush()
