@@ -566,8 +566,6 @@ def obtain_labelrf(loader, netF, netB, netBRF, netCRF, args):
             # outputs = netC(feas)
             outputs = netCRF(netBRF(feas))
 
-        outputs_test_rf = netCRF(netBRF(features_test.detach()))
-
             if start_test:
                 all_fea = feas.float().cpu()
                 all_output = outputs.float().cpu()
