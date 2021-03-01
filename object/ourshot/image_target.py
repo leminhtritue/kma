@@ -121,6 +121,37 @@ def cal_acc(loader, netF, netB, netC, flag=False):
     else:
         return accuracy*100, mean_ent
 
+def cal_accrf(loader, netF, netB, netBRF, netCRF, flag=False):
+    start_test = True
+    with torch.no_grad():
+        iter_test = iter(loader)
+        for i in range(len(loader)):
+            data = iter_test.next()
+            inputs = data[0]
+            labels = data[1]
+            inputs = inputs.cuda()
+            outputs = netCRF(netBRF(netB(netF(inputs))))
+            if start_test:
+                all_output = outputs.float().cpu()
+                all_label = labels.float()
+                start_test = False
+            else:
+                all_output = torch.cat((all_output, outputs.float().cpu()), 0)
+                all_label = torch.cat((all_label, labels.float()), 0)
+    _, predict = torch.max(all_output, 1)
+    accuracy = torch.sum(torch.squeeze(predict).float() == all_label).item() / float(all_label.size()[0])
+    mean_ent = torch.mean(loss.Entropy(nn.Softmax(dim=1)(all_output))).cpu().data.item()
+
+    if flag:
+        matrix = confusion_matrix(all_label, torch.squeeze(predict).float())
+        acc = matrix.diagonal()/matrix.sum(axis=1) * 100
+        aacc = acc.mean()
+        aa = [str(np.round(i, 2)) for i in acc]
+        acc = ' '.join(aa)
+        return aacc, acc
+    else:
+        return accuracy*100, mean_ent
+
 def normalize_perturbation(d):
     d_ = d.view(d.size()[0], -1)
     eps = d.new_tensor(1e-12)
@@ -404,11 +435,13 @@ def train_target(args):
                 # _, predict = torch.max(all_output, 1)
                 acc_s_te, _ = cal_acc(dset_loaders['test'], netF, netB, netC, False)
                 acc_s_tr, _ = cal_acc(dset_loaders['target'], netF, netB, netC, False)
+                acc_s_te_rf, _ = cal_accrf(dset_loaders['test'], netF, netB, netBRF, netCRF, False)
+                acc_s_tr_rf, _ = cal_accrf(dset_loaders['target'], netF, netB, netBRF, netCRF, False)
 
                 # log_str = 'Task: {}, Iter:{}/{}; Loss : {:.2f}, , Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(args.name, iter_num, max_iter, \
                 # classifier_loss_total/classifier_loss_count, acc_s_tr, acc_s_te, right_sample_count, sum_sample)
-                log_str = 'Task: {}, Iter:{}/{}; Loss : {:.2f}, , Accuracy target (train/test) = {:.2f}% / {:.2f}%.'.format(args.name, iter_num, max_iter, \
-                classifier_loss_total/classifier_loss_count, acc_s_tr, acc_s_te)
+                log_str = 'Task: {}, Iter:{}/{}; Loss : {:.2f}, , Accuracy target (train/test/trainrf/testrf) = {:.2f}% / {:.2f}% / {:.2f}% / {:.2f}%.'.format(args.name, iter_num, max_iter, \
+                classifier_loss_total/classifier_loss_count, acc_s_tr, acc_s_te, acc_s_tr_rf, acc_s_te_rf)
 
             args.out_file.write(log_str + '\n')
             args.out_file.flush()
