@@ -265,23 +265,23 @@ def train_target(args):
             if args.train_rf != 0.0:
                 netCRF.train()
 
-        # if iter_num % interval_iter == 0 and args.cls_parrf > 0:
-        #     netF.eval()
-        #     netB.eval()
-        #     netBRF.eval()
-        #     if args.train_c != 0.0:
-        #         netC.eval()
-        #     if args.train_rf != 0.0:
-        #         netCRF.eval()
-        #     mem_label = obtain_label(dset_loaders['test'], netF, netB, netC, args)
-        #     mem_label = torch.from_numpy(mem_label).cuda()
-        #     netF.train()
-        #     netB.train()
-        #     netBRF.train()
-        #     if args.train_c != 0.0:
-        #         netC.train()
-        #     if args.train_rf != 0.0:
-        #         netCRF.train()
+        if iter_num % interval_iter == 0 and args.cls_parrf > 0:
+            netF.eval()
+            netB.eval()
+            netBRF.eval()
+            if args.train_c != 0.0:
+                netC.eval()
+            if args.train_rf != 0.0:
+                netCRF.eval()
+            mem_label_rf = obtain_labelrf(dset_loaders['test'], netF, netB, netBRF, netCRF, args)
+            mem_label_rf = torch.from_numpy(mem_label_rf).cuda()
+            netF.train()
+            netB.train()
+            netBRF.train()
+            if args.train_c != 0.0:
+                netC.train()
+            if args.train_rf != 0.0:
+                netCRF.train()
 
         inputs_test = inputs_test.cuda()
 
@@ -300,6 +300,14 @@ def train_target(args):
                 classifier_loss *= 0
         else:
             classifier_loss = torch.tensor(0.0).cuda()
+
+        if args.cls_parrf > 0:
+            pred_rf = mem_label_rf[tar_idx]
+            classifier_loss_rf = args.cls_parrf * nn.CrossEntropyLoss()(outputs_test_rf, pred_rf)
+            if iter_num < interval_iter and args.dset == "VISDA-C":
+                classifier_loss_rf *= 0
+            classifier_loss += classifier_loss_rf
+
 
         softmax_out = nn.Softmax(dim=1)(outputs_test)
         if args.ent:
@@ -544,6 +552,72 @@ def obtain_label(loader, netF, netB, netC, args):
 
     return pred_label.astype('int')
 
+def obtain_labelrf(loader, netF, netB, netBRF, netCRF, args):
+    start_test = True
+    with torch.no_grad():
+        iter_test = iter(loader)
+        for _ in range(len(loader)):
+            data = iter_test.next()
+            inputs = data[0]
+            labels = data[1]
+            inputs = inputs.cuda()
+
+            feas = netB(netF(inputs))
+            # outputs = netC(feas)
+            outputs = netCRF(netBRF(feas))
+
+        outputs_test_rf = netCRF(netBRF(features_test.detach()))
+
+            if start_test:
+                all_fea = feas.float().cpu()
+                all_output = outputs.float().cpu()
+                all_label = labels.float()
+                start_test = False
+            else:
+                all_fea = torch.cat((all_fea, feas.float().cpu()), 0)
+                all_output = torch.cat((all_output, outputs.float().cpu()), 0)
+                all_label = torch.cat((all_label, labels.float()), 0)
+
+    all_output = nn.Softmax(dim=1)(all_output)
+    ent = torch.sum(-all_output * torch.log(all_output + args.epsilon), dim=1)
+    unknown_weight = 1 - ent / np.log(args.class_num)
+    _, predict = torch.max(all_output, 1)
+
+    accuracy = torch.sum(torch.squeeze(predict).float() == all_label).item() / float(all_label.size()[0])
+    if args.distance == 'cosine':
+        all_fea = torch.cat((all_fea, torch.ones(all_fea.size(0), 1)), 1)
+        all_fea = (all_fea.t() / torch.norm(all_fea, p=2, dim=1)).t()
+
+    all_fea = all_fea.float().cpu().numpy()
+    K = all_output.size(1)
+    aff = all_output.float().cpu().numpy()
+    initc = aff.transpose().dot(all_fea)
+    initc = initc / (1e-8 + aff.sum(axis=0)[:,None])
+    cls_count = np.eye(K)[predict].sum(axis=0)
+    labelset = np.where(cls_count>args.threshold)
+    labelset = labelset[0]
+    # print(labelset)
+
+    dd = cdist(all_fea, initc[labelset], args.distance)
+    pred_label = dd.argmin(axis=1)
+    pred_label = labelset[pred_label]
+
+    for round in range(1):
+        aff = np.eye(K)[pred_label]
+        initc = aff.transpose().dot(all_fea)
+        initc = initc / (1e-8 + aff.sum(axis=0)[:,None])
+        dd = cdist(all_fea, initc[labelset], args.distance)
+        pred_label = dd.argmin(axis=1)
+        pred_label = labelset[pred_label]
+
+    acc = np.sum(pred_label == all_label.float().numpy()) / len(all_fea)
+    log_str = 'Accuracy = {:.2f}% -> {:.2f}%'.format(accuracy * 100, acc * 100)
+
+    args.out_file.write(log_str + '\n')
+    args.out_file.flush()
+    print(log_str+'\n')
+
+    return pred_label.astype('int')
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='SHOT')
