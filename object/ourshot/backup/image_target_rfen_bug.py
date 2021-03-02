@@ -350,37 +350,33 @@ def train_target(args):
             im_loss = entropy_loss * args.ent_par
             classifier_loss += im_loss
 
-
-
-        mark_max = torch.zeros(outputs_test_rf.size()).cuda()
-        
-        mark_zeros = torch.zeros(outputs_test_rf.size()).cuda()
-        if (args.max_zero > 0.0):
-            outputs_test_max = torch.maximum(outputs_test_rf, mark_zeros)
-        else:
-            outputs_test_max = outputs_test_rf
-
-        for i in range(args.class_num):
-            mark_max[:,i] = torch.max(torch.cat((outputs_test_max[:, :i],outputs_test_max[:, i+1:]), dim = 1), dim = 1).values        
-        cost_s = outputs_test_max - mark_max
-   
-        softmax_si = nn.Softmax(dim=1)(cost_s)
-
         if args.alpha_rf > 0:
+            mark_max = torch.zeros(outputs_test_rf.size()).cuda()
+            
+            mark_zeros = torch.zeros(outputs_test_rf.size()).cuda()
+            if (args.max_zero > 0.0):
+                outputs_test_max = torch.maximum(outputs_test_rf, mark_zeros)
+            else:
+                outputs_test_max = outputs_test_rf
 
+            for i in range(args.class_num):
+                mark_max[:,i] = torch.max(torch.cat((outputs_test_max[:, :i],outputs_test_max[:, i+1:]), dim = 1), dim = 1).values        
+            cost_s = outputs_test_max - mark_max
+       
+            softmax_si = nn.Softmax(dim=1)(cost_s)
             entropy_si = -(softmax_out * torch.log(softmax_si + 1e-5))
             entropy_si = torch.sum(entropy_si, dim=1)
             entropy_si_loss = torch.mean(entropy_si)
             classifier_loss += args.alpha_rf * entropy_si_loss
 
-        if args.alpha_rfen > 0:
-            entropy_loss_rf = torch.mean(loss.Entropy(softmax_si))
+            if args.alpha_rfen:
+                entropy_loss_rf = torch.mean(loss.Entropy(softmax_si))
 
-            msoftmax_rf = softmax_si.mean(dim=0)
-            gentropy_loss_rf = torch.sum(-msoftmax_rf * torch.log(msoftmax_rf + args.epsilon))
-            entropy_loss_rf -= gentropy_loss_rf
-            im_loss_rf = entropy_loss_rf * args.alpha_rfen
-            classifier_loss += im_loss_rf
+                msoftmax_rf = softmax_si.mean(dim=0)
+                gentropy_loss_rf = torch.sum(-msoftmax_rf * torch.log(msoftmax_rf + args.epsilon))
+                entropy_loss_rf -= gentropy_loss_rf
+                im_loss_rf = entropy_loss_rf * args.alpha_rfen
+                classifier_loss += im_loss_rf
 
         if (args.w_vat > 0):
         	eps = (torch.randn(size=inputs_test.size())).type(inputs_test.type())
