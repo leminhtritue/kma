@@ -665,27 +665,27 @@ def train_target2(args):
    
 
 ##
-        if iter_num % interval_iter == 0:
-            netC.eval()
-            if args.train_step2 != 0.0:
-            	netF.eval()
-            	netB.eval()
-            	netCRF.eval()
-            	netBRF.eval()
 
-            mem_label_rf = obtain_labelrf(dset_loaders['test'], netF, netB, netBRF, netCRF, args)
-            mem_label_rf = torch.from_numpy(mem_label_rf).cuda()
-            netC.train()
-            if args.train_step2 != 0.0:
-            	netF.train()
-            	netB.train()
-            	netCRF.train()
-            	netBRF.train()
+        netC.eval()
+        if args.train_step2 != 0.0:
+        	netF.eval()
+        	netB.eval()
+        	netCRF.eval()
+        	netBRF.eval()
 
-            pred_rff = mem_label_rf[tar_idx]
-            classifier_loss_rf = nn.CrossEntropyLoss()(pred_rff, outputs_test_h)
+        mem_label_rf = obtain_labelrf(dset_loaders['test'], netF, netB, netBRF, netCRF, args)
+        mem_label_rf = torch.from_numpy(mem_label_rf).cuda()
+        netC.train()
+        if args.train_step2 != 0.0:
+        	netF.train()
+        	netB.train()
+        	netCRF.train()
+        	netBRF.train()
 
-            print("a", outputs_test_h.shape, pred_rff.shape)
+        pred_rff = mem_label_rf[tar_idx]
+        classifier_loss_rf = nn.CrossEntropyLoss()(pred_rff, outputs_test_h)
+
+        print("a", outputs_test_h.shape, pred_rff.shape)
 ##
 
         _, pred_rf = torch.max(outputs_test_rf.detach(), 1)
