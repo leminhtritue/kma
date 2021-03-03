@@ -561,7 +561,7 @@ def train_target2(args):
         netF = network.VGGBase(vgg_name=args.net).cuda()  
 
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
-    netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
+    netC = network.feat_classifier(type=args.layer_2, class_num = args.class_num, bottleneck_dim=args.nrf).cuda()
 
     netBRF = network.feat_bootleneck_rf(nrf=args.nrf, type=args.classifier, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
     netCRF = network.feat_classifier_rf(nrf=args.nrf, type=args.layer_rf, class_num = args.class_num).cuda()
@@ -1001,6 +1001,7 @@ if __name__ == "__main__":
     parser.add_argument('--lr_decayo_2', type=float, default=0.1)
     parser.add_argument('--temp2', type=float, default=0.0)
     parser.add_argument('--w_vat_2', type=float, default=0.0)
+    parser.add_argument('--layer_2', type=str, default="wn", choices=["linear", "wn"])
    
     args = parser.parse_args()
 
@@ -1105,6 +1106,6 @@ if __name__ == "__main__":
                             # for key in dict_result:
                             #     print("{}-{}-{}-{}-{}-{}".format(key[0], key[1], key[2], key[3], key[4], dict_result[key]))
                             _,_,_, acc = train_target2(args)
-                            dict_result[(args.lr_decayc_2, args.train_step2, args.lr_decayo_2, args.temp2, args.w_vat_2)] = acc
+                            dict_result[(args.lr_decayc_2, args.train_step2, args.lr_decayo_2, args.temp2, args.w_vat_2, args.layer_2)] = acc
                             for key in dict_result:
-                                print("{}-{}-{}-{}-{}-{}".format(key[0], key[1], key[2], key[3], key[4], dict_result[key]))
+                                print("{}-{}-{}-{}-{}-{}-{}".format(key[0], key[1], key[2], key[3], key[4], key[5], dict_result[key]))
