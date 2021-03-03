@@ -683,9 +683,10 @@ def train_target2(args):
         	netBRF.train()
 
         pred_rff = mem_label_rf[tar_idx]
+        print("a", outputs_test_h.shape, pred_rff.shape)
         classifier_loss_rf = nn.CrossEntropyLoss()(pred_rff, outputs_test_h)
 
-        print("a", outputs_test_h.shape, pred_rff.shape)
+
 ##
 
         _, pred_rf = torch.max(outputs_test_rf.detach(), 1)
