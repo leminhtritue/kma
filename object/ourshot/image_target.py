@@ -557,25 +557,47 @@ def train_target2(args):
     ## set base network
     if args.net[0:3] == 'res':
         netF = network.ResBase(res_name=args.net).cuda()
+        netF_c = network.ResBase(res_name=args.net).cuda()
     elif args.net[0:3] == 'vgg':
         netF = network.VGGBase(vgg_name=args.net).cuda()  
+        netF_c = network.VGGBase(vgg_name=args.net).cuda()  
 
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
+    netB_c = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
     netC = network.feat_classifier(type=args.layer_2, class_num = args.class_num, bottleneck_dim=args.nrf).cuda()
 
     netBRF = network.feat_bootleneck_rf(nrf=args.nrf, type=args.classifier, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
+    netBRF_c = network.feat_bootleneck_rf(nrf=args.nrf, type=args.classifier, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
     netCRF = network.feat_classifier_rf(nrf=args.nrf, type=args.layer_rf, class_num = args.class_num).cuda()
+    netCRF_c = network.feat_classifier_rf(nrf=args.nrf, type=args.layer_rf, class_num = args.class_num).cuda()
 
     args.modelpath = args.output_dir + '/target_F_' + args.savename + ".pt"
     netF.load_state_dict(torch.load(args.modelpath))
+    netF_c.load_state_dict(torch.load(args.modelpath))
     args.modelpath = args.output_dir + '/target_B_' + args.savename + ".pt"
     netB.load_state_dict(torch.load(args.modelpath))
+    netB_c.load_state_dict(torch.load(args.modelpath))
     # args.modelpath = args.output_dir + '/target_C_' + args.savename + ".pt"
     # netC.load_state_dict(torch.load(args.modelpath))
     args.modelpath = args.output_dir + '/target_BRF_' + args.savename + ".pt"    
     netBRF.load_state_dict(torch.load(args.modelpath))
+    netBRF_c.load_state_dict(torch.load(args.modelpath))
     args.modelpath = args.output_dir + '/target_CRF_' + args.savename + ".pt"    
     netCRF.load_state_dict(torch.load(args.modelpath))
+    netCRF_c.load_state_dict(torch.load(args.modelpath))
+
+    netCRF_c.eval()
+    for k, v in netCRF_c.named_parameters():
+        v.requires_grad = False
+    netF_c.eval()
+    for k, v in netF_c.named_parameters():
+        v.requires_grad = False 
+    netB_c.eval()
+    for k, v in netB_c.named_parameters():
+        v.requires_grad = False   
+    netBRF_c.eval()
+    for k, v in netBRF_c.named_parameters():
+        v.requires_grad = False  
 
     param_group = []
 
@@ -660,10 +682,11 @@ def train_target2(args):
 
         features_test_1 = netB(netF(inputs_test))
         features_test_2 = netBRF(features_test_1)
-        outputs_test_rf = netCRF(features_test_2)
+        outputs_test_rf = netCRF_c(netBRF_c(netB_c(netF_c(inputs_test)))).detach()
+        # outputs_test_rf = netCRF(features_test_2)
         outputs_test_h = netC(features_test_2)
 
-        _, pred_rf = torch.max(outputs_test_rf.detach(), 1)
+        _, pred_rf = torch.max(outputs_test_rf, 1)
         if (args.temp2 != 0.0):
         	outputs_test_h_softmax = nn.Softmax(dim=1)(outputs_test_h/args.temp2)
         	classifier_loss = nn.CrossEntropyLoss()(outputs_test_h_softmax, pred_rf)
@@ -759,7 +782,9 @@ def train_target2(args):
         torch.save(netC.state_dict(), osp.join(args.output_dir, "target2_C_" + args.savename + ".pt"))
         torch.save(netBRF.state_dict(), osp.join(args.output_dir, "target2_BRF_" + args.savename + ".pt"))
         torch.save(netCRF.state_dict(), osp.join(args.output_dir, "target2_CRF_" + args.savename + ".pt"))
-        
+
+    acc_s_te_rf, _ = cal_accrf(dset_loaders['test'], netF_c, netB_c, netBRF_c, netCRF_c, False)
+    print("Test debug:", acc_s_te_rf)
     return netF, netB, netC, acc_s_te
 
 def test_target2_1(args):
