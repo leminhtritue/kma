@@ -763,8 +763,8 @@ def train_target2(args):
             args.out_file.flush()
             print(log_str+'\n')
 
-            if acc_s_te < 50:
-                return netF, netB, netC, (acc_s_te + 100)
+            # if acc_s_te < 50:
+            #     return netF, netB, netC, (acc_s_te + 100)
 
             classifier_loss_total = 0.0
             classifier_loss_count = 0
