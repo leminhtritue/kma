@@ -611,7 +611,7 @@ def train_target2(args):
                 v.requires_grad = False
         for k, v in netB.named_parameters():
             if args.lr_decayo_2 > 0:
-            param_group += [{'params': v, 'lr': args.lr * args.lr_decayo_2}]
+                param_group += [{'params': v, 'lr': args.lr * args.lr_decayo_2}]
             else:
                 v.requires_grad = False
         for k, v in netBRF.named_parameters():
