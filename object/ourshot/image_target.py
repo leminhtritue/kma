@@ -733,7 +733,7 @@ def train_target2(args):
 
                 # log_str = 'Task: {}, Iter:{}/{}; Loss : {:.2f}, , Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(args.name, iter_num, max_iter, \
                 # classifier_loss_total/classifier_loss_count, acc_s_tr, acc_s_te, right_sample_count, sum_sample)
-                log_str = 'Task: {}, Iter:{}/{}; Loss : {:.2f}, , Accuracy target (train/test/trainrf/testrf) = {:.2f}% / {:.2f}% / {:.2f}% / {:.2f}%.'.format(args.name, iter_num, max_iter, \
+                log_str = 'Task: {}, Iter:{}/{}; Loss : {:.2f}, , Accuracy target (trainh/testh/trainrf/testrf) = {:.2f}% / {:.2f}% / {:.2f}% / {:.2f}%.'.format(args.name, iter_num, max_iter, \
                 classifier_loss_total/classifier_loss_count, acc_s_tr, acc_s_te, acc_s_tr_rf, acc_s_te_rf)
 
             args.out_file.write(log_str + '\n')
