@@ -685,7 +685,7 @@ def train_target2(args):
             pred_rff = mem_label_rf[tar_idx]
             classifier_loss_rf = nn.CrossEntropyLoss()(pred_rff, outputs_test_h)
 
-            print(outputs_test_h.shape, pred_rff.shape)
+            print("a", outputs_test_h.shape, pred_rff.shape)
 ##
 
         _, pred_rf = torch.max(outputs_test_rf.detach(), 1)
@@ -693,7 +693,7 @@ def train_target2(args):
         	outputs_test_h_softmax = nn.Softmax(dim=1)(outputs_test_h/args.temp2)
         	classifier_loss = nn.CrossEntropyLoss()(pred_rf, outputs_test_h_softmax)
         else:
-        	print(outputs_test_h.shape, pred_rf.shape)
+        	print("b",outputs_test_h.shape, pred_rf.shape)
         	classifier_loss = nn.CrossEntropyLoss()(pred_rf, outputs_test_h)
 
         
