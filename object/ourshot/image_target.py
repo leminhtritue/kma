@@ -851,9 +851,9 @@ def test_target2_1(args):
     args.modelpath = args.output_dir + '/target_C_' + args.savename + ".pt" 
     netC.load_state_dict(torch.load(args.modelpath))
     args.modelpath = args.output_dir + '/target_BRF_' + args.savename + ".pt"     
-    netBRF.load_state_dict(torch.load(modelpath))
+    netBRF.load_state_dict(torch.load(args.modelpath))
     args.modelpath = args.output_dir + '/target_CRF_' + args.savename + ".pt"     
-    netCRF.load_state_dict(torch.load(modelpath))
+    netCRF.load_state_dict(torch.load(args.modelpath))
 
     netF.eval()
     netB.eval()
