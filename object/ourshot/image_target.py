@@ -5,6 +5,7 @@ import torchvision
 import numpy as np
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import transforms
 import network, loss
@@ -687,11 +688,19 @@ def train_target2(args):
         outputs_test_h = netC(features_test_2)
 
         _, pred_rf = torch.max(outputs_test_rf, 1)
-        if (args.temp2 != 0.0):
-        	outputs_test_h_softmax = nn.Softmax(dim=1)(outputs_test_h/args.temp2)
-        	classifier_loss = nn.CrossEntropyLoss()(outputs_test_h_softmax, pred_rf)
-        else:
-        	classifier_loss = nn.CrossEntropyLoss()(outputs_test_h, pred_rf)
+
+
+        # if (args.temp2 != 0.0):
+        # 	outputs_test_h_softmax = nn.Softmax(dim=1)(outputs_test_h/args.temp2)
+        # 	classifier_loss = nn.CrossEntropyLoss()(outputs_test_h_softmax, pred_rf)
+        # else:
+        # 	classifier_loss = nn.CrossEntropyLoss()(outputs_test_h, pred_rf)
+        alpha = 0.5
+        p = F.log_softmax(outputs_test_h/args.temp2, dim=1)
+        q = F.softmax(outputs_test_rf/args.temp2, dim=1)
+        l_kl = F.kl_div(p, q, size_average=False) * (args.temp2**2) / outputs_test_h.shape[0]
+        l_ce = F.cross_entropy(outputs_test_h, pred_rf)
+        classifier_loss = l_kl * alpha + l_ce * (1.0 - alpha)
 
         
         if (args.w_vat_2 > 0):
