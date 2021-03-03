@@ -996,6 +996,7 @@ if __name__ == "__main__":
 
     parser.add_argument('--radius_2', type=float, default=0.01)  
     parser.add_argument('--lr_decayc_2', type=float, default=1.0)
+
     parser.add_argument('--train_step2', type=float, default=0.0)
     parser.add_argument('--lr_decayo_2', type=float, default=0.1)
     parser.add_argument('--temp2', type=float, default=0.0)
@@ -1099,7 +1100,11 @@ if __name__ == "__main__":
                             np.random.seed(SEED)
                             random.seed(SEED)
                             
+                            # _,_,_, acc = train_target(args)
+                            # dict_result[(args.cls_par, args.alpha_rfen, args.alpha_rf, args.max_zero, args.w_vat)] = acc
+                            # for key in dict_result:
+                            #     print("{}-{}-{}-{}-{}-{}".format(key[0], key[1], key[2], key[3], key[4], dict_result[key]))
                             _,_,_, acc = train_target2(args)
-                            dict_result[(args.cls_par, args.alpha_rfen, args.alpha_rf, args.max_zero, args.w_vat)] = acc
+                            dict_result[(args.lr_decayc_2, args.train_step2, args.lr_decayo_2, args.temp2, args.w_vat_2)] = acc
                             for key in dict_result:
                                 print("{}-{}-{}-{}-{}-{}".format(key[0], key[1], key[2], key[3], key[4], dict_result[key]))
