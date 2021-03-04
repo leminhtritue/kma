@@ -695,7 +695,7 @@ def train_target2(args):
         # 	classifier_loss = nn.CrossEntropyLoss()(outputs_test_h_softmax, pred_rf)
         # else:
         # 	classifier_loss = nn.CrossEntropyLoss()(outputs_test_h, pred_rf)
-        alpha = 0.5
+        alpha = 0.9
         p = F.log_softmax(outputs_test_h/args.temp2, dim=1)
         q = F.softmax(outputs_test_rf/args.temp2, dim=1)
         l_kl = F.kl_div(p, q, size_average=False) * (args.temp2**2) / outputs_test_h.shape[0]
