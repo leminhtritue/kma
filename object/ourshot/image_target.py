@@ -376,15 +376,18 @@ def train_target(args):
 
         if args.alpha_rf > 0:
 
-            entropy_si = -(softmax_out * torch.log(softmax_si + 1e-5))
+            # entropy_si = -(softmax_out * torch.log(softmax_si + 1e-5))
+            entropy_si = -(softmax_out * torch.log(softmax_out + 1e-5))
             entropy_si = torch.sum(entropy_si, dim=1)
             entropy_si_loss = torch.mean(entropy_si)
             classifier_loss += args.alpha_rf * entropy_si_loss
 
         if args.alpha_rfen > 0:
-            entropy_loss_rf = torch.mean(loss.Entropy(softmax_si))
+            # entropy_loss_rf = torch.mean(loss.Entropy(softmax_si))
+            entropy_loss_rf = torch.mean(loss.Entropy(softmax_out))
 
-            msoftmax_rf = softmax_si.mean(dim=0)
+            # msoftmax_rf = softmax_si.mean(dim=0)
+            msoftmax_rf = softmax_out.mean(dim=0)
             gentropy_loss_rf = torch.sum(-msoftmax_rf * torch.log(msoftmax_rf + args.epsilon))
             entropy_loss_rf -= gentropy_loss_rf
             im_loss_rf = entropy_loss_rf * args.alpha_rfen
