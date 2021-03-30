@@ -218,7 +218,10 @@ def train_target(args):
 
     if args.train_rf == 0.0:
         netCRF.eval()
+        netBRF.eval()
         for k, v in netCRF.named_parameters():
+            v.requires_grad = False
+        for k, v in netBRF.named_parameters():
             v.requires_grad = False
     else:
         for k, v in netCRF.named_parameters():
@@ -226,6 +229,12 @@ def train_target(args):
                 param_group += [{'params': v, 'lr': args.lr * args.lr_decay2}]
             else:
                 v.requires_grad = False   
+
+        for k, v in netBRF.named_parameters():
+            if args.lr_decay2 > 0:
+                param_group += [{'params': v, 'lr': args.lr * args.lr_decay2}]
+            else:
+                v.requires_grad = False
 
 
     
@@ -240,11 +249,7 @@ def train_target(args):
         else:
             v.requires_grad = False
 
-    for k, v in netBRF.named_parameters():
-        if args.lr_decay2 > 0:
-            param_group += [{'params': v, 'lr': args.lr * args.lr_decay2}]
-        else:
-            v.requires_grad = False
+
 
     optimizer = optim.SGD(param_group)
     optimizer = op_copy(optimizer)
@@ -281,38 +286,39 @@ def train_target(args):
         if iter_num % interval_iter == 0 and args.cls_par > 0:
             netF.eval()
             netB.eval()
-            netBRF.eval()
             if args.train_c != 0.0:
                 netC.eval()
             if args.train_rf != 0.0:
                 netCRF.eval()
+                netBRF.eval()
             mem_label = obtain_label(dset_loaders['test'], netF, netB, netC, args)
             mem_label = torch.from_numpy(mem_label).cuda()
             netF.train()
             netB.train()
-            netBRF.train()
+            
             if args.train_c != 0.0:
                 netC.train()
             if args.train_rf != 0.0:
                 netCRF.train()
+                netBRF.train()
 
         if iter_num % interval_iter == 0 and args.cls_parrf > 0:
             netF.eval()
             netB.eval()
-            netBRF.eval()
             if args.train_c != 0.0:
                 netC.eval()
             if args.train_rf != 0.0:
                 netCRF.eval()
+                netBRF.eval()
             mem_label_rf = obtain_labelrf(dset_loaders['test'], netF, netB, netBRF, netCRF, args)
             mem_label_rf = torch.from_numpy(mem_label_rf).cuda()
             netF.train()
             netB.train()
-            netBRF.train()
             if args.train_c != 0.0:
                 netC.train()
             if args.train_rf != 0.0:
                 netCRF.train()
+                netBRF.train()
 
         inputs_test = inputs_test.cuda()
 
@@ -429,11 +435,11 @@ def train_target(args):
         if iter_num % interval_iter == 0 or iter_num == max_iter:
             netF.eval()
             netB.eval()
-            netBRF.eval()
             if args.train_c != 0.0:
                 netC.eval()
             if args.train_rf != 0.0:
                 netCRF.eval()
+                netBRF.eval()
             if args.dset=='VISDA-C':
                 acc_s_te, acc_list = cal_acc(dset_loaders['test'], netF, netB, netC, True)
                 log_str = 'Task: {}, Iter:{}/{}; Accuracy = {:.2f}%'.format(args.name, iter_num, max_iter, acc_s_te) + '\n' + acc_list
@@ -472,11 +478,11 @@ def train_target(args):
 
             netF.train()
             netB.train()
-            netBRF.train()
             if args.train_c != 0.0:
                 netC.train()
             if args.train_rf != 0.0:
                 netCRF.train()
+                netBRF.train()
 
     if args.issave:   
         torch.save(netF.state_dict(), osp.join(args.output_dir, "target_F_" + args.savename + ".pt"))
