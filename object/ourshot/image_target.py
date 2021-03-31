@@ -327,8 +327,8 @@ def train_target(args):
 
         features_test = netB(netF(inputs_test))
         outputs_test = netC(features_test)
-        outputs_test_rf = netCRF(netBRF(features_test.detach()))
-        # outputs_test_rf = netCRF(netBRF(features_test))
+        # outputs_test_rf = netCRF(netBRF(features_test.detach()))
+        outputs_test_rf = netCRF(netBRF(features_test))
 
 
         if args.cls_par > 0:
@@ -360,24 +360,25 @@ def train_target(args):
 
 
 
-        mark_max = torch.zeros(outputs_test_rf.size()).cuda()
+        # mark_max = torch.zeros(outputs_test_rf.size()).cuda()
         
-        mark_zeros = torch.zeros(outputs_test_rf.size()).cuda()
-        if (args.max_zero > 0.0):
-            outputs_test_max = torch.maximum(outputs_test_rf, mark_zeros)
-        else:
-            outputs_test_max = outputs_test_rf
+        # mark_zeros = torch.zeros(outputs_test_rf.size()).cuda()
+        # if (args.max_zero > 0.0):
+        #     outputs_test_max = torch.maximum(outputs_test_rf, mark_zeros)
+        # else:
+        #     outputs_test_max = outputs_test_rf
 
-        for i in range(args.class_num):
-            mark_max[:,i] = torch.max(torch.cat((outputs_test_max[:, :i],outputs_test_max[:, i+1:]), dim = 1), dim = 1).values        
-        cost_s = outputs_test_max - mark_max
+        # for i in range(args.class_num):
+        #     mark_max[:,i] = torch.max(torch.cat((outputs_test_max[:, :i],outputs_test_max[:, i+1:]), dim = 1), dim = 1).values        
+        # cost_s = outputs_test_max - mark_max
    
         # softmax_si = nn.Softmax(dim=1)(cost_s)
         softmax_si = nn.Softmax(dim=1)(outputs_test_rf)
 
         if args.alpha_rf > 0:
 
-            entropy_si = -(softmax_out * torch.log(softmax_si + 1e-5))
+            # entropy_si = -(softmax_out * torch.log(softmax_si + 1e-5))
+            entropy_si = -(softmax_out * torch.log(softmax_si.detach() + 1e-5))
             entropy_si = torch.sum(entropy_si, dim=1)
             entropy_si_loss = torch.mean(entropy_si)
             classifier_loss += args.alpha_rf * entropy_si_loss
