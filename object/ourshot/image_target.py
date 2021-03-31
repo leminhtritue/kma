@@ -360,20 +360,20 @@ def train_target(args):
 
 
 
-        mark_max = torch.zeros(outputs_test_rf.size()).cuda()
+        # mark_max = torch.zeros(outputs_test_rf.size()).cuda()
         
-        mark_zeros = torch.zeros(outputs_test_rf.size()).cuda()
-        if (args.max_zero > 0.0):
-            outputs_test_max = torch.maximum(outputs_test_rf, mark_zeros)
-        else:
-            outputs_test_max = outputs_test_rf
+        # mark_zeros = torch.zeros(outputs_test_rf.size()).cuda()
+        # if (args.max_zero > 0.0):
+        #     outputs_test_max = torch.maximum(outputs_test_rf, mark_zeros)
+        # else:
+        #     outputs_test_max = outputs_test_rf
 
-        for i in range(args.class_num):
-            mark_max[:,i] = torch.max(torch.cat((outputs_test_max[:, :i],outputs_test_max[:, i+1:]), dim = 1), dim = 1).values        
-        cost_s = outputs_test_max - mark_max
-        softmax_si = nn.Softmax(dim=1)(cost_s)
-        
-        # softmax_si = nn.Softmax(dim=1)(outputs_test_rf)
+        # for i in range(args.class_num):
+        #     mark_max[:,i] = torch.max(torch.cat((outputs_test_max[:, :i],outputs_test_max[:, i+1:]), dim = 1), dim = 1).values        
+        # cost_s = outputs_test_max - mark_max
+   
+        # softmax_si = nn.Softmax(dim=1)(cost_s)
+        softmax_si = nn.Softmax(dim=1)(outputs_test_rf)
 
         if args.alpha_rf > 0:
 
