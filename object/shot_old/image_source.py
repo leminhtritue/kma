@@ -242,8 +242,11 @@ def train_source(args):
                 acc_s_te, acc_list = cal_acc(dset_loaders['source_te'], netF, netB, netC, True)
                 log_str = 'Task: {}, Iter:{}/{}; Accuracy = {:.2f}%'.format(args.name_src, iter_num, max_iter, acc_s_te) + '\n' + acc_list
             else:
+                acc_s_tr, _ = cal_acc(dset_loaders['source_tr'], netF, netB, netC, False)
                 acc_s_te, _ = cal_acc(dset_loaders['source_te'], netF, netB, netC, False)
-                log_str = 'Task: {}, Iter:{}/{}; Accuracy = {:.2f}%'.format(args.name_src, iter_num, max_iter, acc_s_te)
+                acc_s_tgt, _ = cal_acc(dset_loaders['test'], netF, netB, netC, False)
+
+                log_str = 'Task: {}, Iter:{}/{}; Accuracy source (train/test/target) = {:.2f}% / {:.2f}% / {:.2f}%'.format(args.name_src, iter_num, max_iter, acc_s_tr, acc_s_te, acc_s_tgt)
             args.out_file.write(log_str + '\n')
             args.out_file.flush()
             print(log_str+'\n')
@@ -382,7 +385,7 @@ if __name__ == "__main__":
         args.t = i
         args.name = names[args.s][0].upper() + names[args.t][0].upper()
 
-        folder = '/Checkpoint/liangjian/tran/data/'
+        folder = './data/'
         args.s_dset_path = folder + args.dset + '/' + names[args.s] + '_list.txt'
         args.test_dset_path = folder + args.dset + '/' + names[args.t] + '_list.txt'
 
