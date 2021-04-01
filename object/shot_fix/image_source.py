@@ -382,7 +382,8 @@ if __name__ == "__main__":
         args.t = i
         args.name = names[args.s][0].upper() + names[args.t][0].upper()
 
-        folder = '/Checkpoint/liangjian/tran/data/'
+        # folder = '/Checkpoint/liangjian/tran/data/'
+        folder = './data/'
         args.s_dset_path = folder + args.dset + '/' + names[args.s] + '_list.txt'
         args.test_dset_path = folder + args.dset + '/' + names[args.t] + '_list.txt'
 
