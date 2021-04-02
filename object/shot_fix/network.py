@@ -75,7 +75,7 @@ class ResBase(nn.Module):
 class RandomFourierFeatures(nn.Module):
     def __init__(self, query_dimensions, n_dims=None, gamma = 0.5,
                  orthogonal=False):
-        super(RandomFourierFeatures, self).__init__(query_dimensions)
+        super(RandomFourierFeatures, self).__init__()
 
         self.n_dims = n_dims
         self.orthogonal = orthogonal
