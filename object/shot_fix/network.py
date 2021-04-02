@@ -103,6 +103,27 @@ class feat_classifier(nn.Module):
         x = self.fc(x)
         return x
 
+class feat_classifier_rf(nn.Module):
+    def __init__(self, class_num, bottleneck_dim=256, type="linear"):
+        super(feat_classifier_rf, self).__init__()
+        self.type = type
+        if type == 'wn':
+            self.fc = weightNorm(nn.Linear(bottleneck_dim, class_num), name="weight")
+            self.fc.apply(init_weights)
+        else:
+            self.fc = nn.Linear(bottleneck_dim, class_num)
+            self.fc.apply(init_weights)
+
+    def forward(self, x):
+        x = self.fc(x)
+        return x
+
+    def get_weight(self):
+        return self.fc.weight
+        
+    def get_bias(self):
+        return self.fc.bias
+
 class feat_classifier_two(nn.Module):
     def __init__(self, class_num, input_dim, bottleneck_dim=256):
         super(feat_classifier_two, self).__init__()
