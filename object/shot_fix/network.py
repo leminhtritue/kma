@@ -72,54 +72,13 @@ class ResBase(nn.Module):
         x = x.view(x.size(0), -1)
         return x
 
-class FeatureMap(nn.Module):
-    """Define the FeatureMap interface."""
-    def __init__(self, query_dims):
-        super().__init__()
-        self.query_dims = query_dims
-
-    def new_feature_map(self):
-        """Create a new instance of this feature map. In particular, if it is a
-        random feature map sample new parameters."""
-        raise NotImplementedError()
-
-    def forward_queries(self, x):
-        """Encode the queries `x` using this feature map."""
-        return self(x)
-
-    def forward_keys(self, x):
-        """Encode the keys `x` using this feature map."""
-        return self(x)
-
-    def forward(self, x):
-        """Encode x using this feature map. For symmetric feature maps it
-        suffices to define this function, but for asymmetric feature maps one
-        needs to define the `forward_queries` and `forward_keys` functions."""
-        raise NotImplementedError()
-
-    @classmethod
-    def factory(cls, *args, **kwargs):
-        """Return a function that when called with the query dimensions returns
-        an instance of this feature map.
-
-        It is inherited by the subclasses so it is available in all feature
-        maps.
-        """
-        def inner(query_dims):
-            return cls(query_dims, *args, **kwargs)
-        return inner
-
-class RandomFourierFeatures(FeatureMap):
-    def __init__(self, query_dimensions, n_dims=None, gamma = 0.5, softmax_temp=None,
+class RandomFourierFeatures(nn.Module):
+    def __init__(self, query_dimensions, n_dims=None, gamma = 0.5,
                  orthogonal=False):
         super(RandomFourierFeatures, self).__init__(query_dimensions)
 
-        self.n_dims = n_dims or query_dimensions
+        self.n_dims = n_dims
         self.orthogonal = orthogonal
-        self.softmax_temp = (
-            1/math.sqrt(query_dimensions) if softmax_temp is None
-            else softmax_temp
-        )
         self.gamma = gamma
 
         # Make a buffer for storing the sampled omega
@@ -135,14 +94,11 @@ class RandomFourierFeatures(FeatureMap):
             self.omega.normal_()
 
     def forward(self, x):
-        # print(x.shape)
-        # x = x * math.sqrt(self.softmax_temp)
         x = x * self.gamma
         u = x.matmul(self.omega)
         phi = torch.cat([torch.cos(u), torch.sin(u)], dim=-1)
-        # return phi * math.sqrt(2/self.n_dims)
         return phi
-        
+
 class feat_bootleneck(nn.Module):
     def __init__(self, feature_dim, bottleneck_dim=256, type="ori"):
         super(feat_bootleneck, self).__init__()
@@ -165,7 +121,7 @@ class feat_bootleneck_rf(nn.Module):
         self.bn2 = nn.BatchNorm1d(nrf, affine=True)
         self.type = type
 
-        self.feature_map = RandomFourierFeatures(bottleneck_dim, nrf, gamma)
+        self.feature_map = RandomFourierFeatures(query_dimensions = bottleneck_dim, n_dims = nrf, gamma = gamma)
         self.feature_map.new_feature_map()
 
     def forward(self, x):
