@@ -182,6 +182,30 @@ def cal_acc_oda(loader, netF, netB, netC):
     return np.mean(acc[:-1]), np.mean(acc), unknown_acc
     # return np.mean(acc), np.mean(acc[:-1])
 
+def normalize_perturbation(d):
+    d_ = d.view(d.size()[0], -1)
+    eps = d.new_tensor(1e-12)
+    output = d / torch.sqrt(torch.max((d_**2).sum(dim = -1), eps)[0] )
+    return output
+
+class KLDivWithLogits(nn.Module):
+
+    def __init__(self):
+
+        super(KLDivWithLogits, self).__init__()
+
+        self.kl = nn.KLDivLoss(size_average=False, reduce=True)
+        self.logsoftmax = nn.LogSoftmax(dim = 1)
+        self.softmax = nn.Softmax(dim = 1)
+
+
+    def forward(self, x, y):
+
+        log_p = self.logsoftmax(x)
+        q     = self.softmax(y)
+
+        return self.kl(log_p, q) / x.size()[0]
+
 def train_source(args):
     dset_loaders = data_load(args)
     ## set base network
@@ -238,7 +262,23 @@ def train_source(args):
         inputs_source, labels_source = inputs_source.cuda(), labels_source.cuda()
         outputs_source = netC(netB(netF(inputs_source)))
         classifier_loss = CrossEntropyLabelSmooth(num_classes=args.class_num, epsilon=args.smooth)(outputs_source, labels_source)            
-        
+
+        if (args.w_vat > 0):
+            eps = (torch.randn(size=inputs_source.size())).type(inputs_source.type())
+            eps = 1e-6 * normalize_perturbation(eps)
+            eps.requires_grad = True
+            outputs_source_adv_eps = netC(netB(netF(inputs_source + eps)))
+            loss_func_nll = KLDivWithLogits()
+            loss_eps  = loss_func_nll(outputs_source_adv_eps, outputs_source.detach())
+            loss_eps.backward()
+            eps_adv = eps.grad
+            eps_adv = normalize_perturbation(eps_adv)
+            inputs_source_adv = inputs_source + args.radius * eps_adv
+            output_source_adv = netC(netB(netF(inputs_source_adv.detach())))
+            loss_vat     = loss_func_nll(output_source_adv, outputs_source.detach())
+
+            classifier_loss += args.w_vat * loss_vat
+
         optimizer.zero_grad()
         classifier_loss.backward()
         optimizer.step()
@@ -340,6 +380,10 @@ if __name__ == "__main__":
     parser.add_argument('--output', type=str, default='san')
     parser.add_argument('--da', type=str, default='uda', choices=['uda', 'pda', 'oda'])
     parser.add_argument('--trte', type=str, default='val', choices=['full', 'val'])
+
+    parser.add_argument('--w_vat', type=float, default=0.0)
+    parser.add_argument('--radius', type=float, default=0.01)
+    
     args = parser.parse_args()
 
     if args.dset == 'office-home':

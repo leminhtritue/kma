@@ -2,3 +2,39 @@ python image_source.py --output ckps/tmp0/ --max_epoch 500 --s 0 --t 1 --gpu_id 
 python image_source.py --output ckps/tmp1/ --max_epoch 500 --s 1 --t 0 --gpu_id 1
 python image_source.py --output ckps/tmp2/ --max_epoch 500 --s 2 --t 0 --gpu_id 2
 python image_source.py --output ckps/tmp3/ --max_epoch 500 --s 0 --t 1 --gpu_id 3
+
+
+
+
+
+
+
+Training: val, Task: AD, Accuracy = 81.93% - 83.13% - 82.33% - 80.52%
+Training: val, Task: AW, Accuracy = 79.12% - 80.13% - 78.49%
+Add create crf
+Training: val, Task: AD, Accuracy = 82.73% - 81.73%
+Training: val, Task: AW, Accuracy = 78.74% - 79.37%
+Add create brf
+Training: val, Task: AD, Accuracy = 83.33% - 82.93%
+Training: val, Task: AW, Accuracy = 79.37%
+
+
+
+Training: val, Task: DA, Accuracy = 60.53% - 61.06%
+Training: val, Task: DW, Accuracy = 95.85%
+Add create crf
+Training: val, Task: DA, Accuracy = 60.74%
+Training: val, Task: DW, Accuracy = 95.72%
+Add create brf
+Training: val, Task: DA, Accuracy = 60.92%
+Training: val, Task: DW, Accuracy = 95.60%
+
+
+Training: val, Task: WA, Accuracy = 64.82% - 65.18%
+Training: val, Task: WD, Accuracy = 99.20%
+Add create crf
+Training: val, Task: WA, Accuracy = 64.32%
+Training: val, Task: WD, Accuracy = 99.40%
+Add create brf
+Training: val, Task: WA, Accuracy = 65.10%
+Training: val, Task: WD, Accuracy = 99.00%
