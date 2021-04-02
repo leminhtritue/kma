@@ -1,0 +1,4 @@
+python image_source.py --output ckps/tmp0/ --max_epoch 500 --s 0 --t 1 --gpu_id 0
+python image_source.py --output ckps/tmp1/ --max_epoch 500 --s 1 --t 0 --gpu_id 1
+python image_source.py --output ckps/tmp2/ --max_epoch 500 --s 2 --t 0 --gpu_id 2
+python image_source.py --output ckps/tmp3/ --max_epoch 500 --s 0 --t 1 --gpu_id 3
