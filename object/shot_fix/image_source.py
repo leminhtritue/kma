@@ -264,10 +264,10 @@ def train_source(args):
     for k, v in netCRF.named_parameters():
         param_group += [{'params': v, 'lr': learning_rate}]
     for k, v in netBRF.named_parameters():
-        if (args.train_brf == 0.0):
-            v.requires_grad = False
-        else:
+        if (args.train_brf != 0.0):
             param_group += [{'params': v, 'lr': learning_rate}]
+        else:
+            v.requires_grad = False
 
     optimizer = optim.SGD(param_group)
     optimizer = op_copy(optimizer)
@@ -281,9 +281,7 @@ def train_source(args):
     netB.train()
     netC.train()
     netCRF.train()
-    if (args.train_brf == 0):
-        netBRF.eval()
-    else:
+    if (args.train_brf != 0):
         netBRF.train()
 
     total_loss = 0.0
@@ -343,7 +341,7 @@ def train_source(args):
             netB.eval()
             netC.eval()
             netCRF.eval()
-            if (args.train_brf == 0):
+            if (args.train_brf != 0):
                 netBRF.eval()
             if args.dset=='VISDA-C':
                 acc_s_te, acc_list = cal_acc(dset_loaders['source_te'], netF, netB, netC, True)
@@ -374,7 +372,7 @@ def train_source(args):
             netB.train()
             netC.train()
             netCRF.train()
-            if (args.train_brf == 0):
+            if (args.train_brf != 0):
                 netBRF.train()
 
     torch.save(best_netF, osp.join(args.output_dir_src, "source_F.pt"))
