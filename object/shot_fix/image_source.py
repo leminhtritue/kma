@@ -283,6 +283,8 @@ def train_source(args):
     netCRF.train()
     if (args.train_brf != 0.0):
         netBRF.train()
+    else:
+        netBRF.eval()
 
     total_loss = 0.0
     count_loss = 0
