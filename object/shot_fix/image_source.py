@@ -352,7 +352,8 @@ def train_source(args):
                 acc_s_tr, _ = cal_acc(dset_loaders['source_tr'], netF, netB, netC, False)
                 acc_s_te, _ = cal_acc(dset_loaders['source_te'], netF, netB, netC, False)
                 acc_s_tgt, _ = cal_acc(dset_loaders['test'], netF, netB, netC, False)
-                acc_s_tgt_rf, _ = cal_acc_rf(dset_loaders['test'], netF, netB, netBRF, netCRF, False)
+                # acc_s_tgt_rf, _ = cal_acc_rf(dset_loaders['test'], netF, netB, netBRF, netCRF, False)
+                acc_s_tgt_rf = 0.0
                 # log_str = 'Task: {}, Iter:{}/{}; Accuracy = {:.2f}%'.format(args.name_src, iter_num, max_iter, acc_s_te)
                 log_str = 'Task: {}, Iter:{}/{}; Accuracy source (train/test/target/target_rf) = {:.2f}% / {:.2f}% / {:.2f}% / {:.2f}%, Loss = {:.2f}'.format(args.name_src, \
                     iter_num, max_iter, acc_s_tr, acc_s_te, acc_s_tgt, acc_s_tgt_rf, total_loss/count_loss)
