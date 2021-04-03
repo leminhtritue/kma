@@ -302,7 +302,8 @@ def train_source(args):
         outputs_source_rf = netCRF(netBRF(output_latent))
 
         classifier_loss = args.w_ce_h * CrossEntropyLabelSmooth(num_classes=args.class_num, epsilon=args.smooth)(outputs_source, labels_source)
-        classifier_loss += args.w_kernel * loss.KernelSource(num_classes=args.class_num, alpha=args.w_kernel_w_reg)(outputs_source_rf, labels_source, netCRF)
+        # classifier_loss += args.w_kernel * loss.KernelSource(num_classes=args.class_num, alpha=args.w_kernel_w_reg)(outputs_source_rf, labels_source, netCRF)
+        classifier_loss += args.w_kernel * CrossEntropyLabelSmooth(num_classes=args.class_num, epsilon=args.smooth)(outputs_source_rf, labels_source)    
 
         if (args.w_vat > 0):
             eps = (torch.randn(size=inputs_source.size())).type(inputs_source.type())
