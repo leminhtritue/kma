@@ -260,11 +260,14 @@ def train_source(args):
     for k, v in netB.named_parameters():
         param_group += [{'params': v, 'lr': learning_rate}]
     for k, v in netC.named_parameters():
-        param_group += [{'params': v, 'lr': learning_rate}]   
+        param_group += [{'params': v, 'lr': learning_rate}]
     for k, v in netCRF.named_parameters():
-        param_group += [{'params': v, 'lr': learning_rate}]  
+        param_group += [{'params': v, 'lr': learning_rate}]
     for k, v in netBRF.named_parameters():
+        if (args.train_brf == 0.0):
             v.requires_grad = False
+        else:
+            param_group += [{'params': v, 'lr': learning_rate}]
 
     optimizer = optim.SGD(param_group)
     optimizer = op_copy(optimizer)
@@ -277,8 +280,11 @@ def train_source(args):
     netF.train()
     netB.train()
     netC.train()
-    netBRF.eval()
     netCRF.train()
+    if (args.train_brf == 0):
+        netBRF.eval()
+    else:
+        netBRF.train()
 
     total_loss = 0.0
     count_loss = 0
@@ -302,8 +308,12 @@ def train_source(args):
         outputs_source_rf = netCRF(netBRF(output_latent))
 
         classifier_loss = args.w_ce_h * CrossEntropyLabelSmooth(num_classes=args.class_num, epsilon=args.smooth)(outputs_source, labels_source)
-        # classifier_loss += args.w_kernel * loss.KernelSource(num_classes=args.class_num, alpha=args.w_kernel_w_reg)(outputs_source_rf, labels_source, netCRF)
-        classifier_loss += args.w_kernel * CrossEntropyLabelSmooth(num_classes=args.class_num, epsilon=args.smooth)(outputs_source_rf, labels_source)    
+
+        if (args.kernel_softmax == 0.0):
+            classifier_loss += args.w_kernel * loss.KernelSource(num_classes=args.class_num, alpha=args.w_kernel_w_reg)(outputs_source_rf, labels_source, netCRF)
+        else:
+            classifier_loss += args.w_kernel * CrossEntropyLabelSmooth(num_classes=args.class_num, epsilon=args.smooth)(outputs_source_rf, labels_source)
+
 
         if (args.w_vat > 0):
             eps = (torch.randn(size=inputs_source.size())).type(inputs_source.type())
@@ -333,6 +343,8 @@ def train_source(args):
             netB.eval()
             netC.eval()
             netCRF.eval()
+            if (args.train_brf == 0):
+                netBRF.eval()
             if args.dset=='VISDA-C':
                 acc_s_te, acc_list = cal_acc(dset_loaders['source_te'], netF, netB, netC, True)
                 log_str = 'Task: {}, Iter:{}/{}; Accuracy = {:.2f}%'.format(args.name_src, iter_num, max_iter, acc_s_te) + '\n' + acc_list
@@ -362,7 +374,9 @@ def train_source(args):
             netB.train()
             netC.train()
             netCRF.train()
-                
+            if (args.train_brf == 0):
+                netBRF.train()
+
     torch.save(best_netF, osp.join(args.output_dir_src, "source_F.pt"))
     torch.save(best_netB, osp.join(args.output_dir_src, "source_B.pt"))
     torch.save(best_netC, osp.join(args.output_dir_src, "source_C.pt"))
@@ -453,6 +467,9 @@ if __name__ == "__main__":
 
     parser.add_argument('--w_vat', type=float, default=0.0)
     parser.add_argument('--radius', type=float, default=0.01)
+
+    parser.add_argument('--train_brf', type=float, default=0.0)
+    parser.add_argument('--kernel_softmax', type=float, default=0.0)
 
     args = parser.parse_args()
 
