@@ -281,7 +281,7 @@ def train_source(args):
     netB.train()
     netC.train()
     netCRF.train()
-    if (args.train_brf != 0):
+    if (args.train_brf != 0.0):
         netBRF.train()
 
     total_loss = 0.0
@@ -341,7 +341,7 @@ def train_source(args):
             netB.eval()
             netC.eval()
             netCRF.eval()
-            if (args.train_brf != 0):
+            if (args.train_brf != 0.0):
                 netBRF.eval()
             if args.dset=='VISDA-C':
                 acc_s_te, acc_list = cal_acc(dset_loaders['source_te'], netF, netB, netC, True)
@@ -372,7 +372,7 @@ def train_source(args):
             netB.train()
             netC.train()
             netCRF.train()
-            if (args.train_brf != 0):
+            if (args.train_brf != 0.0):
                 netBRF.train()
 
     torch.save(best_netF, osp.join(args.output_dir_src, "source_F.pt"))
