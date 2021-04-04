@@ -331,6 +331,22 @@ def train_source(args):
 
             classifier_loss += args.w_vat * loss_vat
 
+        if (args.w_vat_rf > 0):
+            eps_rf = (torch.randn(size=inputs_source.size())).type(inputs_source.type())
+            eps_rf = 1e-6 * normalize_perturbation(eps_rf)
+            eps_rf.requires_grad = True
+            outputs_source_adv_eps_rf = netCRF(netBRF(netB(netF(inputs_source + eps_rf))))
+            loss_func_nll_rf = KLDivWithLogits()
+            loss_eps_rf  = loss_func_nll_rf(outputs_source_adv_eps_rf, outputs_source_rf.detach())
+            loss_eps_rf.backward()
+            eps_adv_rf = eps_rf.grad
+            eps_adv_rf = normalize_perturbation(eps_adv_rf)
+            inputs_source_adv_rf = inputs_source + args.radius * eps_adv_rf
+            output_source_adv_rf = netCRF(netBRF(netB(netF(inputs_source_adv_rf.detach()))))
+            loss_vat_rf     = loss_func_nll_rf(output_source_adv_rf, outputs_source_rf.detach())
+
+            classifier_loss += args.w_vat_rf * loss_vat_rf
+
         total_loss += classifier_loss
         count_loss += 1   
 
@@ -466,6 +482,7 @@ if __name__ == "__main__":
     parser.add_argument('--w_ce_h', type=float, default=1.0)  
 
     parser.add_argument('--w_vat', type=float, default=0.0)
+    parser.add_argument('--w_vat_rf', type=float, default=0.0)
     parser.add_argument('--radius', type=float, default=0.01)
 
     parser.add_argument('--train_brf', type=float, default=0.0)
