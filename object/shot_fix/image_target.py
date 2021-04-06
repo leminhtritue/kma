@@ -273,6 +273,25 @@ def train_target(args):
             im_loss = entropy_loss * args.ent_par
             classifier_loss += im_loss
 
+
+
+        softmax_si = nn.Softmax(dim=1)(outputs_test_rf)
+
+        if args.alpha_rf > 0:
+            # entropy_si = -(softmax_out * torch.log(softmax_si + 1e-5))
+            entropy_si = -(softmax_out * torch.log(softmax_si.detach() + 1e-5))
+            entropy_si = torch.sum(entropy_si, dim=1)
+            entropy_si_loss = torch.mean(entropy_si)
+            classifier_loss += args.alpha_rf * entropy_si_loss
+
+        if args.alpha_rfen > 0:
+            entropy_loss_rf = torch.mean(loss.Entropy(softmax_si))
+            msoftmax_rf = softmax_si.mean(dim=0)
+            gentropy_loss_rf = torch.sum(-msoftmax_rf * torch.log(msoftmax_rf + args.epsilon))
+            entropy_loss_rf -= gentropy_loss_rf
+            im_loss_rf = entropy_loss_rf * args.alpha_rfen
+            classifier_loss += im_loss_rf
+
         classifier_loss_total += classifier_loss
         classifier_loss_count += 1   
 
@@ -529,7 +548,9 @@ if __name__ == "__main__":
     parser.add_argument('--nrf', type=int, default=16384)
     parser.add_argument('--layer_rf', type=str, default="wn", choices=["linear", "wn"])
 
-    parser.add_argument('--cls_parrf', type=float, default=0.3)
+    parser.add_argument('--cls_parrf', type=float, default=0.0)
+    parser.add_argument('--alpha_rf', type=float, default=0.0)
+    parser.add_argument('--alpha_rfen', type=float, default=0.0)
 
     args = parser.parse_args()
 
