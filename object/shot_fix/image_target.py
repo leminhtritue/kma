@@ -214,6 +214,7 @@ def train_target(args):
 
     classifier_loss_total = 0.0
     classifier_loss_count = 0
+    flag_start_plrf = False
 
     while iter_num < max_iter:
         if iter_num <= max_iter_half:
@@ -239,13 +240,14 @@ def train_target(args):
             netF.train()
             netB.train()
 
-        if iter_num == 0 or (iter_num % interval_iter == 0 and args.cls_parrf > 0):
+        if (not flag_start_plrf and args.cls_parrf > 0) or (iter_num % interval_iter == 0 and args.cls_parrf > 0):
             netF.eval()
             netB.eval()
             mem_label_rf = obtain_labelrf(dset_loaders['test'], netF, netB, netBRF, netCRF, args)
             mem_label_rf = torch.from_numpy(mem_label_rf).cuda()
             netF.train()
             netB.train()
+            flag_start_plrf = True
 
         inputs_test = inputs_test.cuda()
 
