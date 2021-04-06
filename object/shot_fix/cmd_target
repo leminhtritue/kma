@@ -6,8 +6,6 @@ python image_target.py --ent_par 1.0 --cls_par 0.3 --alpha_rfen 1.0 --cls_parrf 
 python image_target.py --ent_par 1.0 --cls_par 0.3 --alpha_rfen 1.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 2 --t 0 --output_src ckps/c1_31_s2_2020/ --output ckps/tmp20/ --gpu_id 3 #
 python image_target.py --ent_par 1.0 --cls_par 0.3 --alpha_rfen 1.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 2 --t 1 --output_src ckps/c1_31_s2_2020/ --output ckps/tmp21/ --gpu_id 
 
-
-
 #31 C5
 python image_target.py --ent_par 1.0 --cls_par 0.3 --alpha_rfen 1.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 0 --t 1 --output_src ckps/c5_31_s0_2020/ --layer_rf linear --output ckps/tmp01/ --gpu_id 0
 python image_target.py --ent_par 1.0 --cls_par 0.3 --alpha_rfen 1.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 0 --t 2 --output_src ckps/c5_31_s0_2020/ --layer_rf linear --output ckps/tmp02/ --gpu_id 1
