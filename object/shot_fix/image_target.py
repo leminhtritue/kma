@@ -311,7 +311,7 @@ if __name__ == "__main__":
     parser.add_argument('--interval', type=int, default=15)
     parser.add_argument('--batch_size', type=int, default=64, help="batch_size")
     parser.add_argument('--worker', type=int, default=4, help="number of workers")
-    parser.add_argument('--dset', type=str, default='office-home', choices=['VISDA-C', 'office', 'office-home', 'office-caltech'])
+    parser.add_argument('--dset', type=str, default='office', choices=['VISDA-C', 'office', 'office-home', 'office-caltech'])
     parser.add_argument('--lr', type=float, default=1e-2, help="learning rate")
     parser.add_argument('--net', type=str, default='resnet50', help="alexnet, vgg16, resnet50, res101")
     parser.add_argument('--seed', type=int, default=2020, help="random seed")
@@ -359,7 +359,9 @@ if __name__ == "__main__":
     for i in range(len(names)):
         if i == args.s:
             continue
-        args.t = i
+        if i != args.t:
+            continue
+        # args.t = i
 
         folder = './data/'
         args.s_dset_path = folder + args.dset + '/' + names[args.s] + '_list.txt'

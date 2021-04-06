@@ -1,0 +1,2 @@
+#31 C8
+python image_target.py --cls_par 0.3 --s 0 --output_src ckps/c8_31_s0_2020/ --output ckps/tmp0/ --gpu_id 0 
