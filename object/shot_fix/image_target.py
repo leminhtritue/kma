@@ -542,7 +542,7 @@ if __name__ == "__main__":
     parser.add_argument('--output', type=str, default='san')
     parser.add_argument('--output_src', type=str, default='san')
     parser.add_argument('--da', type=str, default='uda', choices=['uda', 'pda'])
-    parser.add_argument('--issave', type=bool, default=True)
+    parser.add_argument('--issave', type=bool, default=False)
 
     parser.add_argument('--gamma', type=float, default=0.1)
     parser.add_argument('--nrf', type=int, default=16384)

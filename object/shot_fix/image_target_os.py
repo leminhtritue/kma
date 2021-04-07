@@ -694,7 +694,7 @@ if __name__ == "__main__":
     parser.add_argument('--output', type=str, default='ckps/target/')
     parser.add_argument('--output_src', type=str, default='ckps/source/')
     parser.add_argument('--da', type=str, default='uda', choices=['uda', 'pda'])
-    parser.add_argument('--issave', type=bool, default=True)
+    parser.add_argument('--issave', type=bool, default=False)
 
     parser.add_argument('--trte', type=str, default='val', choices=['full', 'val'])
     parser.add_argument('--gent', type=float, default=0.1)
