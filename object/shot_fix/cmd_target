@@ -1,40 +1,30 @@
-#Home
-python image_target.py --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.0 --alpha_rf 0.0 --s 0 --t 1 --output_src ckps/c5_home_s0_2020/ --layer_rf linear --dset office-home --gpu_id 0 2>&1 | tee -a out_000; python image_target.py --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.0 --alpha_rf 0.0 --s 0 --t 2 --output_src ckps/c5_home_s0_2020/ --layer_rf linear --dset office-home --gpu_id 0 2>&1 | tee -a out_000; python image_target.py --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.0 --alpha_rf 0.0 --s 0 --t 3 --output_src ckps/c5_home_s0_2020/ --layer_rf linear --dset office-home --gpu_id 0 2>&1 | tee -a out_000
-
-
-
-
-
-#Ourshot
-python image_target_os.py --nrf 16384 --s 0 --t 1 --output_src ckps/source0_16384_gm0_1_aw0_1_vat1_arf0_1_ep500/ --w_vat 0.0 --cls_par 0.3 --ent_par 1.0 --alpha_rfen 0.0 --alpha_rf 0.1 --max_zero 0.0 --cls_parrf 0.3 --gpu_id 1
-python image_target_os.py --nrf 16384 --s 0 --t 2 --output_src ckps/source0_16384_gm0_1_aw0_1_vat1_arf0_1_ep500/ --w_vat 0.0 --cls_par 0.3 --ent_par 1.0 --alpha_rfen 0.0 --alpha_rf 0.1 --max_zero 0.0 --cls_parrf 0.3 --gpu_id 2 
-python image_target_os.py --nrf 16384 --s 1 --t 0 --output_src ckps/source1_16384_gm0_1_aw0_1_vat1_arf0_1_ep500/ --w_vat 0.0 --cls_par 0.3 --ent_par 1.0 --alpha_rfen 0.0 --alpha_rf 0.1 --max_zero 0.0 --cls_parrf 0.3 --gpu_id 2
-python image_target_os.py --nrf 16384 --s 1 --t 2 --output_src ckps/source1_16384_gm0_1_aw0_1_vat1_arf0_1_ep500/ --w_vat 0.0 --cls_par 0.3 --ent_par 1.0 --alpha_rfen 0.0 --alpha_rf 0.1 --max_zero 0.0 --cls_parrf 0.3 --gpu_id 1 
-python image_target_os.py --nrf 16384 --s 2 --t 1 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep500/ --w_vat 0.0 --cls_par 0.3 --ent_par 1.0 --alpha_rfen 0.0 --alpha_rf 0.1 --max_zero 0.0 --cls_parrf 0.3 --gpu_id 1 
-python image_target_os.py --nrf 16384 --s 2 --t 0 --output_src ckps/source2_16384_gm0_1_aw0_1_vat1_arf0_1_ep500/ --w_vat 0.0 --cls_par 0.3 --ent_par 1.0 --alpha_rfen 0.0 --alpha_rf 0.1 --max_zero 0.0 --cls_parrf 0.3 --gpu_id 1
-
+#31 C1
+python image_target.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.0 --s 0 --t 1 --output_src ckps/c1_31_s0_2020/ --layer_rf wn --gpu_id 
+python image_target.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.0 --s 0 --t 2 --output_src ckps/c1_31_s0_2020/ --layer_rf wn --gpu_id 
+python image_target.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.0 --s 1 --t 0 --output_src ckps/c1_31_s1_2020/ --layer_rf wn --gpu_id 
+python image_target.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.0 --s 1 --t 2 --output_src ckps/c1_31_s1_2020/ --layer_rf wn --gpu_id 
+python image_target.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.0 --s 2 --t 0 --output_src ckps/c1_31_s2_2020/ --layer_rf wn --gpu_id 
+python image_target.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.0 --s 2 --t 1 --output_src ckps/c1_31_s2_2020/ --layer_rf wn --gpu_id 
 
 #31 C5
-python image_target_os.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 0 --t 1 --output_src ckps/c5_31_s0_2020/ --layer_rf linear --gpu_id 1 #5
-python image_target_os.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 0 --t 2 --output_src ckps/c5_31_s0_2020/ --layer_rf linear --gpu_id 2 
-python image_target_os.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 1 --t 0 --output_src ckps/c5_31_s1_2020/ --layer_rf linear --gpu_id 2 
-python image_target_os.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 1 --t 2 --output_src ckps/c5_31_s1_2020/ --layer_rf linear --gpu_id 2 #4
-python image_target_os.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 2 --t 0 --output_src ckps/c5_31_s2_2020/ --layer_rf linear --gpu_id 
-python image_target_os.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 2 --t 1 --output_src ckps/c5_31_s2_2020/ --layer_rf linear --gpu_id 4 #
-
-
-#31 C1
-python image_target_os.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 0 --t 1 --output_src ckps/c1_31_s0_2020/ --gpu_id 
-python image_target_os.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 0 --t 2 --output_src ckps/c1_31_s0_2020/ --gpu_id 
-python image_target_os.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 1 --t 0 --output_src ckps/c1_31_s1_2020/ --gpu_id 
-python image_target_os.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 1 --t 2 --output_src ckps/c1_31_s1_2020/ --gpu_id 
-python image_target_os.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 2 --t 0 --output_src ckps/c1_31_s2_2020/ --gpu_id 
-python image_target_os.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 2 --t 1 --output_src ckps/c1_31_s2_2020/ --gpu_id 
+python image_target.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.0 --s 0 --t 1 --output_src ckps/c5_31_s0_2020/ --layer_rf linear --gpu_id 
+python image_target.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.0 --s 0 --t 2 --output_src ckps/c5_31_s0_2020/ --layer_rf linear --gpu_id  
+python image_target.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.0 --s 1 --t 0 --output_src ckps/c5_31_s1_2020/ --layer_rf linear --gpu_id 
+python image_target.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.0 --s 1 --t 2 --output_src ckps/c5_31_s1_2020/ --layer_rf linear --gpu_id 
+python image_target.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.0 --s 2 --t 0 --output_src ckps/c5_31_s2_2020/ --layer_rf linear --gpu_id 
+python image_target.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.0 --s 2 --t 1 --output_src ckps/c5_31_s2_2020/ --layer_rf linear --gpu_id 
 
 #31 C8
-python image_target_os.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 0 --t 1 --output_src ckps/c8_31_s0_2020/ --gpu_id 
-python image_target_os.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 0 --t 2 --output_src ckps/c8_31_s0_2020/ --gpu_id 
-python image_target_os.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 1 --t 0 --output_src ckps/c8_31_s1_2020/ --gpu_id 
-python image_target_os.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 1 --t 2 --output_src ckps/c8_31_s1_2020/ --gpu_id 
-python image_target_os.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 2 --t 0 --output_src ckps/c8_31_s2_2020/ --gpu_id 
-python image_target_os.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 2 --t 1 --output_src ckps/c8_31_s2_2020/ --gpu_id 
+python image_target.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.0 --s 0 --t 1 --output_src ckps/c8_31_s0_2020/ --layer_rf wn --gpu_id 
+python image_target.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.0 --s 0 --t 2 --output_src ckps/c8_31_s0_2020/ --layer_rf wn --gpu_id 
+python image_target.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.0 --s 1 --t 0 --output_src ckps/c8_31_s1_2020/ --layer_rf wn --gpu_id 
+python image_target.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.0 --s 1 --t 2 --output_src ckps/c8_31_s1_2020/ --layer_rf wn --gpu_id 
+python image_target.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.0 --s 2 --t 0 --output_src ckps/c8_31_s2_2020/ --layer_rf wn --gpu_id  
+python image_target.py --nrf 16384 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.3 --alpha_rf 0.0 --s 2 --t 1 --output_src ckps/c8_31_s2_2020/ --layer_rf wn --gpu_id 
+
+
+
+#Home
+python image_target.py --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.0 --alpha_rf 0.0 --s 0 --t 1 --output_src ckps/c5_home_s0_2020/ --layer_rf linear --dset office-home --gpu_id
+python image_target.py --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.0 --alpha_rf 0.0 --s 0 --t 2 --output_src ckps/c5_home_s0_2020/ --layer_rf linear --dset office-home --gpu_id
+python image_target.py --ent_par 1.0 --cls_par 0.3 --alpha_rfen 0.0 --cls_parrf 0.0 --alpha_rf 0.0 --s 0 --t 3 --output_src ckps/c5_home_s0_2020/ --layer_rf linear --dset office-home --gpu_id

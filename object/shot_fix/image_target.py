@@ -179,9 +179,9 @@ def train_target(args):
 
     param_group = []
 
-    netC.eval()
-    netCRF.eval()
-    netBRF.eval()
+    # netC.eval()
+    # netCRF.eval()
+    # netBRF.eval()
 
     for k, v in netC.named_parameters():
         v.requires_grad = False
@@ -225,18 +225,30 @@ def train_target(args):
         if iter_num % interval_iter == 0 and args.cls_par > 0:
             netF.eval()
             netB.eval()
+            netC.eval()
+            netCRF.eval()
+            netBRF.eval()
             mem_label = obtain_label(dset_loaders['test'], netF, netB, netC, args)
             mem_label = torch.from_numpy(mem_label).cuda()
             netF.train()
             netB.train()
+            netC.train()
+            netCRF.train()
+            netBRF.train()
 
         if iter_num % interval_iter == 0 and args.cls_parrf > 0:
             netF.eval()
             netB.eval()
+            netC.eval()
+            netCRF.eval()
+            netBRF.eval()
             mem_label_rf = obtain_labelrf(dset_loaders['test'], netF, netB, netBRF, netCRF, args)
             mem_label_rf = torch.from_numpy(mem_label_rf).cuda()
             netF.train()
             netB.train()
+            netC.train()
+            netCRF.train()
+            netBRF.train()
 
         inputs_test = inputs_test.cuda()
 
@@ -302,6 +314,9 @@ def train_target(args):
         if iter_num % interval_iter == 0 or iter_num == max_iter:
             netF.eval()
             netB.eval()
+            netC.eval()
+            netCRF.eval()
+            netBRF.eval()
             if args.dset=='VISDA-C':
                 acc_s_te, acc_list = cal_acc(dset_loaders['test'], netF, netB, netC, True)
                 log_str = 'Task: {}, Iter:{}/{}; Accuracy = {:.2f}%'.format(args.name, iter_num, max_iter, acc_s_te) + '\n' + acc_list
@@ -322,6 +337,9 @@ def train_target(args):
             classifier_loss_count = 0
             netF.train()
             netB.train()
+            netC.train()
+            netCRF.train()
+            netBRF.train()
 
     if args.issave:   
         torch.save(netF.state_dict(), osp.join(args.output_dir, "target_F_" + args.savename + ".pt"))
