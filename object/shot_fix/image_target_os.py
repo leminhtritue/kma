@@ -732,7 +732,7 @@ if __name__ == "__main__":
         names = ['amazon', 'caltech', 'dslr', 'webcam']
         args.class_num = 10
         
-    os.environ["CUDA_VISIBLE_DEVICES"] = (int(args.gpu_id) % 4)
+    os.environ["CUDA_VISIBLE_DEVICES"] = srt((int(args.gpu_id) % 4))
     SEED = args.seed
     # torch.manual_seed(SEED)
     # torch.cuda.manual_seed(SEED)
