@@ -152,6 +152,30 @@ def cal_accrf(loader, netF, netB, netBRF, netCRF, flag=False):
     else:
         return accuracy*100, mean_ent
 
+def normalize_perturbation(d):
+    d_ = d.view(d.size()[0], -1)
+    eps = d.new_tensor(1e-12)
+    output = d / torch.sqrt(torch.max((d_**2).sum(dim = -1), eps)[0] )
+    return output
+
+class KLDivWithLogits(nn.Module):
+
+    def __init__(self):
+
+        super(KLDivWithLogits, self).__init__()
+
+        self.kl = nn.KLDivLoss(size_average=False, reduce=True)
+        self.logsoftmax = nn.LogSoftmax(dim = 1)
+        self.softmax = nn.Softmax(dim = 1)
+
+
+    def forward(self, x, y):
+
+        log_p = self.logsoftmax(x)
+        q     = self.softmax(y)
+
+        return self.kl(log_p, q) / x.size()[0]
+
 def train_target(args):
     dset_loaders = data_load(args)
     ## set base network
@@ -165,31 +189,55 @@ def train_target(args):
 
     netBRF = network.feat_bootleneck_rf(nrf=args.nrf, type=args.classifier, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
     netCRF = network.feat_classifier_rf(nrf=args.nrf, type=args.layer_rf, class_num = args.class_num).cuda()
-
+    
     modelpath = args.output_dir_src + '/source_F.pt'   
     netF.load_state_dict(torch.load(modelpath))
     modelpath = args.output_dir_src + '/source_B.pt'   
     netB.load_state_dict(torch.load(modelpath))
+
     modelpath = args.output_dir_src + '/source_C.pt'    
     netC.load_state_dict(torch.load(modelpath))
-    modelpath = args.output_dir_src + '/source_BRF.pt'    
-    netBRF.load_state_dict(torch.load(modelpath))
-    modelpath = args.output_dir_src + '/source_CRF.pt'    
-    netCRF.load_state_dict(torch.load(modelpath))
+
+    if args.fromShot == 0.0:
+        modelpath = args.output_dir_src + '/source_BRF.pt'    
+        netBRF.load_state_dict(torch.load(modelpath))
+        modelpath = args.output_dir_src + '/source_CRF.pt'    
+        netCRF.load_state_dict(torch.load(modelpath))
 
     param_group = []
+    if args.train_c == 0.0:
+        netC.eval()
+        for k, v in netC.named_parameters():
+            v.requires_grad = False
+    else:
+        for k, v in netC.named_parameters():
+            if args.lr_decayc > 0:
+                param_group += [{'params': v, 'lr': args.lr * args.lr_decayc}]
+            else:
+                v.requires_grad = False        
 
-    netC.eval()
-    netCRF.eval()
-    netBRF.eval()
+    if args.train_rf == 0.0:
+        netCRF.eval()
+        netBRF.eval()
+        for k, v in netCRF.named_parameters():
+            v.requires_grad = False
+        for k, v in netBRF.named_parameters():
+            v.requires_grad = False
+    else:
+        for k, v in netCRF.named_parameters():
+            if args.lr_decay2 > 0:
+                param_group += [{'params': v, 'lr': args.lr * args.lr_decay2}]
+            else:
+                v.requires_grad = False   
 
-    for k, v in netC.named_parameters():
-        v.requires_grad = False
-    for k, v in netCRF.named_parameters():
-        v.requires_grad = False
-    for k, v in netBRF.named_parameters():
-        v.requires_grad = False
+        for k, v in netBRF.named_parameters():
+            if args.lr_decay2 > 0:
+                param_group += [{'params': v, 'lr': args.lr * args.lr_decay2}]
+            else:
+                v.requires_grad = False
 
+
+    
     for k, v in netF.named_parameters():
         if args.lr_decay1 > 0:
             param_group += [{'params': v, 'lr': args.lr * args.lr_decay1}]
@@ -201,6 +249,8 @@ def train_target(args):
         else:
             v.requires_grad = False
 
+
+
     optimizer = optim.SGD(param_group)
     optimizer = op_copy(optimizer)
 
@@ -208,20 +258,22 @@ def train_target(args):
     # interval_iter = max_iter // args.interval
     interval_iter = len(dset_loaders["target"])
     iter_num = 0
-    max_iter_half = max_iter / 2
-    backup_param_shot = (args.ent_par, args.cls_par)
-    backup_param_our = (args.alpha_rfen, args.cls_parrf, args.alpha_rf)
 
     classifier_loss_total = 0.0
     classifier_loss_count = 0
+    # entropy_loss_total = 0.0
+    # entropy_loss_count = 0
+    # costlog_loss_total = 0.0
+    # costlog_loss_count = 0
+    # costs_loss_total = 0.0
+    # costs_loss_count = 0
+    # costdist_loss_total = 0.0
+    # costdist_loss_count = 0
+    # right_sample_count = 0
+    # sum_sample = 0
+    # start_output = True
 
     while iter_num < max_iter:
-        if iter_num <= max_iter_half:
-            (args.ent_par, args.cls_par) = backup_param_shot
-            (args.alpha_rfen, args.cls_parrf, args.alpha_rf) = (0.0, 0.0, 0.0)
-        else:
-            (args.ent_par, args.cls_par) = (0.0, 0.0)
-            (args.alpha_rfen, args.cls_parrf, args.alpha_rf) = backup_param_our        
         try:
             inputs_test, _, tar_idx = iter_test.next()
         except:
@@ -234,18 +286,39 @@ def train_target(args):
         if iter_num % interval_iter == 0 and args.cls_par > 0:
             netF.eval()
             netB.eval()
+            if args.train_c != 0.0:
+                netC.eval()
+            if args.train_rf != 0.0:
+                netCRF.eval()
+                netBRF.eval()
             mem_label = obtain_label(dset_loaders['test'], netF, netB, netC, args)
             mem_label = torch.from_numpy(mem_label).cuda()
             netF.train()
             netB.train()
+            
+            if args.train_c != 0.0:
+                netC.train()
+            if args.train_rf != 0.0:
+                netCRF.train()
+                netBRF.train()
 
         if iter_num % interval_iter == 0 and args.cls_parrf > 0:
             netF.eval()
             netB.eval()
+            if args.train_c != 0.0:
+                netC.eval()
+            if args.train_rf != 0.0:
+                netCRF.eval()
+                netBRF.eval()
             mem_label_rf = obtain_labelrf(dset_loaders['test'], netF, netB, netBRF, netCRF, args)
             mem_label_rf = torch.from_numpy(mem_label_rf).cuda()
             netF.train()
             netB.train()
+            if args.train_c != 0.0:
+                netC.train()
+            if args.train_rf != 0.0:
+                netCRF.train()
+                netBRF.train()
 
         inputs_test = inputs_test.cuda()
 
@@ -254,7 +327,9 @@ def train_target(args):
 
         features_test = netB(netF(inputs_test))
         outputs_test = netC(features_test)
+        # outputs_test_rf = netCRF(netBRF(features_test.detach()))
         outputs_test_rf = netCRF(netBRF(features_test))
+
 
         if args.cls_par > 0:
             pred = mem_label[tar_idx]
@@ -272,6 +347,7 @@ def train_target(args):
                 classifier_loss_rf *= 0
             classifier_loss += classifier_loss_rf
 
+
         softmax_out = nn.Softmax(dim=1)(outputs_test)
         if args.ent:
             entropy_loss = torch.mean(loss.Entropy(softmax_out))
@@ -284,9 +360,23 @@ def train_target(args):
 
 
 
+        # mark_max = torch.zeros(outputs_test_rf.size()).cuda()
+        
+        # mark_zeros = torch.zeros(outputs_test_rf.size()).cuda()
+        # if (args.max_zero > 0.0):
+        #     outputs_test_max = torch.maximum(outputs_test_rf, mark_zeros)
+        # else:
+        #     outputs_test_max = outputs_test_rf
+
+        # for i in range(args.class_num):
+        #     mark_max[:,i] = torch.max(torch.cat((outputs_test_max[:, :i],outputs_test_max[:, i+1:]), dim = 1), dim = 1).values        
+        # cost_s = outputs_test_max - mark_max
+   
+        # softmax_si = nn.Softmax(dim=1)(cost_s)
         softmax_si = nn.Softmax(dim=1)(outputs_test_rf)
 
         if args.alpha_rf > 0:
+
             # entropy_si = -(softmax_out * torch.log(softmax_si + 1e-5))
             entropy_si = -(softmax_out * torch.log(softmax_si.detach() + 1e-5))
             entropy_si = torch.sum(entropy_si, dim=1)
@@ -295,14 +385,50 @@ def train_target(args):
 
         if args.alpha_rfen > 0:
             entropy_loss_rf = torch.mean(loss.Entropy(softmax_si))
+
             msoftmax_rf = softmax_si.mean(dim=0)
             gentropy_loss_rf = torch.sum(-msoftmax_rf * torch.log(msoftmax_rf + args.epsilon))
             entropy_loss_rf -= gentropy_loss_rf
             im_loss_rf = entropy_loss_rf * args.alpha_rfen
             classifier_loss += im_loss_rf
 
+        if (args.w_vat > 0):
+        	eps = (torch.randn(size=inputs_test.size())).type(inputs_test.type())
+        	eps = 1e-6 * normalize_perturbation(eps)
+        	eps.requires_grad = True
+        	outputs_source_adv_eps = netC(netB(netF(inputs_test + eps)))
+        	loss_func_nll = KLDivWithLogits()
+        	loss_eps  = loss_func_nll(outputs_source_adv_eps, outputs_test.detach())
+        	loss_eps.backward()
+        	eps_adv = eps.grad
+        	eps_adv = normalize_perturbation(eps_adv)
+        	inputs_source_adv = inputs_test + args.radius * eps_adv
+        	output_source_adv = netC(netB(netF(inputs_source_adv.detach())))
+        	loss_vat     = loss_func_nll(output_source_adv, outputs_test.detach())
+        	classifier_loss += args.w_vat * loss_vat
+
         classifier_loss_total += classifier_loss
         classifier_loss_count += 1   
+        # entropy_loss_total += entropy_loss
+        # entropy_loss_count += 1 
+        # costlog_loss_total += 0
+        # costlog_loss_count += 1  
+        # costs_loss_total += 0
+        # costs_loss_count += 1  
+        # costdist_loss_total += 0
+        # costdist_loss_count += 1 
+
+        # max_hyperplane = outputs_test.max(dim=1).values       
+        # max_hyperplane[max_hyperplane > 0] = 1
+        # max_hyperplane[max_hyperplane < 0] = 0
+        # right_sample_count += max_hyperplane.sum()
+        # sum_sample += outputs_test.shape[0]
+
+        # if (start_output):
+        #     all_output = outputs_test.float().cpu()
+        #     start_output = False
+        # else:
+        #     all_output = torch.cat((all_output, outputs_test.float().cpu()), 0)
 
         optimizer.zero_grad()
         classifier_loss.backward()
@@ -311,27 +437,54 @@ def train_target(args):
         if iter_num % interval_iter == 0 or iter_num == max_iter:
             netF.eval()
             netB.eval()
+            if args.train_c != 0.0:
+                netC.eval()
+            if args.train_rf != 0.0:
+                netCRF.eval()
+                netBRF.eval()
             if args.dset=='VISDA-C':
                 acc_s_te, acc_list = cal_acc(dset_loaders['test'], netF, netB, netC, True)
                 log_str = 'Task: {}, Iter:{}/{}; Accuracy = {:.2f}%'.format(args.name, iter_num, max_iter, acc_s_te) + '\n' + acc_list
             else:
-                acc_s_tr, _ = cal_acc(dset_loaders['target'], netF, netB, netC, False)
+                # _, predict = torch.max(all_output, 1)
                 acc_s_te, _ = cal_acc(dset_loaders['test'], netF, netB, netC, False)
-                acc_s_tr_rf, _ = cal_accrf(dset_loaders['target'], netF, netB, netBRF, netCRF, False)
+                acc_s_tr, _ = cal_acc(dset_loaders['target'], netF, netB, netC, False)
                 acc_s_te_rf, _ = cal_accrf(dset_loaders['test'], netF, netB, netBRF, netCRF, False)
+                acc_s_tr_rf, _ = cal_accrf(dset_loaders['target'], netF, netB, netBRF, netCRF, False)
 
-                # log_str = 'Task: {}, Iter:{}/{}; Accuracy = {:.2f}%'.format(args.name, iter_num, max_iter, acc_s_te)
-                log_str = 'Task: {}, Iter:{}/{}; Loss : {:.2f}, , Accuracy target (train / test / trainrf / testrf) = {:.2f}% / {:.2f}% / {:.2f}% / {:.2f}%.'.format(args.name, iter_num, max_iter, \
+                # log_str = 'Task: {}, Iter:{}/{}; Loss : {:.2f}, , Accuracy target (train/test) = {:.2f}% / {:.2f}%, moved samples: {}/{}.'.format(args.name, iter_num, max_iter, \
+                # classifier_loss_total/classifier_loss_count, acc_s_tr, acc_s_te, right_sample_count, sum_sample)
+                log_str = 'Task: {}, Iter:{}/{}; Loss : {:.2f}, , Accuracy target (train/test/trainrf/testrf) = {:.2f}% / {:.2f}% / {:.2f}% / {:.2f}%.'.format(args.name, iter_num, max_iter, \
                 classifier_loss_total/classifier_loss_count, acc_s_tr, acc_s_te, acc_s_tr_rf, acc_s_te_rf)
 
             args.out_file.write(log_str + '\n')
             args.out_file.flush()
-            print(args.ent_par, args.cls_par, args.alpha_rfen, args.cls_parrf, args.alpha_rf)
-            print('\n' + log_str+'\n')
+            print(log_str+'\n')
+
+            if acc_s_te < 50:
+                return netF, netB, netC, (acc_s_te + 100)
+
             classifier_loss_total = 0.0
             classifier_loss_count = 0
+            # entropy_loss_total = 0.0
+            # entropy_loss_count = 0
+            # costs_loss_total = 0.0
+            # costs_loss_count = 0
+            # costdist_loss_total = 0.0
+            # costdist_loss_count = 0
+            # costlog_loss_total = 0.0
+            # costlog_loss_count = 0
+            # right_sample_count = 0
+            # sum_sample = 0
+            # start_output = True
+
             netF.train()
             netB.train()
+            if args.train_c != 0.0:
+                netC.train()
+            if args.train_rf != 0.0:
+                netCRF.train()
+                netBRF.train()
 
     if args.issave:   
         torch.save(netF.state_dict(), osp.join(args.output_dir, "target_F_" + args.savename + ".pt"))
@@ -339,8 +492,8 @@ def train_target(args):
         torch.save(netC.state_dict(), osp.join(args.output_dir, "target_C_" + args.savename + ".pt"))
         torch.save(netBRF.state_dict(), osp.join(args.output_dir, "target_BRF_" + args.savename + ".pt"))
         torch.save(netCRF.state_dict(), osp.join(args.output_dir, "target_CRF_" + args.savename + ".pt"))
-
-    return netF, netB, netC
+        
+    return netF, netB, netC, acc_s_te
 
 def test_target(args):
     dset_loaders = data_load(args)
@@ -352,25 +505,16 @@ def test_target(args):
 
     netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
     netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
-
-    netBRF = network.feat_bootleneck_rf(nrf=args.nrf, type=args.classifier, gamma = args.gamma, bottleneck_dim=args.bottleneck).cuda()
-    netCRF = network.feat_classifier_rf(nrf=args.nrf, type=args.layer_rf, class_num = args.class_num).cuda()
-
-    modelpath = args.output_dir_src + '/source_F.pt'
-    netF.load_state_dict(torch.load(modelpath))
-    modelpath = args.output_dir_src + '/source_B.pt'
-    netB.load_state_dict(torch.load(modelpath))
-    modelpath = args.output_dir_src + '/source_C.pt'
-    netC.load_state_dict(torch.load(modelpath))
-    modelpath = args.output_dir_src + '/source_BRF.pt'    
-    netBRF.load_state_dict(torch.load(modelpath))
-    modelpath = args.output_dir_src + '/source_CRF.pt'    
-    netCRF.load_state_dict(torch.load(modelpath))
+    
+    args.modelpath = args.output_dir_src + '/source_F.pt'   
+    netF.load_state_dict(torch.load(args.modelpath))
+    args.modelpath = args.output_dir_src + '/source_B.pt'   
+    netB.load_state_dict(torch.load(args.modelpath))
+    args.modelpath = args.output_dir_src + '/source_C.pt'   
+    netC.load_state_dict(torch.load(args.modelpath))
     netF.eval()
     netB.eval()
     netC.eval()
-    netBRF.eval()
-    netCRF.eval()
 
     if args.da == 'oda':
         acc_os1, acc_os2, acc_unknown = cal_acc_oda(dset_loaders['test'], netF, netB, netC)
@@ -381,9 +525,7 @@ def test_target(args):
             log_str = '\nTraining: {}, Task: {}, Accuracy = {:.2f}%'.format(args.trte, args.name, acc) + '\n' + acc_list
         else:
             acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC, False)
-            acc_rf, _ = cal_accrf(dset_loaders['test'], netF, netB, netBRF, netCRF, False)
-
-            log_str = '\nTraining:, Task: {}, Accuracy (H / RF) = {:.2f}% / {:.2f}%'.format(args.name, acc, acc_rf)
+            log_str = '\nTraining:, Task: {}, Accuracy = {:.2f}%'.format(args.name, acc)
 
     args.out_file.write(log_str)
     args.out_file.flush()
@@ -536,10 +678,10 @@ if __name__ == "__main__":
     parser.add_argument('--net', type=str, default='resnet50', help="alexnet, vgg16, resnet50, res101")
     parser.add_argument('--seed', type=int, default=2020, help="random seed")
  
-    parser.add_argument('--gent', type=bool, default=True)
+    # parser.add_argument('--gent', type=bool, default=True)
     parser.add_argument('--ent', type=bool, default=True)
     parser.add_argument('--threshold', type=int, default=0)
-    parser.add_argument('--cls_par', type=float, default=0.3)
+
     parser.add_argument('--ent_par', type=float, default=1.0)
     parser.add_argument('--lr_decay1', type=float, default=0.1)
     parser.add_argument('--lr_decay2', type=float, default=1.0)
@@ -549,19 +691,32 @@ if __name__ == "__main__":
     parser.add_argument('--layer', type=str, default="wn", choices=["linear", "wn"])
     parser.add_argument('--classifier', type=str, default="bn", choices=["ori", "bn"])
     parser.add_argument('--distance', type=str, default='cosine', choices=["euclidean", "cosine"])  
-    parser.add_argument('--output', type=str, default='san')
-    parser.add_argument('--output_src', type=str, default='san')
+    parser.add_argument('--output', type=str, default='ckps/target/')
+    parser.add_argument('--output_src', type=str, default='ckps/source/')
     parser.add_argument('--da', type=str, default='uda', choices=['uda', 'pda'])
     parser.add_argument('--issave', type=bool, default=True)
 
+    parser.add_argument('--trte', type=str, default='val', choices=['full', 'val'])
+    parser.add_argument('--gent', type=float, default=0.1)
     parser.add_argument('--gamma', type=float, default=0.1)
-    parser.add_argument('--nrf', type=int, default=16384)
-    parser.add_argument('--layer_rf', type=str, default="wn", choices=["linear", "wn"])
 
-    parser.add_argument('--cls_parrf', type=float, default=0.0)
-    parser.add_argument('--alpha_rf', type=float, default=0.0)
-    parser.add_argument('--alpha_rfen', type=float, default=0.0)
+    parser.add_argument('--cls_par', type=float, default=0.3)
+    parser.add_argument('--cls_parrf', type=float, default=0.3)
+    parser.add_argument('--nrf', type=int, default=512)
+    parser.add_argument('--max_zero', type=float, default=1.0)
+    parser.add_argument('--w_vat', type=float, default=0.0)
+    parser.add_argument('--alpha_rf', type=float, default=0.1)
+    parser.add_argument('--alpha_rfen', type=float, default=0.1)
 
+    parser.add_argument('--radius', type=float, default=0.01)    
+    parser.add_argument('--layer_rf', type=str, default="linear", choices=["linear", "wn"])
+    parser.add_argument('--grid', type=float, default=0.0)    
+    parser.add_argument('--train_c', type=float, default=0.0)    
+    parser.add_argument('--train_rf', type=float, default=0.0)
+    parser.add_argument('--lr_decayc', type=float, default=0.1)
+
+    parser.add_argument('--fromShot', type=float, default=0.0)
+    
     args = parser.parse_args()
 
     if args.dset == 'office-home':
@@ -579,18 +734,18 @@ if __name__ == "__main__":
         
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_id
     SEED = args.seed
-    torch.manual_seed(SEED)
-    torch.cuda.manual_seed(SEED)
-    np.random.seed(SEED)
-    random.seed(SEED)
+    # torch.manual_seed(SEED)
+    # torch.cuda.manual_seed(SEED)
+    # np.random.seed(SEED)
+    # random.seed(SEED)
     # torch.backends.cudnn.deterministic = True
 
     for i in range(len(names)):
         if i == args.s:
             continue
         if i != args.t:
-            continue
-        # args.t = i
+        	continue
+        args.t = i
 
         folder = './data/'
         args.s_dset_path = folder + args.dset + '/' + names[args.s] + '_list.txt'
@@ -620,4 +775,46 @@ if __name__ == "__main__":
         args.out_file.write(print_args(args)+'\n')
         args.out_file.flush()
         test_target(args)
-        train_target(args)
+
+        if (args.grid > 0.0):
+            list_cls_par = [0.3, 0.1, 1.0]
+            # list_w_vat = [0.1, 1.0, 0.0]
+            list_w_vat = [0.0]
+            list_alpha_rfen = [0.1, 1.0]
+            list_alpha_rf = [0.1, 1.0, 0.0]
+            list_max_zero = [1.0, 0.0]
+            args.max_epoch = 30
+
+            # list_cls_par = [1.0]
+            # list_w_vat = [1.0]
+            # list_alpha_rfen = [0.1]
+            # list_alpha_rf = [0.1]
+            # list_max_zero = [0.0]
+
+        else:
+            list_cls_par = [args.cls_par]
+            list_w_vat = [args.w_vat]
+            list_alpha_rfen = [args.alpha_rfen]
+            list_alpha_rf = [args.alpha_rf]
+            list_max_zero = [args.max_zero]
+
+        dict_result = dict()
+        for cur_cls_par in list_cls_par:
+            args.cls_par = cur_cls_par        
+            for cur_w_vat in list_w_vat:
+                args.w_vat = cur_w_vat
+                for cur_alpha_rfen in list_alpha_rfen:
+                    args.alpha_rfen = cur_alpha_rfen                
+                    for cur_alpha_rf in list_alpha_rf:
+                        args.alpha_rf = cur_alpha_rf
+                        for cur_max_zero in list_max_zero:
+                            args.max_zero = cur_max_zero
+                            torch.manual_seed(SEED)
+                            torch.cuda.manual_seed(SEED)
+                            np.random.seed(SEED)
+                            random.seed(SEED)
+                            
+                            _,_,_, acc = train_target(args)
+                            dict_result[(args.cls_par, args.alpha_rfen, args.alpha_rf, args.max_zero, args.w_vat)] = acc
+                            for key in dict_result:
+                                print("{}-{}-{}-{}-{}-{}".format(key[0], key[1], key[2], key[3], key[4], dict_result[key]))

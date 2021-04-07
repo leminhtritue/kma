@@ -208,11 +208,21 @@ def train_target(args):
     # interval_iter = max_iter // args.interval
     interval_iter = len(dset_loaders["target"])
     iter_num = 0
+    max_iter_half = max_iter / 2
+    backup_param_shot = (args.ent_par, args.cls_par)
+    backup_param_our = (args.alpha_rfen, args.cls_parrf, args.alpha_rf)
 
     classifier_loss_total = 0.0
     classifier_loss_count = 0
+    flag_start_plrf = False
 
     while iter_num < max_iter:
+        if iter_num <= max_iter_half:
+            (args.ent_par, args.cls_par) = backup_param_shot
+            (args.alpha_rfen, args.cls_parrf, args.alpha_rf) = (0.0, 0.0, 0.0)
+        else:
+            (args.ent_par, args.cls_par) = (0.0, 0.0)
+            (args.alpha_rfen, args.cls_parrf, args.alpha_rf) = backup_param_our        
         try:
             inputs_test, _, tar_idx = iter_test.next()
         except:
@@ -230,13 +240,14 @@ def train_target(args):
             netF.train()
             netB.train()
 
-        if iter_num % interval_iter == 0 and args.cls_parrf > 0:
+        if (not flag_start_plrf and args.cls_parrf > 0) or (iter_num % interval_iter == 0 and args.cls_parrf > 0):
             netF.eval()
             netB.eval()
             mem_label_rf = obtain_labelrf(dset_loaders['test'], netF, netB, netBRF, netCRF, args)
             mem_label_rf = torch.from_numpy(mem_label_rf).cuda()
             netF.train()
             netB.train()
+            flag_start_plrf = True
 
         inputs_test = inputs_test.cuda()
 
@@ -311,13 +322,14 @@ def train_target(args):
                 acc_s_tr_rf, _ = cal_accrf(dset_loaders['target'], netF, netB, netBRF, netCRF, False)
                 acc_s_te_rf, _ = cal_accrf(dset_loaders['test'], netF, netB, netBRF, netCRF, False)
 
-                log_str = 'Task: {}, Iter:{}/{}; Accuracy = {:.2f}%'.format(args.name, iter_num, max_iter, acc_s_te)
+                # log_str = 'Task: {}, Iter:{}/{}; Accuracy = {:.2f}%'.format(args.name, iter_num, max_iter, acc_s_te)
                 log_str = 'Task: {}, Iter:{}/{}; Loss : {:.2f}, , Accuracy target (train / test / trainrf / testrf) = {:.2f}% / {:.2f}% / {:.2f}% / {:.2f}%.'.format(args.name, iter_num, max_iter, \
                 classifier_loss_total/classifier_loss_count, acc_s_tr, acc_s_te, acc_s_tr_rf, acc_s_te_rf)
 
             args.out_file.write(log_str + '\n')
             args.out_file.flush()
-            print(log_str+'\n')
+            print(args.ent_par, args.cls_par, args.alpha_rfen, args.cls_parrf, args.alpha_rf)
+            print('\n' + log_str+'\n')
             classifier_loss_total = 0.0
             classifier_loss_count = 0
             netF.train()
