@@ -102,17 +102,3 @@ python image_source.py --max_epoch 500 --s 3 --t 0 --w_ce_h 1.0 --w_kernel 0.1 -
 
 
 
-
-
-
- cd digit/
- python uda_digit.py --dset m2u --gpu_id 0 --output ckps_digits --cls_par 0.0
- python uda_digit.py --dset m2u --gpu_id 0 --output ckps_digits --cls_par 0.1
-
-
-
- python image_target.py --cls_par 0.3 --da uda --dset VISDA-C --gpu_id 0 --s 0 --output_src ckps/source/ --output ckps/target/ --net resnet101 --lr 1e-3
-
-
-
-python image_source.py --net resnet101 --lr 1e-3 --max_epoch 10 --s 0 --t 1 --w_ce_h 1.0 --w_kernel 6.0 --w_vat 0.0 --w_vat_rf 0.0 --gamma 0.1 --nrf 16384  --layer_rf wn --train_brf 0.0 --kernel_softmax 0.0 --output ckps/c8_visdac_s0_2020/ --dset VISDA-C --gpu_id 0

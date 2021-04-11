@@ -362,8 +362,11 @@ def train_source(args):
             if (args.train_brf != 0.0):
                 netBRF.eval()
             if args.dset=='VISDA-C':
-                acc_s_te, acc_list = cal_acc(dset_loaders['source_te'], netF, netB, netC, True)
-                log_str = 'Task: {}, Iter:{}/{}; Accuracy = {:.2f}%'.format(args.name_src, iter_num, max_iter, acc_s_te) + '\n' + acc_list
+                acc_s_tr, acc_list_tr = cal_acc(dset_loaders['source_tr'], netF, netB, netC, True)
+                acc_s_te, acc_list_te = cal_acc(dset_loaders['source_te'], netF, netB, netC, True)
+                acc_s_tgt, acc_list_tgt = cal_acc(dset_loaders['test'], netF, netB, netC, True)
+                log_str = 'Task: {}, Iter:{}/{}; Accuracy source (train/test/target) = {:.2f}% / {:.2f}% / {:.2f}%'.format(args.name_src, iter_num, max_iter, acc_s_tr, acc_s_te, acc_s_tgt) +\
+                 '\n' + acc_list_tr + '\n' + acc_list_te + '\n' + acc_list_tgt
             else:
                 acc_s_tr, _ = cal_acc(dset_loaders['source_tr'], netF, netB, netC, False)
                 acc_s_te, _ = cal_acc(dset_loaders['source_te'], netF, netB, netC, False)
@@ -436,7 +439,8 @@ def test_target(args):
     else:
         if args.dset=='VISDA-C':
             acc, acc_list = cal_acc(dset_loaders['test'], netF, netB, netC, True)
-            log_str = '\nTraining: {}, Task: {}, Accuracy = {:.2f}%'.format(args.trte, args.name, acc) + '\n' + acc_list
+            acc_rf, acc_list_rf = cal_acc_rf(dset_loaders['test'], netF, netB, netBRF, netCRF, True)
+            log_str = '\nTraining: {}, Task: {}, Accuracy (H / RF) = {:.2f}% / {:.2f}%'.format(args.trte, args.name, acc, acc_rf) + '\n' + acc_list + '\n' + acc_list_rf
         else:
             acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC, False)
             acc_rf, _ = cal_acc_rf(dset_loaders['test'], netF, netB, netBRF, netCRF, False)
