@@ -202,7 +202,7 @@ python image_target.py --max_epoch 15 --nrf 4096 --ent_par 1.0 --cls_par 0.3 --a
 
 python image_target.py --max_epoch 15 --nrf 4096 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 1.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 0 --t 1 --output_src ckps/c104_home_s0_2020_100/ --layer_rf wn --dset office-home --gpu_id 
 python image_target.py --max_epoch 15 --nrf 4096 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 1.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 0 --t 2 --output_src ckps/c104_home_s0_2020_100/ --layer_rf wn --dset office-home --gpu_id 
-python image_target.py --max_epoch 15 --nrf 4096 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 1.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 0 --t 3 --output_src ckps/c104_home_s0_2020_100/ --layer_rf wn --dset office-home --gpu_id 2
+python image_target.py --max_epoch 15 --nrf 4096 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 1.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 0 --t 3 --output_src ckps/c104_home_s0_2020_100/ --layer_rf wn --dset office-home --gpu_id 
 
 python image_target.py --max_epoch 15 --nrf 4096 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 1.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 1 --t 0 --output_src ckps/c104_home_s1_2020_100/ --layer_rf wn --dset office-home --gpu_id 
 python image_target.py --max_epoch 15 --nrf 4096 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 1.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 1 --t 2 --output_src ckps/c104_home_s1_2020_100/ --layer_rf wn --dset office-home --gpu_id 
@@ -214,16 +214,16 @@ python image_target.py --max_epoch 15 --nrf 4096 --ent_par 1.0 --cls_par 0.3 --a
 
 
 
-python image_target.py --max_epoch 15 --nrf 4096 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 1.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 0 --t 1 --output_src ckps/c804_home_s0_2020_100/ --layer_rf wn --dset office-home --gpu_id 7
-python image_target.py --max_epoch 15 --nrf 4096 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 1.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 0 --t 2 --output_src ckps/c804_home_s0_2020_100/ --layer_rf wn --dset office-home --gpu_id 1
+python image_target.py --max_epoch 15 --nrf 4096 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 1.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 0 --t 1 --output_src ckps/c804_home_s0_2020_100/ --layer_rf wn --dset office-home --gpu_id 
+python image_target.py --max_epoch 15 --nrf 4096 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 1.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 0 --t 2 --output_src ckps/c804_home_s0_2020_100/ --layer_rf wn --dset office-home --gpu_id 
 python image_target.py --max_epoch 15 --nrf 4096 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 1.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 0 --t 3 --output_src ckps/c804_home_s0_2020_100/ --layer_rf wn --dset office-home --gpu_id 4
 
-python image_target.py --max_epoch 15 --nrf 4096 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 1.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 1 --t 0 --output_src ckps/c804_home_s1_2020_100/ --layer_rf wn --dset office-home --gpu_id 6
+python image_target.py --max_epoch 15 --nrf 4096 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 1.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 1 --t 0 --output_src ckps/c804_home_s1_2020_100/ --layer_rf wn --dset office-home --gpu_id 
 python image_target.py --max_epoch 15 --nrf 4096 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 1.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 1 --t 2 --output_src ckps/c804_home_s1_2020_100/ --layer_rf wn --dset office-home --gpu_id 3
-python image_target.py --max_epoch 15 --nrf 4096 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 1.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 1 --t 3 --output_src ckps/c804_home_s1_2020_100/ --layer_rf wn --dset office-home --gpu_id 
+python image_target.py --max_epoch 15 --nrf 4096 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 1.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 1 --t 3 --output_src ckps/c804_home_s1_2020_100/ --layer_rf wn --dset office-home --gpu_id 7
 
-python image_target.py --max_epoch 15 --nrf 4096 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 1.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 2 --t 0 --output_src ckps/c804_home_s2_2020_100/ --layer_rf wn --dset office-home --gpu_id 
-python image_target.py --max_epoch 15 --nrf 4096 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 1.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 2 --t 1 --output_src ckps/c804_home_s2_2020_100/ --layer_rf wn --dset office-home --gpu_id 
+python image_target.py --max_epoch 15 --nrf 4096 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 1.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 2 --t 0 --output_src ckps/c804_home_s2_2020_100/ --layer_rf wn --dset office-home --gpu_id 6
+python image_target.py --max_epoch 15 --nrf 4096 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 1.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 2 --t 1 --output_src ckps/c804_home_s2_2020_100/ --layer_rf wn --dset office-home --gpu_id 1
 python image_target.py --max_epoch 15 --nrf 4096 --ent_par 1.0 --cls_par 0.3 --alpha_rfen 1.0 --cls_parrf 0.3 --alpha_rf 0.1 --s 2 --t 3 --output_src ckps/c804_home_s2_2020_100/ --layer_rf wn --dset office-home --gpu_id 
 
 
