@@ -51,22 +51,34 @@ python image_source.py --max_epoch 500 --s 2 --t 0 --w_ce_h 0.0 --w_kernel 6.0 -
 
 
 
-#31 SHOT
-python image_source.py --max_epoch 100 --s 0 --t 1 --w_ce_h 1.0 --w_kernel 0.0 --w_vat 0.0 --w_vat_rf 0.0 --gamma 0.1 --nrf 16384  --layer_rf wn --train_brf 0.0 --kernel_softmax 0.0 --output ckps/shot_31_s0_2020/ --gpu_id 1
-python image_source.py --max_epoch 100 --s 1 --t 0 --w_ce_h 1.0 --w_kernel 0.0 --w_vat 0.0 --w_vat_rf 0.0 --gamma 0.1 --nrf 16384  --layer_rf wn --train_brf 0.0 --kernel_softmax 0.0 --output ckps/shot_31_s1_2020/ --gpu_id 2
-python image_source.py --max_epoch 100 --s 2 --t 0 --w_ce_h 1.0 --w_kernel 0.0 --w_vat 0.0 --w_vat_rf 0.0 --gamma 0.1 --nrf 16384  --layer_rf wn --train_brf 0.0 --kernel_softmax 0.0 --output ckps/shot_31_s2_2020/ --gpu_id 3
+#31 SHOT 100
+python image_source.py --max_epoch 100 --s 0 --t 1 --w_ce_h 1.0 --w_kernel 0.0 --w_vat 0.0 --w_vat_rf 0.0 --gamma 0.1 --nrf 16384  --layer_rf wn --train_brf 0.0 --kernel_softmax 0.0 --output ckps/shot_31_s0_2020/ --gpu_id 0
+python image_source.py --max_epoch 100 --s 1 --t 0 --w_ce_h 1.0 --w_kernel 0.0 --w_vat 0.0 --w_vat_rf 0.0 --gamma 0.1 --nrf 16384  --layer_rf wn --train_brf 0.0 --kernel_softmax 0.0 --output ckps/shot_31_s1_2020/ --gpu_id 1
+python image_source.py --max_epoch 100 --s 2 --t 0 --w_ce_h 1.0 --w_kernel 0.0 --w_vat 0.0 --w_vat_rf 0.0 --gamma 0.1 --nrf 16384  --layer_rf wn --train_brf 0.0 --kernel_softmax 0.0 --output ckps/shot_31_s2_2020/ --gpu_id 2
 
-#31 C1
+#31 C1 100
 python image_source.py --max_epoch 100 --s 0 --t 1 --w_ce_h 1.0 --w_kernel 6.0 --w_vat 0.0 --w_vat_rf 0.5 --gamma 0.1 --nrf 16384  --layer_rf wn --train_brf 0.0 --kernel_softmax 0.0 --output ckps/c1_31_s0_2020_100/ --gpu_id 0
 python image_source.py --max_epoch 100 --s 1 --t 0 --w_ce_h 1.0 --w_kernel 6.0 --w_vat 0.0 --w_vat_rf 0.5 --gamma 0.1 --nrf 16384  --layer_rf wn --train_brf 0.0 --kernel_softmax 0.0 --output ckps/c1_31_s1_2020_100/ --gpu_id 4
 python image_source.py --max_epoch 100 --s 2 --t 0 --w_ce_h 1.0 --w_kernel 6.0 --w_vat 0.0 --w_vat_rf 0.5 --gamma 0.1 --nrf 16384  --layer_rf wn --train_brf 0.0 --kernel_softmax 0.0 --output ckps/c1_31_s2_2020_100/ --gpu_id 5
 
-#31 C5
-python image_source.py --max_epoch 100 --s 0 --t 1 --w_ce_h 1.0 --w_kernel 0.1 --w_vat 1.0 --w_vat_rf 0.0 --gamma 0.1 --nrf 16384  --layer_rf linear --train_brf 1.0 --kernel_softmax 0.0 --output ckps/c5_31_s0_2020_100/ --gpu_id 
-python image_source.py --max_epoch 100 --s 1 --t 0 --w_ce_h 1.0 --w_kernel 0.1 --w_vat 1.0 --w_vat_rf 0.0 --gamma 0.1 --nrf 16384  --layer_rf linear --train_brf 1.0 --kernel_softmax 0.0 --output ckps/c5_31_s1_2020_100/ --gpu_id  
-python image_source.py --max_epoch 100 --s 2 --t 0 --w_ce_h 1.0 --w_kernel 0.1 --w_vat 1.0 --w_vat_rf 0.0 --gamma 0.1 --nrf 16384  --layer_rf linear --train_brf 1.0 --kernel_softmax 0.0 --output ckps/c5_31_s2_2020_100/ --gpu_id  
+#31 C5 100
+python image_source.py --max_epoch 100 --s 0 --t 1 --w_ce_h 1.0 --w_kernel 0.1 --w_vat 1.0 --w_vat_rf 0.0 --gamma 0.1 --nrf 16384  --layer_rf linear --train_brf 1.0 --kernel_softmax 0.0 --output ckps/c5_31_s0_2020_100/ --gpu_id 6
+python image_source.py --max_epoch 100 --s 1 --t 0 --w_ce_h 1.0 --w_kernel 0.1 --w_vat 1.0 --w_vat_rf 0.0 --gamma 0.1 --nrf 16384  --layer_rf linear --train_brf 1.0 --kernel_softmax 0.0 --output ckps/c5_31_s1_2020_100/ --gpu_id 7
+python image_source.py --max_epoch 100 --s 2 --t 0 --w_ce_h 1.0 --w_kernel 0.1 --w_vat 1.0 --w_vat_rf 0.0 --gamma 0.1 --nrf 16384  --layer_rf linear --train_brf 1.0 --kernel_softmax 0.0 --output ckps/c5_31_s2_2020_100/ --gpu_id 1
+
+#31 C8 100
+python image_source.py --max_epoch 100 --s 0 --t 1 --w_ce_h 1.0 --w_kernel 6.0 --w_vat 0.0 --w_vat_rf 0.0 --gamma 0.1 --nrf 16384  --layer_rf wn --train_brf 0.0 --kernel_softmax 0.0 --output ckps/c8_31_s0_2020_100/ --gpu_id 2
+python image_source.py --max_epoch 100 --s 1 --t 0 --w_ce_h 1.0 --w_kernel 6.0 --w_vat 0.0 --w_vat_rf 0.0 --gamma 0.1 --nrf 16384  --layer_rf wn --train_brf 0.0 --kernel_softmax 0.0 --output ckps/c8_31_s1_2020_100/ --gpu_id 2
+python image_source.py --max_epoch 100 --s 2 --t 0 --w_ce_h 1.0 --w_kernel 6.0 --w_vat 0.0 --w_vat_rf 0.0 --gamma 0.1 --nrf 16384  --layer_rf wn --train_brf 0.0 --kernel_softmax 0.0 --output ckps/c8_31_s2_2020_100/ --gpu_id 3
 
 
+
+
+#Home SHOT 100
+python image_source.py --max_epoch 100 --s 0 --t 1 --w_ce_h 1.0 --w_kernel 0.0 --w_vat 0.0 --w_vat_rf 0.0 --gamma 0.1 --nrf 16384  --layer_rf wn --train_brf 0.0 --kernel_softmax 0.0 --output ckps/shot_home_s0_2020/ --dset office-home --gpu_id 7
+python image_source.py --max_epoch 100 --s 1 --t 0 --w_ce_h 1.0 --w_kernel 0.0 --w_vat 0.0 --w_vat_rf 0.0 --gamma 0.1 --nrf 16384  --layer_rf wn --train_brf 0.0 --kernel_softmax 0.0 --output ckps/shot_home_s1_2020/ --dset office-home --gpu_id 7
+python image_source.py --max_epoch 100 --s 2 --t 0 --w_ce_h 1.0 --w_kernel 0.0 --w_vat 0.0 --w_vat_rf 0.0 --gamma 0.1 --nrf 16384  --layer_rf wn --train_brf 0.0 --kernel_softmax 0.0 --output ckps/shot_home_s2_2020/ --dset office-home --gpu_id 7
+python image_source.py --max_epoch 100 --s 3 --t 0 --w_ce_h 1.0 --w_kernel 0.0 --w_vat 0.0 --w_vat_rf 0.0 --gamma 0.1 --nrf 16384  --layer_rf wn --train_brf 0.0 --kernel_softmax 0.0 --output ckps/shot_home_s3_2020/ --dset office-home --gpu_id 7
 
 
 #Home C1
