@@ -303,16 +303,20 @@ def train_target(args):
             netF.eval()
             netB.eval()
             if args.dset=='VISDA-C':
-                acc_s_te, acc_list = cal_acc(dset_loaders['test'], netF, netB, netC, True)
-                log_str = 'Task: {}, Iter:{}/{}; Accuracy = {:.2f}%'.format(args.name, iter_num, max_iter, acc_s_te) + '\n' + acc_list
+                acc_s_tr, acc_list_tr = cal_acc(dset_loaders['target'], netF, netB, netC, True)
+                acc_s_te, acc_list_te = cal_acc(dset_loaders['test'], netF, netB, netC, True)
+                acc_s_tr_rf, acc_list_tr_tf = cal_accrf(dset_loaders['target'], netF, netB, netBRF, netCRF, True)
+                acc_s_te_rf, acc_list_te_rf = cal_accrf(dset_loaders['test'], netF, netB, netBRF, netCRF, True)
+
+                log_str = 'Task: {}, Iter:{}/{}; Loss : {:.2f}; Accuracy target (train / test / trainrf / testrf) = {:.2f}% / {:.2f}% / {:.2f}% / {:.2f}%.'.format(args.name, iter_num, max_iter, \
+                    classifier_loss_total/classifier_loss_count, acc_s_tr, acc_s_te, acc_s_tr_rf, acc_s_te_rf) + '\n' + acc_list_tr + '\n' + acc_list_te + '\n' + acc_list_tr_tf + '\n' + acc_list_te_rf
             else:
                 acc_s_tr, _ = cal_acc(dset_loaders['target'], netF, netB, netC, False)
                 acc_s_te, _ = cal_acc(dset_loaders['test'], netF, netB, netC, False)
                 acc_s_tr_rf, _ = cal_accrf(dset_loaders['target'], netF, netB, netBRF, netCRF, False)
                 acc_s_te_rf, _ = cal_accrf(dset_loaders['test'], netF, netB, netBRF, netCRF, False)
 
-                log_str = 'Task: {}, Iter:{}/{}; Accuracy = {:.2f}%'.format(args.name, iter_num, max_iter, acc_s_te)
-                log_str = 'Task: {}, Iter:{}/{}; Loss : {:.2f}, , Accuracy target (train / test / trainrf / testrf) = {:.2f}% / {:.2f}% / {:.2f}% / {:.2f}%.'.format(args.name, iter_num, max_iter, \
+                log_str = 'Task: {}, Iter:{}/{}; Loss : {:.2f}; Accuracy target (train / test / trainrf / testrf) = {:.2f}% / {:.2f}% / {:.2f}% / {:.2f}%.'.format(args.name, iter_num, max_iter, \
                 classifier_loss_total/classifier_loss_count, acc_s_tr, acc_s_te, acc_s_tr_rf, acc_s_te_rf)
 
             args.out_file.write(log_str + '\n')
@@ -364,11 +368,13 @@ def test_target(args):
 
     if args.da == 'oda':
         acc_os1, acc_os2, acc_unknown = cal_acc_oda(dset_loaders['test'], netF, netB, netC)
-        log_str = '\nTraining: {}, Task: {}, Accuracy = {:.2f}% / {:.2f}% / {:.2f}%'.format(args.trte, args.name, acc_os2, acc_os1, acc_unknown)
+        log_str = '\nTraining:, Task: {}, Accuracy = {:.2f}% / {:.2f}% / {:.2f}%'.format(args.name, acc_os2, acc_os1, acc_unknown)
     else:
         if args.dset=='VISDA-C':
             acc, acc_list = cal_acc(dset_loaders['test'], netF, netB, netC, True)
-            log_str = '\nTraining: {}, Task: {}, Accuracy = {:.2f}%'.format(args.trte, args.name, acc) + '\n' + acc_list
+            acc_rf, acc_list_rf = cal_accrf(dset_loaders['test'], netF, netB, netBRF, netCRF, True)
+
+            log_str = '\nTraining:, Task: {}, Accuracy (H / RF) = {:.2f}% / {:.2f}%'.format(args.name, acc, acc_rf) + '\n' + acc_list + '\n' + acc_list_rf
         else:
             acc, _ = cal_acc(dset_loaders['test'], netF, netB, netC, False)
             acc_rf, _ = cal_accrf(dset_loaders['test'], netF, netB, netBRF, netCRF, False)
