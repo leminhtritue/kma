@@ -1,0 +1,5 @@
+cd digit/
+python uda_digit.py --dset m2u --output test_002 --cls_par 0.1 --gpu_id 0
+python uda_digit.py --dset u2m --output test_002 --cls_par 0.1 --gpu_id 0
+python uda_digit.py --dset s2m --output test_002 --cls_par 0.1 --gpu_id 0
+
