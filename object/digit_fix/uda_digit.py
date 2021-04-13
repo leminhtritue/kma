@@ -699,7 +699,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     args.class_num = 10
 
-    os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_id
+    os.environ["CUDA_VISIBLE_DEVICES"] = str((int(args.gpu_id) % 4))
     SEED = args.seed
     torch.manual_seed(SEED)
     torch.cuda.manual_seed(SEED)
