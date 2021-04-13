@@ -142,6 +142,28 @@ def cal_acc(loader, netF, netB, netC):
     mean_ent = torch.mean(loss.Entropy(nn.Softmax(dim=1)(all_output))).cpu().data.item()
     return accuracy*100, mean_ent
 
+def cal_accrf(loader, netF, netB, netBRF, netCRF):
+    start_test = True
+    with torch.no_grad():
+        iter_test = iter(loader)
+        for i in range(len(loader)):
+            data = iter_test.next()
+            inputs = data[0]
+            labels = data[1]
+            inputs = inputs.cuda()
+            outputs = netCRF(netBRF(netB(netF(inputs))))
+            if start_test:
+                all_output = outputs.float().cpu()
+                all_label = labels.float()
+                start_test = False
+            else:
+                all_output = torch.cat((all_output, outputs.float().cpu()), 0)
+                all_label = torch.cat((all_label, labels.float()), 0)
+    _, predict = torch.max(all_output, 1)
+    accuracy = torch.sum(torch.squeeze(predict).float() == all_label).item() / float(all_label.size()[0])
+    mean_ent = torch.mean(loss.Entropy(nn.Softmax(dim=1)(all_output))).cpu().data.item()
+    return accuracy*100, mean_ent
+
 def normalize_perturbation(d):
     d_ = d.view(d.size()[0], -1)
     eps = d.new_tensor(1e-12)
@@ -525,7 +547,7 @@ def train_target(args):
         torch.save(netC.state_dict(), osp.join(args.output_dir, "target_C_" + args.savename + ".pt"))
         torch.save(netBRF.state_dict(), osp.join(args.output_dir, "target_BRF_" + args.savename + ".pt"))
         torch.save(netCRF.state_dict(), osp.join(args.output_dir, "target_CRF_" + args.savename + ".pt"))
-        
+
     return netF, netB, netC
 
 def obtain_label(loader, netF, netB, netC, args, c=None):
