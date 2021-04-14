@@ -259,7 +259,9 @@ def train_target(args):
 
         if args.cls_parrf > 0:
             pred_rf = mem_label[tar_idx]
-            classifier_loss_rf = args.cls_parrf * nn.CrossEntropyLoss()(outputs_test_rf, pred_rf)
+            # classifier_loss_rf = args.cls_parrf * nn.CrossEntropyLoss()(outputs_test_rf, pred_rf)
+            classifier_loss_rf = args.cls_parrf * loss.KernelSource(num_classes=args.class_num, alpha=0.1)(outputs_test_rf, pred_rf, netCRF)
+
             if iter_num < interval_iter and args.dset == "VISDA-C":
                 classifier_loss_rf *= 0
             classifier_loss += classifier_loss_rf
