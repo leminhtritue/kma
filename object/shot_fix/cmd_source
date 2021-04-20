@@ -102,3 +102,10 @@ python image_source.py --max_epoch 500 --s 3 --t 0 --w_ce_h 1.0 --w_kernel 0.1 -
 
 
 
+
+
+#Home C8
+python image_source.py --max_epoch 100 --s 0 --t 1 --w_ce_h 1.0 --w_kernel 6.0 --w_vat 0.0 --w_vat_rf 0.0 --gamma 0.1 --nrf 16384  --layer_rf wn --train_brf 0.0 --kernel_softmax 1.0 --output ckps/c8_home_s0_2020_100_SM/ --dset office-home --gpu_id 0 
+python image_source.py --max_epoch 100 --s 1 --t 0 --w_ce_h 1.0 --w_kernel 6.0 --w_vat 0.0 --w_vat_rf 0.0 --gamma 0.1 --nrf 16384  --layer_rf wn --train_brf 0.0 --kernel_softmax 1.0 --output ckps/c8_home_s1_2020_100_SM/ --dset office-home --gpu_id 1 
+python image_source.py --max_epoch 100 --s 2 --t 0 --w_ce_h 1.0 --w_kernel 6.0 --w_vat 0.0 --w_vat_rf 0.0 --gamma 0.1 --nrf 16384  --layer_rf wn --train_brf 0.0 --kernel_softmax 1.0 --output ckps/c8_home_s2_2020_100_SM/ --dset office-home --gpu_id 2 
+python image_source.py --max_epoch 100 --s 3 --t 0 --w_ce_h 1.0 --w_kernel 6.0 --w_vat 0.0 --w_vat_rf 0.0 --gamma 0.1 --nrf 16384  --layer_rf wn --train_brf 0.0 --kernel_softmax 1.0 --output ckps/c8_home_s3_2020_100_SM/ --dset office-home --gpu_id 3 
