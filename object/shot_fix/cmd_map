@@ -1,0 +1,70 @@
+python a.py -i img/A.jpg -d office -m c8 -t A -r resnet50
+python a.py -i img/D.jpg -d office -m c8 -t A -r resnet50
+python a.py -i img/A.jpg -d office -m c8 -t D -r resnet50
+python a.py -i img/D.jpg -d office -m c8 -t D -r resnet50
+
+python a.py -i img/A.jpg -d office -m shot -t A -r resnet50
+python a.py -i img/D.jpg -d office -m shot -t A -r resnet50
+python a.py -i img/A.jpg -d office -m shot -t D -r resnet50
+python a.py -i img/D.jpg -d office -m shot -t D -r resnet50
+
+python a.py -i img/A.jpg -d office -m c8 -t AD -r resnet50
+python a.py -i img/D.jpg -d office -m c8 -t AD -r resnet50
+python a.py -i img/A.jpg -d office -m c8 -t DA -r resnet50
+python a.py -i img/D.jpg -d office -m c8 -t DA -r resnet50
+
+python a.py -i img/A.jpg -d office -m shot -t AD -r resnet50
+python a.py -i img/D.jpg -d office -m shot -t AD -r resnet50
+python a.py -i img/A.jpg -d office -m shot -t DA -r resnet50
+python a.py -i img/D.jpg -d office -m shot -t DA -r resnet50
+
+
+python a.py -i img/R.jpg -d office-home -m c8 -t R -r resnet50
+python a.py -i img/C.jpg -d office-home -m c8 -t R -r resnet50
+python a.py -i img/R.jpg -d office-home -m c8 -t C -r resnet50
+python a.py -i img/C.jpg -d office-home -m c8 -t C -r resnet50
+
+python a.py -i img/R.jpg -d office-home -m shot -t R -r resnet50
+python a.py -i img/C.jpg -d office-home -m shot -t R -r resnet50
+python a.py -i img/R.jpg -d office-home -m shot -t C -r resnet50
+python a.py -i img/C.jpg -d office-home -m shot -t C -r resnet50
+
+python a.py -i img/R.jpg -d office-home -m c8 -t RC -r resnet50
+python a.py -i img/C.jpg -d office-home -m c8 -t RC -r resnet50
+python a.py -i img/R.jpg -d office-home -m c8 -t CR -r resnet50
+python a.py -i img/C.jpg -d office-home -m c8 -t CR -r resnet50
+
+python a.py -i img/R.jpg -d office-home -m shot -t RC -r resnet50
+python a.py -i img/C.jpg -d office-home -m shot -t RC -r resnet50
+python a.py -i img/R.jpg -d office-home -m shot -t CR -r resnet50
+python a.py -i img/C.jpg -d office-home -m shot -t CR -r resnet50
+
+python a.py -i img/V.jpg -d VISDA-C -m c8 -t V -r resnet101
+python a.py -i img/T.png -d VISDA-C -m c8 -t V -r resnet101
+python a.py -i img/V.jpg -d VISDA-C -m c8 -t T -r resnet101
+python a.py -i img/T.png -d VISDA-C -m c8 -t T -r resnet101
+
+python a.py -i img/V.jpg -d VISDA-C -m shot -t V -r resnet101
+python a.py -i img/T.png -d VISDA-C -m shot -t V -r resnet101
+python a.py -i img/V.jpg -d VISDA-C -m shot -t T -r resnet101
+python a.py -i img/T.png -d VISDA-C -m shot -t T -r resnet101
+
+python a.py -i img/V.jpg -d VISDA-C -m c8 -t VT -r resnet101
+python a.py -i img/T.png -d VISDA-C -m c8 -t VT -r resnet101
+python a.py -i img/V.jpg -d VISDA-C -m c8 -t TV -r resnet101
+python a.py -i img/T.png -d VISDA-C -m c8 -t TV -r resnet101
+
+python a.py -i img/V.jpg -d VISDA-C -m shot -t VT -r resnet101
+python a.py -i img/T.png -d VISDA-C -m shot -t VT -r resnet101
+python a.py -i img/V.jpg -d VISDA-C -m shot -t TV -r resnet101
+python a.py -i img/T.png -d VISDA-C -m shot -t TV -r resnet101
+
+python a.py -i img/A.jpg -d office -m c8 -t A -r resnet50; python a.py -i img/D.jpg -d office -m c8 -t A -r resnet50; python a.py -i img/A.jpg -d office -m c8 -t D -r resnet50; python a.py -i img/D.jpg -d office -m c8 -t D -r resnet50; python a.py -i img/A.jpg -d office -m shot -t A -r resnet50; python a.py -i img/D.jpg -d office -m shot -t A -r resnet50; python a.py -i img/A.jpg -d office -m shot -t D -r resnet50; python a.py -i img/D.jpg -d office -m shot -t D -r resnet50; python a.py -i img/A.jpg -d office -m c8 -t AD -r resnet50; python a.py -i img/D.jpg -d office -m c8 -t AD -r resnet50; python a.py -i img/A.jpg -d office -m c8 -t DA -r resnet50; python a.py -i img/D.jpg -d office -m c8 -t DA -r resnet50; python a.py -i img/A.jpg -d office -m shot -t AD -r resnet50; python a.py -i img/D.jpg -d office -m shot -t AD -r resnet50; python a.py -i img/A.jpg -d office -m shot -t DA -r resnet50; python a.py -i img/D.jpg -d office -m shot -t DA -r resnet50 
+
+
+python a.py -i img/R.jpg -d office-home -m c8 -t R -r resnet50; python a.py -i img/C.jpg -d office-home -m c8 -t R -r resnet50; python a.py -i img/R.jpg -d office-home -m c8 -t C -r resnet50; python a.py -i img/C.jpg -d office-home -m c8 -t C -r resnet50; python a.py -i img/R.jpg -d office-home -m shot -t R -r resnet50; python a.py -i img/C.jpg -d office-home -m shot -t R -r resnet50; python a.py -i img/R.jpg -d office-home -m shot -t C -r resnet50; python a.py -i img/C.jpg -d office-home -m shot -t C -r resnet50; python a.py -i img/R.jpg -d office-home -m c8 -t RC -r resnet50; python a.py -i img/C.jpg -d office-home -m c8 -t RC -r resnet50; python a.py -i img/R.jpg -d office-home -m c8 -t CR -r resnet50; python a.py -i img/C.jpg -d office-home -m c8 -t CR -r resnet50; python a.py -i img/R.jpg -d office-home -m shot -t RC -r resnet50; python a.py -i img/C.jpg -d office-home -m shot -t RC -r resnet50; python a.py -i img/R.jpg -d office-home -m shot -t CR -r resnet50; python a.py -i img/C.jpg -d office-home -m shot -t CR -r resnet50 
+
+
+
+
+python a.py -i img/V.jpg -d VISDA-C -m c8 -t V -r resnet101; python a.py -i img/T.png -d VISDA-C -m c8 -t V -r resnet101; python a.py -i img/V.jpg -d VISDA-C -m c8 -t T -r resnet101; python a.py -i img/T.png -d VISDA-C -m c8 -t T -r resnet101; python a.py -i img/V.jpg -d VISDA-C -m shot -t V -r resnet101; python a.py -i img/T.png -d VISDA-C -m shot -t V -r resnet101; python a.py -i img/V.jpg -d VISDA-C -m shot -t T -r resnet101; python a.py -i img/T.png -d VISDA-C -m shot -t T -r resnet101; python a.py -i img/V.jpg -d VISDA-C -m c8 -t VT -r resnet101; python a.py -i img/T.png -d VISDA-C -m c8 -t VT -r resnet101; python a.py -i img/V.jpg -d VISDA-C -m c8 -t TV -r resnet101; python a.py -i img/T.png -d VISDA-C -m c8 -t TV -r resnet101; python a.py -i img/V.jpg -d VISDA-C -m shot -t VT -r resnet101; python a.py -i img/T.png -d VISDA-C -m shot -t VT -r resnet101; python a.py -i img/V.jpg -d VISDA-C -m shot -t TV -r resnet101; python a.py -i img/T.png -d VISDA-C -m shot -t TV -r resnet101 
