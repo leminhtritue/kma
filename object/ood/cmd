@@ -1,0 +1,50 @@
+#SHOT
+python uda_digit.py --dset m2u --output test_002 --cls_par 0.1 --gpu_id 0
+python uda_digit.py --dset u2m --output test_002 --cls_par 0.1 --gpu_id 0
+python uda_digit.py --dset s2m --output test_002 --cls_par 0.1 --gpu_id 0
+
+ --w_kernel 6.0 --w_vat 0.0 --w_vat_rf 0.5 --layer_rf wn --train_brf 0.0 --output ckps/c1_visdac_s0_2020/  
+ --w_kernel 0.1 --w_vat 1.0 --w_vat_rf 0.0 --layer_rf linear --train_brf 1.0  --output ckps/c5_visdac_s0_2020/ 
+
+
+python uda_digit.py --dset m2u --output ckps/shot_001 --nrf 16384 --gamma 0.1 --kernel_softmax 0.0 --layer_rf wn --train_brf 0.0 --w_ce_h 1.0 --w_kernel 0.0 --w_vat 0.0 --w_vat_rf 0.0 --output ckps/shot_digit_2020/ --ent_par 1.0 --cls_par 0.1 --alpha_rfen 0.0 --cls_parrf 0.0 --alpha_rf 0.0 --gpu_id 0
+
+python uda_digit.py --dset u2m --output ckps/shot_001 --nrf 16384 --gamma 0.1 --kernel_softmax 0.0 --layer_rf wn --train_brf 0.0 --w_ce_h 1.0 --w_kernel 0.0 --w_vat 0.0 --w_vat_rf 0.0 --output ckps/shot_digit_2020/ --ent_par 1.0 --cls_par 0.1 --alpha_rfen 0.0 --cls_parrf 0.0 --alpha_rf 0.0 --gpu_id 1
+
+python uda_digit.py --dset s2m --output ckps/shot_001 --nrf 16384 --gamma 0.1 --kernel_softmax 0.0 --layer_rf wn --train_brf 0.0 --w_ce_h 1.0 --w_kernel 0.0 --w_vat 0.0 --w_vat_rf 0.0 --output ckps/shot_digit_2020/ --ent_par 1.0 --cls_par 0.1 --alpha_rfen 0.0 --cls_parrf 0.0 --alpha_rf 0.0 --gpu_id 2
+
+
+
+python uda_digit.py --dset s2m --output ckps/c8_digit_2020_4096_10/ --nrf 4096 --gamma 0.1 --kernel_softmax 0.0 --w_ce_h 1.0 --w_kernel 10.0 --w_vat 0.0 --w_vat_rf 0.0 --layer_rf wn --train_brf 0.0  --ent_par 1.0 --cls_par 0.1 --alpha_rfen 1.0 --cls_parrf 0.1 --alpha_rf 0.1 --gpu_id 0
+python uda_digit.py --dset u2m --output ckps/c8_digit_2020_4096_10/ --nrf 4096 --gamma 0.1 --kernel_softmax 0.0 --w_ce_h 1.0 --w_kernel 10.0 --w_vat 0.0 --w_vat_rf 0.0 --layer_rf wn --train_brf 0.0  --ent_par 1.0 --cls_par 0.1 --alpha_rfen 1.0 --cls_parrf 0.1 --alpha_rf 0.1 --gpu_id 0
+python uda_digit.py --dset m2u --output ckps/c8_digit_2020_4096_10/ --nrf 4096 --gamma 0.1 --kernel_softmax 0.0 --w_ce_h 1.0 --w_kernel 10.0 --w_vat 0.0 --w_vat_rf 0.0 --layer_rf wn --train_brf 0.0  --ent_par 1.0 --cls_par 0.1 --alpha_rfen 1.0 --cls_parrf 0.1 --alpha_rf 0.1 --gpu_id 0
+
+python uda_digit.py --dset s2m --output ckps/c8_digit_2020_4096_5/ --nrf 4096 --gamma 0.1 --kernel_softmax 0.0 --w_ce_h 1.0 --w_kernel 5.0 --w_vat 0.0 --w_vat_rf 0.0 --layer_rf wn --train_brf 0.0  --ent_par 1.0 --cls_par 0.1 --alpha_rfen 1.0 --cls_parrf 0.1 --alpha_rf 0.1 --gpu_id 1
+python uda_digit.py --dset u2m --output ckps/c8_digit_2020_4096_5/ --nrf 4096 --gamma 0.1 --kernel_softmax 0.0 --w_ce_h 1.0 --w_kernel 5.0 --w_vat 0.0 --w_vat_rf 0.0 --layer_rf wn --train_brf 0.0  --ent_par 1.0 --cls_par 0.1 --alpha_rfen 1.0 --cls_parrf 0.1 --alpha_rf 0.1 --gpu_id 1
+python uda_digit.py --dset m2u --output ckps/c8_digit_2020_4096_5/ --nrf 4096 --gamma 0.1 --kernel_softmax 0.0 --w_ce_h 1.0 --w_kernel 5.0 --w_vat 0.0 --w_vat_rf 0.0 --layer_rf wn --train_brf 0.0  --ent_par 1.0 --cls_par 0.1 --alpha_rfen 1.0 --cls_parrf 0.1 --alpha_rf 0.1 --gpu_id 1
+
+python uda_digit.py --dset s2m --output ckps/c8_digit_2020_4096_1/ --nrf 4096 --gamma 0.1 --kernel_softmax 0.0 --w_ce_h 1.0 --w_kernel 1.0 --w_vat 0.0 --w_vat_rf 0.0 --layer_rf wn --train_brf 0.0  --ent_par 1.0 --cls_par 0.1 --alpha_rfen 1.0 --cls_parrf 0.1 --alpha_rf 0.1 --gpu_id 2
+python uda_digit.py --dset u2m --output ckps/c8_digit_2020_4096_1/ --nrf 4096 --gamma 0.1 --kernel_softmax 0.0 --w_ce_h 1.0 --w_kernel 1.0 --w_vat 0.0 --w_vat_rf 0.0 --layer_rf wn --train_brf 0.0  --ent_par 1.0 --cls_par 0.1 --alpha_rfen 1.0 --cls_parrf 0.1 --alpha_rf 0.1 --gpu_id 2
+python uda_digit.py --dset m2u --output ckps/c8_digit_2020_4096_1/ --nrf 4096 --gamma 0.1 --kernel_softmax 0.0 --w_ce_h 1.0 --w_kernel 1.0 --w_vat 0.0 --w_vat_rf 0.0 --layer_rf wn --train_brf 0.0  --ent_par 1.0 --cls_par 0.1 --alpha_rfen 1.0 --cls_parrf 0.1 --alpha_rf 0.1 --gpu_id 2
+
+python uda_digit.py --dset s2m --output ckps/c8_digit_2020_4096_0_5/ --nrf 4096 --gamma 0.1 --kernel_softmax 0.0 --w_ce_h 1.0 --w_kernel 0.5 --w_vat 0.0 --w_vat_rf 0.0 --layer_rf wn --train_brf 0.0  --ent_par 1.0 --cls_par 0.1 --alpha_rfen 1.0 --cls_parrf 0.1 --alpha_rf 0.1 --gpu_id 3
+python uda_digit.py --dset u2m --output ckps/c8_digit_2020_4096_0_5/ --nrf 4096 --gamma 0.1 --kernel_softmax 0.0 --w_ce_h 1.0 --w_kernel 0.5 --w_vat 0.0 --w_vat_rf 0.0 --layer_rf wn --train_brf 0.0  --ent_par 1.0 --cls_par 0.1 --alpha_rfen 1.0 --cls_parrf 0.1 --alpha_rf 0.1 --gpu_id 3
+python uda_digit.py --dset m2u --output ckps/c8_digit_2020_4096_0_5/ --nrf 4096 --gamma 0.1 --kernel_softmax 0.0 --w_ce_h 1.0 --w_kernel 0.5 --w_vat 0.0 --w_vat_rf 0.0 --layer_rf wn --train_brf 0.0  --ent_par 1.0 --cls_par 0.1 --alpha_rfen 1.0 --cls_parrf 0.1 --alpha_rf 0.1 --gpu_id 3
+
+python uda_digit.py --dset s2m --output ckps/c8_digit_2020_4096_0_1/ --nrf 4096 --gamma 0.1 --kernel_softmax 0.0 --w_ce_h 1.0 --w_kernel 0.1 --w_vat 0.0 --w_vat_rf 0.0 --layer_rf wn --train_brf 0.0  --ent_par 1.0 --cls_par 0.1 --alpha_rfen 1.0 --cls_parrf 0.1 --alpha_rf 0.1 --gpu_id 4
+python uda_digit.py --dset u2m --output ckps/c8_digit_2020_4096_0_1/ --nrf 4096 --gamma 0.1 --kernel_softmax 0.0 --w_ce_h 1.0 --w_kernel 0.1 --w_vat 0.0 --w_vat_rf 0.0 --layer_rf wn --train_brf 0.0  --ent_par 1.0 --cls_par 0.1 --alpha_rfen 1.0 --cls_parrf 0.1 --alpha_rf 0.1 --gpu_id 4
+python uda_digit.py --dset m2u --output ckps/c8_digit_2020_4096_0_1/ --nrf 4096 --gamma 0.1 --kernel_softmax 0.0 --w_ce_h 1.0 --w_kernel 0.1 --w_vat 0.0 --w_vat_rf 0.0 --layer_rf wn --train_brf 0.0  --ent_par 1.0 --cls_par 0.1 --alpha_rfen 1.0 --cls_parrf 0.1 --alpha_rf 0.1 --gpu_id 4
+
+python uda_digit.py --dset s2m --output ckps/c8_digit_2020_4096_0_05/ --nrf 4096 --gamma 0.1 --kernel_softmax 0.0 --w_ce_h 1.0 --w_kernel 0.05 --w_vat 0.0 --w_vat_rf 0.0 --layer_rf wn --train_brf 0.0  --ent_par 1.0 --cls_par 0.1 --alpha_rfen 1.0 --cls_parrf 0.1 --alpha_rf 0.1 --gpu_id 5
+python uda_digit.py --dset u2m --output ckps/c8_digit_2020_4096_0_05/ --nrf 4096 --gamma 0.1 --kernel_softmax 0.0 --w_ce_h 1.0 --w_kernel 0.05 --w_vat 0.0 --w_vat_rf 0.0 --layer_rf wn --train_brf 0.0  --ent_par 1.0 --cls_par 0.1 --alpha_rfen 1.0 --cls_parrf 0.1 --alpha_rf 0.1 --gpu_id 5
+python uda_digit.py --dset m2u --output ckps/c8_digit_2020_4096_0_05/ --nrf 4096 --gamma 0.1 --kernel_softmax 0.0 --w_ce_h 1.0 --w_kernel 0.05 --w_vat 0.0 --w_vat_rf 0.0 --layer_rf wn --train_brf 0.0  --ent_par 1.0 --cls_par 0.1 --alpha_rfen 1.0 --cls_parrf 0.1 --alpha_rf 0.1 --gpu_id 5
+
+
+python uda_digit.py --dset s2m --output ckps/c8_digit_2020_4096_0_01/ --nrf 4096 --gamma 0.1 --kernel_softmax 0.0 --w_ce_h 1.0 --w_kernel 0.01 --w_vat 0.0 --w_vat_rf 0.0 --layer_rf wn --train_brf 0.0  --ent_par 1.0 --cls_par 0.1 --alpha_rfen 1.0 --cls_parrf 0.1 --alpha_rf 0.1 --gpu_id 6
+python uda_digit.py --dset u2m --output ckps/c8_digit_2020_4096_0_01/ --nrf 4096 --gamma 0.1 --kernel_softmax 0.0 --w_ce_h 1.0 --w_kernel 0.01 --w_vat 0.0 --w_vat_rf 0.0 --layer_rf wn --train_brf 0.0  --ent_par 1.0 --cls_par 0.1 --alpha_rfen 1.0 --cls_parrf 0.1 --alpha_rf 0.1 --gpu_id 6
+python uda_digit.py --dset m2u --output ckps/c8_digit_2020_4096_0_01/ --nrf 4096 --gamma 0.1 --kernel_softmax 0.0 --w_ce_h 1.0 --w_kernel 0.01 --w_vat 0.0 --w_vat_rf 0.0 --layer_rf wn --train_brf 0.0  --ent_par 1.0 --cls_par 0.1 --alpha_rfen 1.0 --cls_parrf 0.1 --alpha_rf 0.1 --gpu_id 6
+
+
+python uda_digit.py --dset s2m --output ckps/c8_digit_2020_4096_0_005/ --nrf 4096 --gamma 0.1 --kernel_softmax 0.0 --w_ce_h 1.0 --w_kernel 0.005 --w_vat 0.0 --w_vat_rf 0.0 --layer_rf wn --train_brf 0.0  --ent_par 1.0 --cls_par 0.1 --alpha_rfen 1.0 --cls_parrf 0.1 --alpha_rf 0.1 --gpu_id 7
+python uda_digit.py --dset u2m --output ckps/c8_digit_2020_4096_0_005/ --nrf 4096 --gamma 0.1 --kernel_softmax 0.0 --w_ce_h 1.0 --w_kernel 0.005 --w_vat 0.0 --w_vat_rf 0.0 --layer_rf wn --train_brf 0.0  --ent_par 1.0 --cls_par 0.1 --alpha_rfen 1.0 --cls_parrf 0.1 --alpha_rf 0.1 --gpu_id 7
+python uda_digit.py --dset m2u --output ckps/c8_digit_2020_4096_0_005/ --nrf 4096 --gamma 0.1 --kernel_softmax 0.0 --w_ce_h 1.0 --w_kernel 0.005 --w_vat 0.0 --w_vat_rf 0.0 --layer_rf wn --train_brf 0.0  --ent_par 1.0 --cls_par 0.1 --alpha_rfen 1.0 --cls_parrf 0.1 --alpha_rf 0.1 --gpu_id 7

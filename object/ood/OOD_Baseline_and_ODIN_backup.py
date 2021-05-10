@@ -15,15 +15,13 @@ import lib_generation
 from torchvision import transforms
 from torch.autograd import Variable
 
-import network
-
 parser = argparse.ArgumentParser(description='PyTorch code: Mahalanobis detector')
 parser.add_argument('--batch_size', type=int, default=200, metavar='N', help='batch size for data loader')
 parser.add_argument('--dataset', required=True, help='cifar10 | cifar100 | svhn')
 parser.add_argument('--dataroot', default='./data1', help='path to dataset')
 parser.add_argument('--outf', default='./output/', help='folder to output results')
 parser.add_argument('--num_classes', type=int, default=10, help='the # of classes')
-parser.add_argument('--net_type', required=True, help='resnet | densenet  | dtn')
+parser.add_argument('--net_type', required=True, help='resnet | densenet')
 parser.add_argument('--gpu', type=int, default=0, help='gpu index')
 args = parser.parse_args()
 print(args)
@@ -54,23 +52,6 @@ def main():
             model = torch.load(pre_trained_net, map_location = "cuda:" + str(args.gpu))
         in_transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((125.3/255, 123.0/255, 113.9/255), (63.0/255, 62.1/255.0, 66.7/255.0)),])
     elif args.net_type == 'resnet':
-        model = models.ResNet34(num_c=args.num_classes)
-        model.load_state_dict(torch.load(pre_trained_net, map_location = "cuda:" + str(args.gpu)))
-        in_transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),])
-    elif args.net_type == 'dtn':
-    	netF = network.DTNBase().cuda()
-    	netB = network.feat_bootleneck(type=args.classifier, feature_dim=netF.in_features, bottleneck_dim=args.bottleneck).cuda()
-    	netC = network.feat_classifier(type=args.layer, class_num = args.class_num, bottleneck_dim=args.bottleneck).cuda()
-
-    args.modelpath = args.output_dir + '/source_F.pt'
-    netF.load_state_dict(torch.load(args.modelpath))
-    args.modelpath = args.output_dir + '/source_B.pt'
-    netB.load_state_dict(torch.load(args.modelpath))
-    args.modelpath = args.output_dir + '/source_C.pt'
-    netC.load_state_dict(torch.load(args.modelpath))
-
-
-
         model = models.ResNet34(num_c=args.num_classes)
         model.load_state_dict(torch.load(pre_trained_net, map_location = "cuda:" + str(args.gpu)))
         in_transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),])
