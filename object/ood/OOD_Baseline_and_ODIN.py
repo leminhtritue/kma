@@ -63,10 +63,13 @@ def main():
     train_loader, test_loader = data_loader.getTargetDataSet(args.dataset, args.batch_size, in_transform, args.dataroot)
 
     # measure the performance
-    M_list = [0, 0.0005, 0.001, 0.0014, 0.002, 0.0024, 0.005, 0.01, 0.05, 0.1, 0.2]
-    T_list = [1, 10, 100, 1000]
+    # M_list = [0, 0.0005, 0.001, 0.0014, 0.002, 0.0024, 0.005, 0.01, 0.05, 0.1, 0.2]
+    # T_list = [1, 10, 100, 1000]
     # M_list = [0, 0.001, 0.002, 0.005, 0.05, 0.2]
     # T_list = [1, 100]
+
+    M_list = [0, 0.002, 0.2]
+    T_list = [1]
 
     base_line_list = []
     ODIN_best_tnr = [0, 0, 0]
