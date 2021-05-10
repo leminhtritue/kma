@@ -31,7 +31,7 @@ def main():
     pre_trained_net = './pre_trained1/' + args.net_type + '_' + args.dataset + '.pth'
     args.outf = args.outf + args.net_type + '_' + args.dataset + '/'
     if os.path.isdir(args.outf) == False:
-        os.mkdir(args.outf)
+        os.makedirs(args.outf)
     torch.cuda.manual_seed(0)
     torch.cuda.set_device(args.gpu)
     
